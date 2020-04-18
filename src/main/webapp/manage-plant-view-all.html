@@ -1,0 +1,648 @@
+
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="">
+<meta name="author" content="">
+
+<title>Welcome To Rucha Group</title>
+
+Custom fonts for this template
+<link href="css/all.min.css" rel="stylesheet" type="text/css">
+<link href="css/style.css" rel="stylesheet" type="text/css">
+Custom styles for this template
+<link href="css/sb-admin-2.min.css" rel="stylesheet">
+<link href="css/dataTables.bootstrap4.min.css" rel="stylesheet">
+</head>
+
+<body id="page-top">
+
+Page Wrapper
+<div id="wrapper">
+Sidebar
+
+
+<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+
+Sidebar - Brand
+<a class="sidebar-brand d-flex align-items-center justify-content-center" href="#">
+<img src="images/rucha-group-logo.png" class="img-fluid" style="height:60px;" />
+</a>
+
+Divider
+<hr class="sidebar-divider my-0">
+
+Nav Item - Dashboard
+
+<li class="nav-item">
+<a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#managePlants" aria-expanded="true" aria-controls="managePlants">
+<i class="fas fa-fw fa-industry"></i>
+<span>Manage Plants</span>
+</a>
+<div id="managePlants" class="collapse" aria-labelledby="managePlants" data-parent="#accordionSidebar">
+<div class="collapse-inner" style="background-color:#3482ae;">
+<a class="collapse-item" href="manage-plant-view-all.php">View All</a>
+</div>
+</div>
+</li>
+
+
+
+
+Divider
+<hr class="sidebar-divider d-none d-md-block">
+
+Sidebar Toggler (Sidebar)
+<div class="text-center d-none d-md-inline">
+<button class="rounded-circle border-0" id="sidebarToggle"></button>
+</div>
+
+</ul>
+End of Sidebar
+
+Content Wrapper
+<div id="content-wrapper" class="d-flex flex-column">
+
+Main Content
+<div id="content">
+
+Topbar
+
+<nav class="navbar navbar-expand navbar-light TopBarBgColor topbar static-top shadow">
+
+Sidebar Toggle (Topbar)
+<button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+<i class="fa fa-bars"></i>
+</button>
+
+Topbar Search
+<form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search FaIcon">
+<div class="input-group">
+<input type="text" class="form-control bg-light border-0 small" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2">
+</div>
+<span class="FloatIcon fa fa-search"></span>
+</form>
+
+
+Topbar Navbar
+<ul class="navbar-nav ml-auto">
+Nav Item - Search Dropdown (Visible Only XS)
+<li class="nav-item dropdown no-arrow d-sm-none">
+<a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+<i class="fas fa-search fa-fw"></i>
+</a>
+Dropdown - Messages
+<div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in" aria-labelledby="searchDropdown">
+<form class="form-inline mr-auto w-100 navbar-search FaIcon">
+<div class="input-group">
+<input type="text" class="form-control bg-light border small" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2">
+</div>
+<span class="FloatIcon fa fa-search"></span>
+</form>
+</div>
+</li>
+
+
+
+Nav Item - User Information
+<li class="nav-item dropdown no-arrow">
+<a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+<span class="mr-2 d-none d-lg-inline text-white small">Robert Downey</span>
+<img class="img-profile rounded-circle" src="images/profile-pic.jpg">
+</a>
+Dropdown - User Information
+<div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
+<a class="dropdown-item" href="#">
+<i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+Profile
+</a>
+<a class="dropdown-item" href="#">
+<i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
+Settings
+</a>
+<div class="dropdown-divider"></div>
+<a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
+<i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+Logout
+</a>
+</div>
+</li>
+</ul>
+
+</nav>
+End of Topbar
+ -->
+
+<!-- Begin Page Content -->
+<div ng-controller="managePlantController" class="container-fluid mt-3">
+
+<!-- Page Heading -->
+<div class="row mb-2">
+<div class="col-sm-8 align-self-center">
+<h1 class="h4 text-gray-800">View Plants</h1>
+</div>
+
+<div class="col-sm-4 text-right">
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addNewPlantModal" ng-click="beforeAddModal();">Add New Plant</button>
+</div>
+</div>
+
+<!--Add New Plant Popup-->
+<div class="modal fade" id="addNewPlantModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal-dialog modal-lg" role="document">
+<div class="modal-content">
+<div class="modal-header">
+<h5 class="modal-title BlackTxtColor" id="exampleModalLabel">Add New Plant</h5>
+<span style="margin-left: 179px;font-size: larger;color: red;" ng-show="whenError">{{errorMsg}}missing required field!!</span>
+<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+<span aria-hidden="true">&times;</span>
+</button>
+</div>
+
+<div class="modal-body">
+
+
+<div class="row">
+<div class="col-lg-6 border-right">
+<div class="row">
+
+<div class="col-lg-12">
+<div class="form-group">
+<label>Plant Code</label>
+<input class="form-control" ng-model="newPlant.plantCode" required>
+</div>
+</div>
+
+<div class="col-lg-12">
+<div class="form-group">
+<label>Plant Name</label>
+<input class="form-control" ng-model="newPlant.plantName">
+</div>
+</div>
+
+<div class="col-lg-12">
+<div class="form-group">
+<label>Plant Address</label>
+<textarea class="form-control" rows="1" ng-model="newPlant.plantAddress"></textarea>
+</div>
+</div>
+
+<div class="col-lg-12">
+<div class="form-group">
+<label>Plant City</label>
+<select class="form-control" ng-model="newPlant.plantCity">
+<option selected>Aurangabad</option>
+</select>
+</div>
+</div>
+
+<div class="col-lg-12">
+<div class="form-group">
+<label>Plant Pincode</label>
+<input class="form-control" ng-model="newPlant.plantPincode">
+</div>
+</div>
+
+<div class="col-lg-12">
+<div class="form-group">
+<label>Plant State</label>
+<select class="form-control" ng-model="newPlant.plantState">
+<option selected>Maharashtra</option>
+</select>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="col-lg-6">
+<div class="row">
+
+<div class="col-lg-12">
+<div class="form-group">
+<label>Plant Country</label>
+<select class="form-control" ng-model="newPlant.plantCountry">
+<option selected>India</option>
+</select>
+</div>
+</div>
+
+<div class="col-lg-12">
+<div class="form-group">
+<label>Plant GST</label>
+<input class="form-control" ng-model="newPlant.plantGst">
+</div>
+</div>
+
+<div class="col-lg-12">
+<div class="form-group">
+<label>Plant Pan</label>
+<input class="form-control" ng-model="newPlant.plantPan">
+</div>
+</div>
+
+<div class="col-lg-12">
+<div class="form-group">
+<label>Plant Maplink</label>
+<input class="form-control" ng-model="newPlant.plantMapLink">
+</div>
+</div>
+
+<div class="col-lg-12">
+<div class="form-group">
+<label>Plant CIN</label>
+<input class="form-control" ng-model="newPlant.plantCin">
+</div>
+</div>
+
+</div>
+</div>
+</div>
+
+
+</div>
+<div class="modal-footer">
+<button type="button" class="btn btn-primary" ng-click="addNewPlant()">Submit</button>
+<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+</div>
+</div>
+</div>
+</div>
+<!-- End Page Heading -->
+
+
+<!--Edit Plant Popup-->
+<div class="modal fade" id="editPlantModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal-dialog modal-lg" role="document">
+<div class="modal-content">
+<div class="modal-header">
+<h5 class="modal-title BlackTxtColor" id="exampleModalLabel">Edit Plant</h5>
+<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+<span aria-hidden="true">&times;</span>
+</button>
+</div>
+<div class="modal-body">
+
+<div class="row">
+<div class="col-lg-6 border-right">
+<div class="row">
+
+<div class="col-lg-12">
+<div class="form-group">
+<label>Plant Code</label>
+<input class="form-control" ng-model="edited.plantCode">
+</div>
+</div>
+
+<div class="col-lg-12">
+<div class="form-group">
+<label>Plant Name</label>
+<input class="form-control" ng-model="edited.plantName">
+</div>
+</div>
+
+<div class="col-lg-12">
+<div class="form-group">
+<label>Plant Address</label>
+<textarea class="form-control" rows="1" ng-model="edited.plantAddress"></textarea>
+</div>
+</div>
+
+<div class="col-lg-12">
+<div class="form-group">
+<label>Plant City</label>
+<select class="form-control" ng-model="edited.plantCity">
+<option selected>Aurangabad</option>
+</select>
+</div>
+</div>
+
+<div class="col-lg-12">
+<div class="form-group">
+<label>Plant Pincode</label>
+<input class="form-control" ng-model="edited.plantPincode">
+</div>
+</div>
+
+<div class="col-lg-12">
+<div class="form-group">
+<label>Plant State</label>
+<select class="form-control" ng-model="edited.plantState">
+<option selected>Maharashtra</option>
+</select>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="col-lg-6">
+<div class="row">
+
+<div class="col-lg-12">
+<div class="form-group">
+<label>Plant Country</label>
+<select class="form-control" ng-model="edited.plantCountry">
+<option selected>India</option>
+</select>
+</div>
+</div>
+
+<div class="col-lg-12">
+<div class="form-group">
+<label>Plant GST</label>
+<input class="form-control" ng-model="edited.plantGst">
+</div>
+</div>
+
+<div class="col-lg-12">
+<div class="form-group">
+<label>Plant Pan</label>
+<input class="form-control" ng-model="edited.plantPan">
+</div>
+</div>
+
+<div class="col-lg-12">
+<div class="form-group">
+<label>Plant Maplink</label>
+<input class="form-control" ng-model="edited.plantMapLink">
+</div>
+</div>
+
+<div class="col-lg-12">
+<div class="form-group">
+<label>Plant CIN</label>
+<input class="form-control" ng-model="edited.plantCin">
+</div>
+</div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="modal-footer">
+<button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="editPlant()">Submit</button>
+<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+</div>
+</div>
+</div>
+</div>
+<!--Edit Plant Popup-->
+
+
+<!--View Plant Popup-->
+<div class="modal fade" id="viewPlantModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal-dialog modal-lg" role="document">
+<div class="modal-content">
+<div class="modal-header">
+<h5 class="modal-title BlackTxtColor" id="exampleModalLabel">View Plant Details</h5>
+<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+<span aria-hidden="true">&times;</span>
+</button>
+</div>
+<div class="modal-body">
+
+<div class="row">
+<div class="col-lg-6 border-right">
+<div class="row">
+<div class="col-sm-4 mb-3">Plant Code</div>
+<div class="col-sm-8 BlackTxtColor mb-3">: {{plantView.plantCode}}</div>
+</div>
+
+<div class="row">
+<div class="col-sm-4 mb-3">Plant Name</div>
+<div class="col-sm-8 BlackTxtColor mb-3">: {{plantView.plantName}}</div>
+</div>
+
+<div class="row">
+<div class="col-sm-4 mb-3">Plant Address</div>
+<div class="col-sm-8 BlackTxtColor mb-3">: {{plantView.plantAddress}}</div>
+</div>
+
+<div class="row">
+<div class="col-sm-4 mb-3">Plant City</div>
+<div class="col-sm-8 BlackTxtColor mb-3">: {{plantView.plantCity}}</div>
+</div>
+
+<div class="row">
+<div class="col-sm-4 mb-3">Plant Pincode</div>
+<div class="col-sm-8 BlackTxtColor mb-3">: {{plantView.plantPincode}}</div>
+</div>
+
+<div class="row">
+<div class="col-sm-4 mb-3">Plant State</div>
+<div class="col-sm-8 BlackTxtColor mb-3">: {{plantView.plantState}}</div>
+</div>
+
+<div class="row">
+<div class="col-sm-4 mb-3">Plant Country</div>
+<div class="col-sm-8 BlackTxtColor mb-3">: {{plantView.plantCountry}}</div>
+</div>
+</div>
+
+<div class="col-lg-6">
+<div class="row">
+<div class="col-sm-4 mb-3">Plant GST</div>
+<div class="col-sm-8 BlackTxtColor mb-3">: {{plantView.plantGst}}</div>
+</div>
+
+<div class="row">
+<div class="col-sm-4 mb-3">Plant Pan</div>
+<div class="col-sm-8 BlackTxtColor mb-3">: {{plantView.plantPan}}</div>
+</div>
+
+<div class="row">
+<div class="col-sm-4 mb-3">Plant Maplink</div>
+<div class="col-sm-8 BlackTxtColor mb-3" style="word-break: break-all;">: {{plantView.plantMapLink}}</div>
+</div>
+
+<div class="row">
+<div class="col-sm-4 mb-3">Plant CIN</div>
+<div class="col-sm-8 BlackTxtColor mb-3">: {{plantView.plantCin}}</div>
+</div>
+
+<div class="row">
+<div class="col-sm-4 mb-3">Reg by</div>
+<div class="col-sm-8 BlackTxtColor mb-3">: {{plantView.regBy}}</div>
+</div>
+
+<div class="row">
+<div class="col-sm-4 mb-3">Reg Date</div>
+<div class="col-sm-8 BlackTxtColor mb-3">: {{plantView.regDate}}</div>
+</div>
+
+<div class="row">
+<div class="col-sm-4 mb-3">Reg Time</div>
+<div class="col-sm-8 BlackTxtColor mb-3">: {{plantView.regTime}}</div>
+</div>
+</div>
+</div>
+
+</div>
+<div class="modal-footer">
+<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+</div>
+</div>
+</div>
+</div>
+<!--View Plant Popup-->
+
+<!-- delete plant popup -->
+<div class="modal fade" id="deletePlantModal" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-content">
+	        <div class="modal-header">
+	          <h5 class="modal-title BlackTxtColor" id="exampleModalLabel">Delete Plant</h5>
+	          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	          <span aria-hidden="true">&times;</span>
+	        </div>
+	        <div class="modal-body">
+	          <p>Are you sure, you want to delete the plant?</p>
+	        </div>
+	        <div class="modal-footer">
+	        	<button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="deletePlant()">Delete</button>
+	          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	        </div>
+      </div>
+ 	</div>
+ </div>
+<!-- delete plant popup ends -->
+
+
+<div class="bg-white p-3 mb-3">
+<div class="table-responsive my-3 px-3">
+<table class="table table" id="dataTable" width="100%" cellspacing="0">
+<thead>
+<tr>
+<th>Plant Code</th>
+<th>Plant Name</th>
+<th>Plant Address</th>
+<th>Plant City</th>
+<th>Action</th>	
+</tr>
+</thead>
+<tbody>
+<tr ng-repeat="plant in allPlants">
+<td>{{plant.plantCode}}</td>
+<td>{{plant.plantName}}</td>
+<td>{{plant.plantAddress}}</td>
+<td>{{plant.plantCity}}</td>
+<td><span data-toggle="modal" data-target="#editPlantModal" ng-click="viewEditPlant(plant)"><i class="fa fa-edit fa-lg fa-fw Pointer text-primary" data-toggle="tooltip" data-placement="top" title="Edit"></i></span> 
+<span data-toggle="modal" ng-click="viewPlant(plant)" data-target="#viewPlantModal"><i class="fa fa-eye fa-lg fa-fw Pointer text-dark" data-toggle="tooltip" data-placement="top" title="View"></i></span> 
+<span data-toggle="modal" ng-click="deletePlantDetails(plant)" data-target="#deletePlantModal"><i class="fa fa-trash-alt fa-lg fa-fw Pointer text-danger" data-toggle="tooltip" data-placement="top" title="Delete"></i></span></td>
+</tr>
+
+<!-- <tr>
+<td>1001</td>
+<td>Rucha Engineers Pvt. Ltd. Unit-1</td>
+<td>K-249, MIDC, WalujWALUJ K-249A, K-252-54 MIDC Waluj</td>
+<td>Aurangabad</td>
+<td><span data-toggle="modal" data-target="#editPlantModal"><i class="fa fa-edit fa-lg fa-fw Pointer text-primary" data-toggle="tooltip" data-placement="top" title="Edit"></i></span> 
+<span data-toggle="modal" data-target="#viewPlantModal"><i class="fa fa-eye fa-lg fa-fw Pointer text-dark" data-toggle="tooltip" data-placement="top" title="View"></i></span> 
+<i class="fa fa-trash-alt fa-lg fa-fw Pointer text-danger" data-toggle="tooltip" data-placement="top" title="Delete"></i></td>
+</tr>
+
+<tr>
+<td>1001</td>
+<td>Rucha Engineers Pvt. Ltd. Unit-1</td>
+<td>K-249, MIDC, WalujWALUJ K-249A, K-252-54 MIDC Waluj</td>
+<td>Aurangabad</td>
+<td><span data-toggle="modal" data-target="#editPlantModal"><i class="fa fa-edit fa-lg fa-fw Pointer text-primary" data-toggle="tooltip" data-placement="top" title="Edit"></i></span> 
+<span data-toggle="modal" data-target="#viewPlantModal"><i class="fa fa-eye fa-lg fa-fw Pointer text-dark" data-toggle="tooltip" data-placement="top" title="View"></i></span> 
+<i class="fa fa-trash-alt fa-lg fa-fw Pointer text-danger" data-toggle="tooltip" data-placement="top" title="Delete"></i></td>
+</tr>
+
+<tr>
+<td>1001</td>
+<td>Rucha Engineers Pvt. Ltd. Unit-1</td>
+<td>K-249, MIDC, WalujWALUJ K-249A, K-252-54 MIDC Waluj</td>
+<td>Aurangabad</td>
+<td><span data-toggle="modal" data-target="#editPlantModal"><i class="fa fa-edit fa-lg fa-fw Pointer text-primary" data-toggle="tooltip" data-placement="top" title="Edit"></i></span> 
+<span data-toggle="modal" data-target="#viewPlantModal"><i class="fa fa-eye fa-lg fa-fw Pointer text-dark" data-toggle="tooltip" data-placement="top" title="View"></i></span> 
+<i class="fa fa-trash-alt fa-lg fa-fw Pointer text-danger" data-toggle="tooltip" data-placement="top" title="Delete"></i></td>
+</tr>
+
+<tr>
+<td>1001</td>
+<td>Rucha Engineers Pvt. Ltd. Unit-1</td>
+<td>K-249, MIDC, WalujWALUJ K-249A, K-252-54 MIDC Waluj</td>
+<td>Aurangabad</td>
+<td><span data-toggle="modal" data-target="#editPlantModal"><i class="fa fa-edit fa-lg fa-fw Pointer text-primary" data-toggle="tooltip" data-placement="top" title="Edit"></i></span> 
+<span data-toggle="modal" data-target="#viewPlantModal"><i class="fa fa-eye fa-lg fa-fw Pointer text-dark" data-toggle="tooltip" data-placement="top" title="View"></i></span> 
+<i class="fa fa-trash-alt fa-lg fa-fw Pointer text-danger" data-toggle="tooltip" data-placement="top" title="Delete"></i></td>
+</tr> -->
+</tbody>
+</table>
+</div>
+</div>
+
+
+</div>
+<!-- /End Page Content -->
+
+
+
+<!-- </div>
+End of Main Content
+
+
+
+Footer
+<footer class="sticky-footer bg-white">
+<div class="container my-auto">
+<div class="copyright text-center my-auto">
+<span>Copyright &copy; Rucha Group 2020</span>
+</div>
+</div>
+</footer>
+End of Footer
+
+</div>
+End of Content Wrapper
+
+</div>
+End of Page Wrapper
+
+
+
+Scroll to Top Button
+<a class="scroll-to-top rounded" href="#page-top">
+<i class="fas fa-angle-up"></i>
+</a>
+
+
+
+Bootstrap core JavaScript
+<script src="js/jquery.min.js"></script>
+<script src="js/bootstrap.bundle.min.js"></script>
+Core plugin JavaScript
+<script src="js/jquery.easing.min.js"></script>
+Custom scripts for all pages
+<script src="js/sb-admin-2.min.js"></script>
+
+Page level plugins
+<script src="js/jquery.dataTables.min.js"></script>
+<script src="js/dataTables.bootstrap4.min.js"></script>
+
+Page level custom scripts
+<script src="js/datatables-demo.js"></script>
+<script src="js/bs-custom-file-input.js"></script>
+<script>
+$(document).ready(function () {
+  bsCustomFileInput.init()
+})
+</script>
+
+<script>
+$(function () {
+  $('[data-toggle="tooltip"]').tooltip()
+})
+</script>
+</body>
+</html> -->
