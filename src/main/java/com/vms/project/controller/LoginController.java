@@ -42,7 +42,6 @@ public class LoginController {
 	public JSONObject doLogin(@RequestBody EmployeeMaster employee) {
 		
 		JSONObject jsonObject = new JSONObject();
-		System.out.println("in java");
 		Optional<EmployeeMaster> l = repo.findByEmpMobile(employee.getEmpMobile());
 		if(l.isPresent()) {
 			if(l.get().getEmpPass().equals(employee.getEmpPass())) {
