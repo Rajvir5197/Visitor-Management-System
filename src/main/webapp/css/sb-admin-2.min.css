@@ -42,7 +42,7 @@
 box-sizing:border-box
 }
 html {
-	font-family: 'exoregular', sans-serif;
+	font-family: 'exoregular';
 	line-height:1.15;
 	-webkit-text-size-adjust:100%;
 	-webkit-tap-highlight-color:transparent
@@ -52,7 +52,7 @@ article, aside, figcaption, figure, footer, header, hgroup, main, nav, section {
 }
 body {
 	margin:0;
-	font-family: 'exoregular', sans-serif;
+	font-family: 'exoregular';
 	font-size:1rem;
 	font-weight:400;
 	line-height:1.5;
@@ -1476,7 +1476,8 @@ margin-left:91.66667%
 .table {
 	width:100%;
 	margin-bottom:1rem;
-	color:#858796
+	color:#858796;
+	font-size:14px;
 }
 .table td, .table th {
 padding:.75rem;
@@ -9135,7 +9136,8 @@ max-width:13.375rem
 	min-height:100vh
 }
 .sidebar .nav-item {
-	position:relative
+	position:relative;
+	border-bottom:1px solid #fff;
 }
 
 .sidebar .nav-item :hover {
@@ -9960,7 +9962,7 @@ clip:rect(81px,9999px,41px,0)
 	animation:noise-anim-2 3s infinite linear alternate-reverse
 }
 footer.sticky-footer {
-	padding:2rem 0;
+	padding:1rem 0;
 	-ms-flex-negative:0;
 	flex-shrink:0
 }

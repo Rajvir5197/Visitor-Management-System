@@ -28,6 +28,33 @@
 <!-- Bootstrap core JavaScript-->
 <script src="js/jquery.min.js"></script>
 <script src="js/bootstrap.bundle.min.js"></script>
+
+<script src="js/jquery.multi-select.js"></script>
+<script type="text/javascript">
+   $(function(){
+       $('#plantCode1, #plantCode2').multiSelect();
+       $('#line-wrap-example').multiSelect({
+           positionMenuWithin: $('.position-menu-within')
+       });
+       $('#categories').multiSelect({
+           noneText: 'All categories',
+           presets: [
+               {
+                   name: 'All categories',
+                   options: []
+               },
+               {
+                   name: 'My categories',
+                   options: ['a', 'c']
+               }
+           ]
+       });
+       $('#modal-example').multiSelect({
+           'modalHTML': '<div class="multi-select-modal">'
+       });
+   });
+   </script>
+
 <!-- Core plugin JavaScript-->
 <script src="js/jquery.easing.min.js"></script>
 <!-- Custom scripts for all pages-->

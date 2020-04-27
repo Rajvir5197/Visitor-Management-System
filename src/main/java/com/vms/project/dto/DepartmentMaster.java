@@ -12,6 +12,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "DEPARTMENT_MASTER")
@@ -22,11 +23,12 @@ public class DepartmentMaster {
 	private int deptCode;
 	
 	@Column (name = "dept_name")
+	@NotNull
 	private String deptName;
-	
-	@ManyToMany(cascade = CascadeType.ALL)
-    @JoinColumn
-	private Set<PlantMaster> plant;
+
+	@Column (name = "dept_plant_code")
+	@NotNull
+	private int deptPlantCode;
 	
 	@Column (name = "reg_by")
 	private int regBy;
@@ -39,7 +41,7 @@ public class DepartmentMaster {
 	
 	@OneToMany(mappedBy = "empDept")
 	private Set<EmployeeMaster> employeeMaster;
-
+	
 	public int getDeptCode() {
 		return deptCode;
 	}
@@ -56,12 +58,12 @@ public class DepartmentMaster {
 		this.deptName = deptName;
 	}
 	
-	public Set<PlantMaster> getPlant() {
-		return plant;
+	public int getDeptPlantCode() {
+		return deptPlantCode;
 	}
 
-	public void setPlant(Set<PlantMaster> plant) {
-		this.plant = plant;
+	public void setDeptPlantCode(int deptPlantCode) {
+		this.deptPlantCode = deptPlantCode;
 	}
 
 	public int getRegBy() {
@@ -88,12 +90,4 @@ public class DepartmentMaster {
 		this.regTime = regTime;
 	}
 
-	public Set<EmployeeMaster> getEmployeeMaster() {
-		return employeeMaster;
-	}
-
-	public void setEmployeeMaster(Set<EmployeeMaster> employeeMaster) {
-		this.employeeMaster = employeeMaster;
-	}
-	
 }

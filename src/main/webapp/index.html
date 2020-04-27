@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="ISO-8859-1">
+	<meta charset = "UTF-8" />
   	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
   	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.js"></script>
@@ -22,146 +22,73 @@
 	<script src="controller/main.js"></script>
 	<script src="controller/dashboardController.js"></script>
 	<script src="controller/managePlantController.js"></script>
+	<script src="controller/manageDepartmentController.js"></script>
+	<script src="controller/manageEmployeeController.js"></script>
+	<script src="controller/manageContactController.js"></script>
+	<script src="controller/manageContactEditContoller.js"></script>
+	<script src="controller/manageVisitController.js"></script>
   	
 	<div style="width: 100%;" ng-controller="indexController">
- 		 <!-- <a href="#!login" style="font-size: large; margin-top: 1%;">LOGIN</a>
- 		 <a href="#!dashboard" style="font-size: large; margin-top: 1%;">LOGIN</a>
- 		 <a href="#!manage-visits-add-new" style="font-size: large; margin-top: 1%;">manage-visits-add-new</a>
- 		 <a href="#!manage-contact-add-new" style="font-size: large; margin-top: 1%;">manage-contact-add-new</a>
- 		 <a href="#!manage-contact-edit" style="font-size: large; margin-top: 1%;">manage-contact-edit</a>
- 		 <a href="#!manage-contact-view-all" style="font-size: large; margin-top: 1%;">manage-contact-view-all</a>
- 		 <a href="#!manage-plant-add-new" style="font-size: large; margin-top: 1%;">manage-plant-add-new</a>
- 		 <a href="#!manage-plant-edit" style="font-size: large; margin-top: 1%;">manage-plant-edit</a>
- 		 <a href="#!manage-plant-view-all" style="font-size: large; margin-top: 1%;">manage-plant-view-all</a>
- 		 <a href="#!manage-visits-view-all" style="font-size: large; margin-top: 1%;">manage-visits-view-all</a>
- 		 <a href="#!personcheck-out" style="font-size: large; margin-top: 1%;">personcheck-out</a>
- 		 <a href="#!security-dashboard" style="font-size: large; margin-top: 1%;">security-dashboard</a>
- 		 <a href="#!todays-visits-listing" style="font-size: large; margin-top: 1%;">todays-visit-listing</a> -->
- 		 
  		<!-- Page Wrapper -->
 		<div id="wrapper">
 		<!-- Sidebar -->
 		
-		
-		
+
 		<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 		
 		<!-- Sidebar - Brand -->
-		<a class="sidebar-brand d-flex align-items-center justify-content-center" href="#">
+		<a class="sidebar-brand d-flex align-items-center justify-content-center border-bottom" href="#">
 		<img src="images/rucha-group-logo.png" class="img-fluid" style="height:60px;" />
 		</a>
 		
 		<!-- Divider -->
 		<!--<hr class="sidebar-divider my-0">-->
 		
-		<!-- Nav Item - Dashboard -->
+		<!-- Super Admin Menu -->
 		<li class="nav-item">
-		<a class="nav-link" href="dashboard.php">
-		<i class="fas fa-fw fa-users"></i>
-		<span>Employee Dashboard</span></a>
+		<a class="nav-link" href="#!dashboard">
+		<i class="fas fa-fw fa-tachometer-alt"></i>
+		<span>Dashboard</span></a>
 		</li>
 		
 		<li class="nav-item">
-		<a class="nav-link" href="security-dashboard.php">
-		<i class="fas fa-fw fa-user-tie"></i>
-		<span>Security Dashboard</span></a>
-		</li>
-		
-		<li class="nav-item">
-		<a class="nav-link" href="todays-visits-listing.php">
-		<i class="fas fa-fw fa-calendar-alt"></i>
-		<span>Todays Visits Listing</span></a>
-		</li>
-		
-		
-		<li class="nav-item">
-		<a class="nav-link" href="personcheck-out.php">
-		<i class="fas fa-fw fa-sign-out-alt"></i>
-		<span>Personcheck Out</span></a>
-		</li>
-		
-		
-		<!--New Navigation-->
-		
-		<li class="nav-item">
-		<a class="nav-link collapsed" data-toggle="collapse" data-target="#managePlants" aria-expanded="true" aria-controls="managePlants">
+		<a class="nav-link" href="#!ViewAllPlants">
 		<i class="fas fa-fw fa-industry"></i>
-		<span>Manage Plants</span>
-		</a>
-		<div id="managePlants" class="collapse" aria-labelledby="managePlants" data-parent="#accordionSidebar">
-		<div class="collapse-inner" style="background-color:#3482ae;">
-		<a class="collapse-item" href="#!ViewAllPlants">View All</a>
-		</div>
-		</div>
+		<span>Manage Plants</span></a>
 		</li>
 		
-		
 		<li class="nav-item">
-		<a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#manageVisits" aria-expanded="true" aria-controls="manageVisits">
+		<a class="nav-link collapsed" href="" data-toggle="collapse" data-target="#masterMVisit" aria-expanded="true" aria-controls="masterMVisit">
 		<i class="fas fa-fw fa-file-signature"></i>
-		<span>Manage Visits</span>
+		<span>Manage Visit</span>
 		</a>
-		<div id="manageVisits" class="collapse" aria-labelledby="manageVisits" data-parent="#accordionSidebar">
+		<div id="masterMVisit" class="collapse" aria-labelledby="masterMVisit" data-parent="#accordionSidebar">
 		<div class="collapse-inner" style="background-color:#3482ae;">
-		<a class="collapse-item" href="manage-visits-view-all.php">View All</a>
-		<a class="collapse-item" href="manage-visits-add-new.php">Add/New Visit</a>
+		<a class="collapse-item" href="#!viewAllVisit">Todays Visits Listing</a>
+		<a class="collapse-item" href="personcheck-out.php">Person Checkout</a>
+		<a class="collapse-item" href="#">Manage Check In</a>
 		</div>
 		</div>
 		</li>
 		
-		
 		<li class="nav-item">
-		<a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#manageCheckIn" aria-expanded="true" aria-controls="manageCheckIn">
-		<i class="fas fa-fw fa-clock"></i>
-		<span>Manage Check-In</span>
-		</a>
-		<div id="manageCheckIn" class="collapse" aria-labelledby="manageCheckIn" data-parent="#accordionSidebar">
-		<div class="collapse-inner" style="background-color:#3482ae;">
-		<a class="collapse-item" href="#">View All (Co Visitor + <br />Asset Details)</a>
-		</div>
-		</div>
-		</li>
-		
-		
-		
-		<li class="nav-item">
-		<a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#manageContact" aria-expanded="true" aria-controls="manageContact">
+		<a class="nav-link" href="#!ManageContact">
 		<i class="fas fa-fw fa-address-card"></i>
-		<span>Manage Contact</span>
-		</a>
-		<div id="manageContact" class="collapse" aria-labelledby="manageContact" data-parent="#accordionSidebar">
-		<div class="collapse-inner" style="background-color:#3482ae;">
-		<a class="collapse-item" href="manage-contact-view-all.php">View All</a>
-		<a class="collapse-item" href="manage-contact-add-new.php">Add New Contact</a>
-		</div>
-		</div>
-		</li>
-		
-		
-		<li class="nav-item">
-		<a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#empMaster" aria-expanded="true" aria-controls="empMaster">
-		<i class="fas fa-fw fa-user-cog"></i>
-		<span>Employee Master</span>
-		</a>
-		<div id="empMaster" class="collapse" aria-labelledby="empMaster" data-parent="#accordionSidebar">
-		<div class="collapse-inner" style="background-color:#3482ae;">
-		<a class="collapse-item" href="employee-master-view-all.php">View All</a>
-		</div>
-		</div>
+		<span>Manage Contact</span></a>
 		</li>
 		
 		<li class="nav-item">
-		<a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#depMaster" aria-expanded="true" aria-controls="empMaster">
-		<i class="fas fa-fw fa-building"></i>
-		<span>Department Master</span>
+		<a class="nav-link collapsed" href="" data-toggle="collapse" data-target="#masterMenu" aria-expanded="true" aria-controls="masterMenu">
+		<i class="fas fa-fw fa-cogs"></i>
+		<span>Master</span>
 		</a>
-		<div id="depMaster" class="collapse" aria-labelledby="depMaster" data-parent="#accordionSidebar">
+		<div id="masterMenu" class="collapse" aria-labelledby="masterMenu" data-parent="#accordionSidebar">
 		<div class="collapse-inner" style="background-color:#3482ae;">
-		<a class="collapse-item" href="department-master-view-all.php">View All</a>
+		<a class="collapse-item" href="#!ViewAllEmployee">Employee Master</a>
+		<a class="collapse-item" href="#!ViewAllDepartment">Department Master</a>
 		</div>
 		</div>
 		</li>
-		
 		
 		<li class="nav-item">
 		<a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#ReportsMenu" aria-expanded="true" aria-controls="ReportsMenu">
@@ -177,9 +104,45 @@
 		</div>
 		</li>
 		
+		<li class="nav-item">
+		<a class="nav-link" href="#">
+		<i class="fas fa-fw fa-tools"></i>
+		<span>Authorization</span></a>
+		</li>
+		<!-- End Super Admin Menu -->
 		
-		<!-- Divider -->
-		<hr class="sidebar-divider d-none d-md-block">
+		
+		
+		
+		
+		
+		<!--<li class="nav-item">
+		<a class="nav-link" href="dashboard.php">
+		<i class="fas fa-fw fa-users"></i>
+		<span>Employee Dashboard</span></a>
+		</li>
+		
+		<li class="nav-item">
+		<a class="nav-link" href="security-dashboard.php">
+		<i class="fas fa-fw fa-user-tie"></i>
+		<span>Security Dashboard</span></a>
+		</li>-->
+		
+		
+		
+		<!--<li class="nav-item">
+		<a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#manageVisits" aria-expanded="true" aria-controls="manageVisits">
+		<i class="fas fa-fw fa-file-signature"></i>
+		<span>Manage Visits</span>
+		</a>
+		<div id="manageVisits" class="collapse" aria-labelledby="manageVisits" data-parent="#accordionSidebar">
+		<div class="collapse-inner" style="background-color:#3482ae;">
+		<a class="collapse-item" href="manage-visits-view-all.php">View All</a>
+		<a class="collapse-item" href="manage-visits-add-new.php">Add/New Visit</a>
+		</div>
+		</div>
+		</li>-->
+		
 		
 		<!-- Sidebar Toggler (Sidebar) -->
 		<div class="text-center d-none d-md-inline">
@@ -235,8 +198,8 @@
 		
 		<!-- Nav Item - User Information -->
 		<li class="nav-item dropdown no-arrow">
-		<a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-		<span class="mr-2 d-none d-lg-inline text-white small">Robert Downey</span>
+		<a class="nav-link dropdown-toggle" href="" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+		<span class="mr-2 d-none d-lg-inline text-white small">{{UserName}}</span>
 		<img class="img-profile rounded-circle" src="images/profile-pic.jpg">
 		</a>
 		<!-- Dropdown - User Information -->
@@ -250,7 +213,7 @@
 		Settings
 		</a>
 		<div class="dropdown-divider"></div>
-		<a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
+		<a class="dropdown-item" href="" ng-click="logoutUser()" data-toggle="modal" data-target="#logoutModal">
 		<i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
 		Logout
 		</a>

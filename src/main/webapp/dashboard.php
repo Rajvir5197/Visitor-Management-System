@@ -21,8 +21,12 @@
 
 <!-- Page Heading -->
 <div class="row mb-2">
-<div class="col-sm-12">
+<div class="col-sm-8 align-self-center">
 <h1 class="h4 text-gray-800">Dashboard</h1>
+</div>
+
+<div class="col-sm-4 text-right">
+<!--<button type="button" class="btn btn-primary">Set Visit</button>-->
 </div>
 </div>
 <!-- End Page Heading -->
@@ -34,8 +38,8 @@
 <div><span class="fa fa-users fa-2x"></span></div>
 
 <div class="row">
-<div class="col-sm-6 align-self-center FontSize18">Total Visits</div>
-<div class="col-sm-6 text-right FontSize28">1001</div>
+<div class="col-sm-7 align-self-center FontSize18">Total Visits</div>
+<div class="col-sm-5 text-right FontSize28">1001</div>
 </div>
 </div>
 </div>
@@ -45,8 +49,8 @@
 <div><span class="fa fa-calendar-alt fa-2x"></span></div>
 
 <div class="row">
-<div class="col-sm-6 align-self-center FontSize18">Todays Visit</div>
-<div class="col-sm-6 text-right FontSize28">501</div>
+<div class="col-sm-7 align-self-center FontSize18">Todays Visit</div>
+<div class="col-sm-5 text-right FontSize28">501</div>
 </div>
 </div>
 </div>
@@ -56,8 +60,8 @@
 <div><span class="fa fa-user-times fa-2x"></span></div>
 
 <div class="row">
-<div class="col-sm-6 align-self-center FontSize18">Cancel Visit</div>
-<div class="col-sm-6 text-right FontSize28">101</div>
+<div class="col-sm-7 align-self-center FontSize18">Cancel Visit</div>
+<div class="col-sm-5 text-right FontSize28">101</div>
 </div>
 </div>
 </div>
@@ -67,8 +71,8 @@
 <div><span class="fa fa-address-card fa-2x"></span></div>
 
 <div class="row">
-<div class="col-sm-6 align-self-center FontSize18">Attended Visit</div>
-<div class="col-sm-6 text-right FontSize28">52</div>
+<div class="col-sm-7 align-self-center FontSize18">Attended Visit</div>
+<div class="col-sm-5 text-right FontSize28">52</div>
 </div>
 </div>
 </div>
@@ -80,29 +84,91 @@
 <div class="row">
 <div class="col-lg-6 mb-3">
 <div class="w-100 bg-white">
-<h2 class="m-0 FontSize22 p-3 bg-light BlackTxtColor border-bottom">
+<h2 class="m-0 FontSize22 p-3 TopBarBgColor text-white border-bottom">
 <i class="fa fa-bullhorn fa-fw"></i> Upcoming Visits
 </h2>
 <div class="p-2" style="max-height:360px; overflow-y:scroll; overflow-x:hidden;">
-<ul class="listNew">
-<li><i class="fa fa-user fa-fw"></i> Omkar Deshmukh</li>
-<li><i class="fa fa-user fa-fw"></i> Omkar Deshmukh</li>
-<li><i class="fa fa-user fa-fw"></i> Omkar Deshmukh</li>
-<li><i class="fa fa-user fa-fw"></i> Omkar Deshmukh</li>
-<li><i class="fa fa-user fa-fw"></i> Omkar Deshmukh</li>
-<li><i class="fa fa-user fa-fw"></i> Omkar Deshmukh</li>
-<li><i class="fa fa-user fa-fw"></i> Omkar Deshmukh</li>
-<li><i class="fa fa-user fa-fw"></i> Omkar Deshmukh</li>
-<li><i class="fa fa-user fa-fw"></i> Omkar Deshmukh</li>
-<li><i class="fa fa-user fa-fw"></i> Omkar Deshmukh</li>
-</ul> 
+<div class="table-responsive">
+<table class="table">
+<thead>
+<tr>
+<th class="BlackTxtColor">Visitor Name</th>
+<th class="BlackTxtColor">Visit Date</th>
+<th class="BlackTxtColor">Time</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>Rahul Dev</td>
+<td>15-04-2020</td>
+<td>02:30</td>
+</tr>
+<tr>
+<td>Rahul Dev</td>
+<td>15-04-2020</td>
+<td>02:30</td>
+</tr>
+<tr>
+<td>Rahul Dev</td>
+<td>15-04-2020</td>
+<td>02:30</td>
+</tr>
+<tr>
+<td>Rahul Dev</td>
+<td>15-04-2020</td>
+<td>02:30</td>
+</tr>
+<tr>
+<td>Rahul Dev</td>
+<td>15-04-2020</td>
+<td>02:30</td>
+</tr>
+<tr>
+<td>Rahul Dev</td>
+<td>15-04-2020</td>
+<td>02:30</td>
+</tr>
+<tr>
+<td>Rahul Dev</td>
+<td>15-04-2020</td>
+<td>02:30</td>
+</tr>
+<tr>
+<td>Rahul Dev</td>
+<td>15-04-2020</td>
+<td>02:30</td>
+</tr>
+<tr>
+<td>Rahul Dev</td>
+<td>15-04-2020</td>
+<td>02:30</td>
+</tr>
+<tr>
+<td>Rahul Dev</td>
+<td>15-04-2020</td>
+<td>02:30</td>
+</tr>
+<tr>
+<td>Rahul Dev</td>
+<td>15-04-2020</td>
+<td>02:30</td>
+</tr>
+<tr>
+<td>Rahul Dev</td>
+<td>15-04-2020</td>
+<td>02:30</td>
+</tr>
+</tbody>
+</table>
+</div> 
 </div>
 </div>
 </div>
 
 <div class="col-lg-6 mb-3">
 <div class="w-100 bg-white">
-<h2 class="m-0 FontSize22 p-3 bg-light BlackTxtColor border-bottom">
+<h2 class="m-0 FontSize22 p-3 TopBarBgColor text-white border-bottom">
 <i class="fa fa-file-alt fa-fw"></i> To do list
 </h2>
 <div class="p-2" style="max-height:360px; overflow-y:scroll; overflow-x:hidden;">
@@ -126,7 +192,7 @@
 <div class="row mb-3">
 <div class="col-lg-12">
 <div class="w-100 bg-white">
-<h2 class="m-0 FontSize22 p-3 bg-light BlackTxtColor border-bottom">
+<h2 class="m-0 FontSize22 p-3 TopBarBgColor text-white border-bottom">
 <i class="fa fa-sliders-h fa-fw"></i> Controls
 </h2>
 <div class="p-2 text-center">
@@ -147,7 +213,7 @@
 <div class="row">
 <div class="col-lg-12">
 <div class="w-100 bg-white">
-<h2 class="m-0 FontSize22 p-3 bg-light BlackTxtColor border-bottom">
+<h2 class="m-0 FontSize22 p-3 TopBarBgColor text-white border-bottom">
 <i class="fa fa-users fa-fw"></i> Contacts
 </h2>
 
@@ -162,26 +228,26 @@
 
 <div class="p-2" style="max-height:480px; overflow-y:scroll; overflow-x:hidden;">
 <ul class="listNew">
-<li><i class="fa fa-user fa-fw"></i> <a href="#" data-toggle="modal" data-target="#VisitScheduleModal">Omkar Deshmukh</a></li>
-<li><i class="fa fa-user fa-fw"></i> <a href="#" data-toggle="modal" data-target="#VisitScheduleModal">Omkar Deshmukh</a></li>
-<li><i class="fa fa-user fa-fw"></i> <a href="#" data-toggle="modal" data-target="#VisitScheduleModal">Omkar Deshmukh</a></li>
-<li><i class="fa fa-user fa-fw"></i> <a href="#" data-toggle="modal" data-target="#VisitScheduleModal">Omkar Deshmukh</a></li>
-<li><i class="fa fa-user fa-fw"></i> <a href="#" data-toggle="modal" data-target="#VisitScheduleModal">Omkar Deshmukh</a></li>
-<li><i class="fa fa-user fa-fw"></i> <a href="#" data-toggle="modal" data-target="#VisitScheduleModal">Omkar Deshmukh</a></li>
-<li><i class="fa fa-user fa-fw"></i> <a href="#" data-toggle="modal" data-target="#VisitScheduleModal">Omkar Deshmukh</a></li>
-<li><i class="fa fa-user fa-fw"></i> <a href="#" data-toggle="modal" data-target="#VisitScheduleModal">Omkar Deshmukh</a></li>
-<li><i class="fa fa-user fa-fw"></i> <a href="#" data-toggle="modal" data-target="#VisitScheduleModal">Omkar Deshmukh</a></li>
-<li><i class="fa fa-user fa-fw"></i> <a href="#" data-toggle="modal" data-target="#VisitScheduleModal">Omkar Deshmukh</a></li>
-<li><i class="fa fa-user fa-fw"></i> <a href="#" data-toggle="modal" data-target="#VisitScheduleModal">Omkar Deshmukh</a></li>
-<li><i class="fa fa-user fa-fw"></i> <a href="#" data-toggle="modal" data-target="#VisitScheduleModal">Omkar Deshmukh</a></li>
-<li><i class="fa fa-user fa-fw"></i> <a href="#" data-toggle="modal" data-target="#VisitScheduleModal">Omkar Deshmukh</a></li>
-<li><i class="fa fa-user fa-fw"></i> <a href="#" data-toggle="modal" data-target="#VisitScheduleModal">Omkar Deshmukh</a></li>
-<li><i class="fa fa-user fa-fw"></i> <a href="#" data-toggle="modal" data-target="#VisitScheduleModal">Omkar Deshmukh</a></li>
-<li><i class="fa fa-user fa-fw"></i> <a href="#" data-toggle="modal" data-target="#VisitScheduleModal">Omkar Deshmukh</a></li>
-<li><i class="fa fa-user fa-fw"></i> <a href="#" data-toggle="modal" data-target="#VisitScheduleModal">Omkar Deshmukh</a></li>
-<li><i class="fa fa-user fa-fw"></i> <a href="#" data-toggle="modal" data-target="#VisitScheduleModal">Omkar Deshmukh</a></li>
-<li><i class="fa fa-user fa-fw"></i> <a href="#" data-toggle="modal" data-target="#VisitScheduleModal">Omkar Deshmukh</a></li>
-<li><i class="fa fa-user fa-fw"></i> <a href="#" data-toggle="modal" data-target="#VisitScheduleModal">Omkar Deshmukh</a></li>
+<li class="Rel"><i class="fa fa-user fa-fw"></i> Omkar Deshmukh <button class="btn btn-primary btn-sm ContFloatingBtn" data-toggle="modal" data-target="#VisitScheduleModal">Set Visit</button></li>
+<li class="Rel"><i class="fa fa-user fa-fw"></i> Omkar Deshmukh <button class="btn btn-primary btn-sm ContFloatingBtn" data-toggle="modal" data-target="#VisitScheduleModal">Set Visit</button></li>
+<li class="Rel"><i class="fa fa-user fa-fw"></i> Omkar Deshmukh <button class="btn btn-primary btn-sm ContFloatingBtn" data-toggle="modal" data-target="#VisitScheduleModal">Set Visit</button></li>
+<li class="Rel"><i class="fa fa-user fa-fw"></i> Omkar Deshmukh <button class="btn btn-primary btn-sm ContFloatingBtn" data-toggle="modal" data-target="#VisitScheduleModal">Set Visit</button></li>
+<li class="Rel"><i class="fa fa-user fa-fw"></i> Omkar Deshmukh <button class="btn btn-primary btn-sm ContFloatingBtn" data-toggle="modal" data-target="#VisitScheduleModal">Set Visit</button></li>
+<li class="Rel"><i class="fa fa-user fa-fw"></i> Omkar Deshmukh <button class="btn btn-primary btn-sm ContFloatingBtn" data-toggle="modal" data-target="#VisitScheduleModal">Set Visit</button></li>
+<li class="Rel"><i class="fa fa-user fa-fw"></i> Omkar Deshmukh <button class="btn btn-primary btn-sm ContFloatingBtn" data-toggle="modal" data-target="#VisitScheduleModal">Set Visit</button></li>
+<li class="Rel"><i class="fa fa-user fa-fw"></i> Omkar Deshmukh <button class="btn btn-primary btn-sm ContFloatingBtn" data-toggle="modal" data-target="#VisitScheduleModal">Set Visit</button></li>
+<li class="Rel"><i class="fa fa-user fa-fw"></i> Omkar Deshmukh <button class="btn btn-primary btn-sm ContFloatingBtn" data-toggle="modal" data-target="#VisitScheduleModal">Set Visit</button></li>
+<li class="Rel"><i class="fa fa-user fa-fw"></i> Omkar Deshmukh <button class="btn btn-primary btn-sm ContFloatingBtn" data-toggle="modal" data-target="#VisitScheduleModal">Set Visit</button></li>
+<li class="Rel"><i class="fa fa-user fa-fw"></i> Omkar Deshmukh <button class="btn btn-primary btn-sm ContFloatingBtn" data-toggle="modal" data-target="#VisitScheduleModal">Set Visit</button></li>
+<li class="Rel"><i class="fa fa-user fa-fw"></i> Omkar Deshmukh <button class="btn btn-primary btn-sm ContFloatingBtn" data-toggle="modal" data-target="#VisitScheduleModal">Set Visit</button></li>
+<li class="Rel"><i class="fa fa-user fa-fw"></i> Omkar Deshmukh <button class="btn btn-primary btn-sm ContFloatingBtn" data-toggle="modal" data-target="#VisitScheduleModal">Set Visit</button></li>
+<li class="Rel"><i class="fa fa-user fa-fw"></i> Omkar Deshmukh <button class="btn btn-primary btn-sm ContFloatingBtn" data-toggle="modal" data-target="#VisitScheduleModal">Set Visit</button></li>
+<li class="Rel"><i class="fa fa-user fa-fw"></i> Omkar Deshmukh <button class="btn btn-primary btn-sm ContFloatingBtn" data-toggle="modal" data-target="#VisitScheduleModal">Set Visit</button></li>
+<li class="Rel"><i class="fa fa-user fa-fw"></i> Omkar Deshmukh <button class="btn btn-primary btn-sm ContFloatingBtn" data-toggle="modal" data-target="#VisitScheduleModal">Set Visit</button></li>
+<li class="Rel"><i class="fa fa-user fa-fw"></i> Omkar Deshmukh <button class="btn btn-primary btn-sm ContFloatingBtn" data-toggle="modal" data-target="#VisitScheduleModal">Set Visit</button></li>
+<li class="Rel"><i class="fa fa-user fa-fw"></i> Omkar Deshmukh <button class="btn btn-primary btn-sm ContFloatingBtn" data-toggle="modal" data-target="#VisitScheduleModal">Set Visit</button></li>
+<li class="Rel"><i class="fa fa-user fa-fw"></i> Omkar Deshmukh <button class="btn btn-primary btn-sm ContFloatingBtn" data-toggle="modal" data-target="#VisitScheduleModal">Set Visit</button></li>
+<li class="Rel"><i class="fa fa-user fa-fw"></i> Omkar Deshmukh <button class="btn btn-primary btn-sm ContFloatingBtn" data-toggle="modal" data-target="#VisitScheduleModal">Set Visit</button></li>
 </ul> 
 </div>
 

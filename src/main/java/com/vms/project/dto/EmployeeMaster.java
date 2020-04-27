@@ -3,14 +3,22 @@ package com.vms.project.dto;
 import java.sql.Blob;
 import java.sql.Date;
 import java.sql.Time;
+import java.util.ArrayList;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+
+import antlr.collections.List;
 
 @Entity
 @Table(name = "EMPLOYEE_MASTER")
@@ -19,33 +27,33 @@ public class EmployeeMaster {
 	@Id
 	@Column (name = "emp_code")
 	private int empCode;
-	
-	/*
-	 * @OneToOne(cascade = CascadeType.ALL)
-	 * 
-	 * @JoinColumn(unique = true) private PlantMaster plantCode;
-	 */
-	
+
 	@Column (name = "grade_id")
+	@NotNull
 	private int gradeId;
 	
 	@Column (name = "emp_name")
+	@NotNull
 	private String empName;
 	
 	@Column (name = "emp_designation")
+	@NotNull
 	private String empDesignation;
 	
 	@Column (name = "emp_role")
 	private String empRole;
 	
-	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumn(unique = true)
+	@ManyToOne
+	@JoinColumn(name = "EMP_DEPT")
+	@NotNull
 	private DepartmentMaster empDept;
 	
 	@Column (name = "emp_mobile", unique = true)
+	@NotNull
 	private long empMobile;
 	
 	@Column (name = "emp_pass")
+	@NotNull
 	private String empPass;
 	
 	@Column (name = "profile_attachment")
@@ -59,6 +67,11 @@ public class EmployeeMaster {
 	
 	@Column (name = "reg_time")
 	private Time regTime;
+	
+	@ManyToMany
+	@JoinColumn(name = "EMP_PLANT")
+	@NotNull
+	private Set<PlantMaster> empPlantCode;
 
 	public int getEmpCode() {
 		return empCode;
@@ -115,6 +128,8 @@ public class EmployeeMaster {
 	public void setEmpMobile(long empMobile) {
 		this.empMobile = empMobile;
 	}
+	
+	
 
 	public String getEmpPass() {
 		return empPass;
@@ -156,5 +171,12 @@ public class EmployeeMaster {
 		this.regTime = regTime;
 	}
 	
+	public Set<PlantMaster> getEmpPlantCode() {
+		return empPlantCode;
+	}
+
+	public void setEmpPlantCode(Set<PlantMaster> empPlantCode) {
+		this.empPlantCode = empPlantCode;
+	}
 	
 }

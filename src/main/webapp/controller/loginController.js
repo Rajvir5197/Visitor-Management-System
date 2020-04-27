@@ -1,4 +1,4 @@
-app.controller('loginController', function($scope, $rootScope, $http, $rootScope) {
+app.controller('loginController', function($scope, $rootScope, $http) {
 	
 	console.log("in js");
 	$scope.invalidUser = false;
@@ -12,6 +12,7 @@ app.controller('loginController', function($scope, $rootScope, $http, $rootScope
 			if(response.data.data == 'SUCCESS'){
 				console.log("authorized");
 				$scope.invalidUser = false;
+				window.localStorage.setItem("loginDetails", response.data.empDetails.empCode);
 				window.location.href  = "index.html"
 			}else{
 				$scope.invalidUser = true;

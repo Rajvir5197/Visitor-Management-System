@@ -1,0 +1,131 @@
+
+<!-- Begin Page Content -->
+<div ng-controller="manageContactController" class="container-fluid mt-3">
+
+<!-- Page Heading -->
+<div class="row mb-2">
+<div class="col-sm-8 align-self-center">
+<h1 class="h4 text-gray-800">View Contact</h1>
+</div>
+
+<div class="col-sm-4 text-right">
+<a href="#!addContact" class="btn btn-primary">Add Contact</a>
+</div>
+</div>
+<!-- End Page Heading -->
+
+
+
+<div class="bg-white p-3 mb-3">
+<div class="table-responsive my-3 px-3">
+<table class="table table" id="dataTable" width="100%" cellspacing="0">
+<thead>
+<tr>
+<th>Name</th>
+<th>Designation</th>
+<th>Gender</th>
+<th>Company</th>
+<th>Mobile No.</th>
+<th>Email</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr ng-repeat="contacts in allContacts">
+<td>{{contacts.firstName}} {{contacts.middleName}} {{contacts.lastName}}</td>
+<td>{{contacts.designation}}</td>
+<td>{{contacts.gender}}</td>
+<td>{{contacts.company}}</td>
+<td>{{contacts.mobileNumb}}</td>
+<td>{{contacts.emailId}}</td>
+<td><span data-toggle="modal" data-target="#viewConDetails" ng-click="viewSelectedContact(contacts)"><i class="fa fa-eye fa-lg fa-fw Pointer text-dark" data-toggle="tooltip" data-placement="top" title="View"></i></span> 
+<a href="#!editContact"><i class="fa fa-edit fa-lg fa-fw Pointer text-primary" ng-click="editSelectedContact(contacts)" data-toggle="tooltip" data-placement="top" title="Edit"></i></a> 
+<i class="fa fa-trash-alt fa-lg fa-fw Pointer text-danger" data-toggle="modal" data-target="#deleteContactModal" ng-click="dtlSelectedContact(contacts)" data-toggle="tooltip" data-placement="top" title="Delete"></i></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<!-- delete contact popup -->
+<div class="modal fade" id="deleteContactModal" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-content">
+	        <div class="modal-header">
+	          <h5 class="modal-title BlackTxtColor" id="exampleModalLabel">Delete Department</h5>
+	          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	          <span aria-hidden="true">&times;</span>
+	        </div>
+	        <div class="modal-body">
+	          <p>Are you sure, you want to delete the Contact?</p>
+	        </div>
+	        <div class="modal-footer">
+	        	<button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="deleteContact()">Delete</button>
+	          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	        </div>
+      </div>
+ 	</div>
+ </div>
+<!-- delete contact popup ends -->
+
+
+<!--View Details Popup-->
+<div class="modal fade" id="viewConDetails" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal-dialog modal-lg" role="document">
+<div class="modal-content">
+<div class="modal-header">
+<h5 class="modal-title BlackTxtColor" id="exampleModalLabel">Contact Details</h5>
+<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+<span aria-hidden="true">&times;</span>
+</button>
+</div>
+<div class="modal-body">
+<div class="row">
+
+<div class="col-lg-6 border-right">
+<div class="row">
+<div class="col-sm-4 mb-3">Name</div>
+<div class="col-sm-8 BlackTxtColor mb-3">: {{viewContact.firstName}} {{viewContact.middleName}} {{viewContact.lastName}}</div>
+</div>
+
+<div class="row">
+<div class="col-sm-4 mb-3">Designation</div>
+<div class="col-sm-8 BlackTxtColor mb-3">: {{viewContact.designation}}</div>
+</div>
+
+<div class="row">
+<div class="col-sm-4 mb-3">Gender</div>
+<div class="col-sm-8 BlackTxtColor mb-3">: {{viewContact.gender}}</div>
+</div>
+</div>
+
+<div class="col-lg-6">
+<div class="row">
+<div class="col-sm-4 mb-3">Company</div>
+<div class="col-sm-8 BlackTxtColor mb-3">: {{viewContact.company}}</div>
+</div>
+
+<div class="row">
+<div class="col-sm-4 mb-3">Mobile No.</div>
+<div class="col-sm-8 BlackTxtColor mb-3">: {{viewContact.mobileNumb}}</div>
+</div>
+
+<div class="row">
+<div class="col-sm-4 mb-3">Email</div>
+<div class="col-sm-8 BlackTxtColor mb-3">: {{viewContact.emailId}}</div>
+</div>
+</div>
+
+</div>
+</div>
+<div class="modal-footer">
+<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+</div>
+</div>
+</div>
+</div>
+<!--View Details Popup-->
+
+
+</div>
+<!-- /End Page Content -->

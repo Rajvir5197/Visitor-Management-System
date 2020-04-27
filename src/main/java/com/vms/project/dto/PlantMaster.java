@@ -2,12 +2,16 @@ package com.vms.project.dto;
 
 import java.sql.Date;
 import java.sql.Time;
+import java.util.ArrayList;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
@@ -68,8 +72,9 @@ public class PlantMaster {
 	@Column (name = "reg_time")
 	private Time regTime;
 	
-	@ManyToMany(mappedBy = "plant")
-	private Set<DepartmentMaster> departmentMaster;
+	@ManyToMany(mappedBy = "empPlantCode")
+	@Column (name = "empPlantCode")
+	private Set<EmployeeMaster> employeeMaster;
 
 	public int getPlantCode() {
 		return plantCode;

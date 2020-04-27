@@ -8,7 +8,7 @@
 <meta name="description" content="">
 <meta name="author" content="">
 
-<title>Welcome To eBaniya</title>
+<title>Welcome To Rucha Group</title>
 
 <!-- Custom fonts for this template-->
 <link href="css/all.min.css" rel="stylesheet" type="text/css">
@@ -32,7 +32,7 @@
 <div class="border bg-white rounded p-4 shadow">
 <div class="row">
 <div class="col-lg-12 text-center">
-<img src="images/RUCHA-LOGO.png" style="max-width:100%; width:180px; height:auto;" />
+<img src="images/rucha-logo.png" style="max-width:100%; width:180px; height:auto;" />
 </div>
 </div>
 
