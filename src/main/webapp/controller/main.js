@@ -4,16 +4,16 @@ app.config(function($routeProvider){
         .when('/login',{
             templateUrl: '/login.php',
             controller: 'loginController'
-        })
-        .when('/dashboard',{
+        }).when('/secDashboard',{
+            templateUrl: '/security-dashboard.html',
+            controller: 'dashboardController'
+        }).when('/employeeDashboard',{
             templateUrl: '/dashboard.html',
             controller: 'dashboardController'
-        })
-        .when('/ViewAllPlants',{
+        }).when('/ViewAllPlants',{
             templateUrl: '/manage-plant-view-all.html',
             controller: 'managePlantController'
-        })
-        .when('/ViewAllDepartment',{
+        }).when('/ViewAllDepartment',{
             templateUrl: '/department-master-view-all.html',
             controller: 'manageDeptController'
         }).when('/ViewAllEmployee',{
@@ -34,20 +34,52 @@ app.config(function($routeProvider){
         }).when('/addVisit',{
             templateUrl: '/manage-visits-add-new.html',
             controller: 'manageVisitController'
+        }).when('/securityCheckOut',{
+            templateUrl: '/personcheck-out.html',
+            controller: 'securityController'
         });
 });
+app.directive('fileModel', ['$parse', function ($parse) {
+    return {
+       restrict: 'A',
+       link: function(scope, element, attrs) {
+          var model = $parse(attrs.fileModel);
+          var modelSetter = model.assign;
+          
+          element.bind('change', function() {
+             scope.$apply(function() {
+                modelSetter(scope, element[0].files[0]);
+             });
+          });
+       }
+    };
+ }]);
 
 app.controller('indexController', function($scope, $rootScope, $http) {
 	
 	$rootScope.UserName = window.localStorage.getItem("loginDetails");
+	$scope.role = window.localStorage.getItem("loginRole");
 	
 	if($rootScope.UserName == undefined || $rootScope.UserName == null ){
 		window.location = "login.html";
 	}else{
-		window.location = "#!dashboard";
+		if($scope.role == "Security"){
+			window.location = "#!secDashboard";
+		}else{
+			window.location = "#!employeeDashboard";
+		}
 	}																											
 	$scope.logoutUser = function(){
 		window.localStorage.removeItem("loginDetails");
+		window.localStorage.removeItem("loginRole");
 		window.location.href  = "login.html";
-	}
+	};
+	
+	$scope.navToDashboard = function(){
+		if($scope.role == "Security"){
+			window.location = "#!secDashboard";
+		}else{
+			window.location = "#!employeeDashboard";
+		}
+	};
 });

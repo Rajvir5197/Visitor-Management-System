@@ -26,9 +26,9 @@ public class DepartmentMaster {
 	@NotNull
 	private String deptName;
 
-	@Column (name = "dept_plant_code")
-	@NotNull
-	private int deptPlantCode;
+	@ManyToMany
+	@JoinColumn (name = "dept_plant_code")
+	private Set<PlantMaster> deptPlantCode;
 	
 	@Column (name = "reg_by")
 	private int regBy;
@@ -58,11 +58,11 @@ public class DepartmentMaster {
 		this.deptName = deptName;
 	}
 	
-	public int getDeptPlantCode() {
+	public Set<PlantMaster> getDeptPlantCode() {
 		return deptPlantCode;
 	}
 
-	public void setDeptPlantCode(int deptPlantCode) {
+	public void setDeptPlantCode(Set<PlantMaster> deptPlantCode) {
 		this.deptPlantCode = deptPlantCode;
 	}
 
@@ -90,4 +90,5 @@ public class DepartmentMaster {
 		this.regTime = regTime;
 	}
 
+	
 }

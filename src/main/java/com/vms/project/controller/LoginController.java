@@ -1,10 +1,15 @@
 package com.vms.project.controller;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
+import java.sql.Blob;
 import java.sql.Date;
+import java.sql.SQLException;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.text.ParseException;
@@ -14,20 +19,35 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.AddressException;
+import javax.sql.rowset.serial.SerialBlob;
+import javax.sql.rowset.serial.SerialException;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.vms.project.dao.AssetDao;
 import com.vms.project.dao.ContactDao;
 import com.vms.project.dao.DepartmentDao;
 import com.vms.project.dao.MeetingDao;
 import com.vms.project.dao.MeetingStatusDao;
+import com.vms.project.dao.coVisitorDao;
 import com.vms.project.dao.loginDao;
 import com.vms.project.dao.plantDao;
 import com.vms.project.dao.visitDao;
+import com.vms.project.dto.AssetDetails;
+import com.vms.project.dto.CoVisitorDetails;
 import com.vms.project.dto.ContactManagerDto;
 import com.vms.project.dto.DepartmentMaster;
 import com.vms.project.dto.EmployeeMaster;
@@ -61,12 +81,21 @@ public class LoginController {
 	@Autowired
 	MeetingStatusDao meetingStatusRepo;
 	
+	@Autowired
+	JavaMailSender javaMailSender;
+	
+	@Autowired
+	coVisitorDao coVisitorRepo;
+	
+	@Autowired
+	AssetDao assetRepo;
+	
 	@RequestMapping(value="/doLogin", method=RequestMethod.POST)
 	@ResponseBody
 	public JSONObject doLogin(@RequestBody EmployeeMaster employee) {
 		
 		JSONObject jsonObject = new JSONObject();
-		Optional<EmployeeMaster> l = repo.findByEmpMobile(employee.getEmpMobile());
+		Optional<EmployeeMaster> l = repo.findById(employee.getEmpCode());
 		if(l.isPresent()) {
 			if(l.get().getEmpPass().equals(employee.getEmpPass())) {
 				jsonObject.put("data", "SUCCESS");
@@ -196,20 +225,30 @@ public class LoginController {
 	
 	@RequestMapping(value="/addNewOrEditEmp", method=RequestMethod.POST)
 	@ResponseBody
-	public JSONObject addNewOrEditEmp(@RequestBody EmployeeMaster employee) {
+	public JSONObject addNewOrEditEmp(@RequestParam("file") MultipartFile file, @RequestParam("empDetails") String jsonEmployee) {
 		
 		//employee.setRegBy(1421661);
-		employee.setRegDate(Date.valueOf(LocalDate.now()));
-		employee.setRegTime(Time.valueOf(LocalTime.now()));
+		ObjectMapper mapper = new ObjectMapper();
 		JSONObject jsonObject = new JSONObject();
-		System.out.println("in java");
-		EmployeeMaster employeeSaved = repo.save(employee);
-		if(null != employeeSaved) {
-			jsonObject.put("data", "SUCCESS");
-		}else {
-			jsonObject.put("data", "FAIL");
+		String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+		try {
+
+			EmployeeMaster employee = mapper.readValue(jsonEmployee, EmployeeMaster.class);
+			//employee.setProfileAttachment(new SerialBlob(file.getBytes()));
+			employee.setRegDate(Date.valueOf(LocalDate.now()));
+			employee.setRegTime(Time.valueOf(LocalTime.now()));
+			System.out.println("in java");
+			EmployeeMaster employeeSaved = repo.save(employee);
+			if(null != employeeSaved) {
+				jsonObject.put("data", "SUCCESS");
+			}else {
+				jsonObject.put("data", "FAIL");
+			}
+		} /*
+			 * catch (SQLException e) { e.printStackTrace(); }
+			 */ catch (IOException e) {
+			e.printStackTrace();
 		}
-		
 		return jsonObject;
 	}
 	
@@ -304,29 +343,35 @@ public class LoginController {
 	public String sendMessage(@RequestBody MeetingStatus visitor) {
 		try {
 			// Construct data
-			SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-			String apiKey = "apikey=" + "5YdXwI1maNE-PBsnyJDSrm6SJfIe9rSvsBXNQOqaIO";
-			String message = "&message=" + "Your Meeting is schedule on "+ sdf.format(visitor.getMeetingBooked().getVisitDate()) +" "+visitor.getMeetingBooked().getVisitTime()
-					+" with "+visitor.getMeetingBooked().getEmpId()+" at "+visitor.getMeetingBooked().getVisitLocation();
-			String numbers = "&numbers=" + visitor.getMeetingBooked().getVisitor().getContactNumber();
+			//APIKey=R8ntvc8nnU26zeAGiN0U0A&senderid=ERUCHA&channel=2&DCS=0&
+			//flashsms=0&number=919028xxxxxx&text=test%20message&route=1
+			//SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+			//String apiKey = "APIKey=" + URLEncoder.encode("R8ntvc8nnU26zeAGiN0U0A","UTF-8")+"&senderid="+URLEncoder.encode("ERUCHA","UTF-8")+"&channel="+URLEncoder.encode("2","UTF-8")+"&DCS="+URLEncoder.encode("0","UTF-8")+"&flashsms="+URLEncoder.encode("0","UTF-8");
+			//String message = "Your Meeting is schedule on "+ sdf.format(visitor.getMeetingBooked().getVisitDate()) +" "+visitor.getMeetingBooked().getVisitTime()
+			//		+" with "+visitor.getMeetingBooked().getEmpId()+" at "+visitor.getMeetingBooked().getVisitLocation()+"&route=1";
+			//String numbers = "&numbers=" + URLEncoder.encode(""+visitor.getMeetingBooked().getVisitor().getContactNumber(),"UTF-8");
 			
 			// Send data
-			HttpURLConnection conn = (HttpURLConnection) new URL("https://api.textlocal.in/send/?").openConnection();
-			String data = apiKey + numbers + message; //+ sender;
-			System.out.println("data: "+ data);
-			conn.setDoOutput(true);
-			conn.setRequestMethod("POST");
-			conn.setRequestProperty("Content-Length", Integer.toString(data.length()));
-			conn.getOutputStream().write(data.getBytes("UTF-8"));
-			final BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-			final StringBuffer stringBuffer = new StringBuffer();
-			String line;
-			while ((line = rd.readLine()) != null) {
-				stringBuffer.append(line);
-			}
-			rd.close();
+			//HttpURLConnection conn = (HttpURLConnection) new URL("http://bulksms.vrudheesolutions.com/api/mt/SendSMS?").openConnection();
+			//conn.setRequestProperty("Content-Type", "application/json");
+			//String data = apiKey + numbers +"&text=" +  URLEncoder.encode(message,"UTF-8"); //+ sender;
+			//String data1 ="{APIKey: \"R8ntvc8nnU26zeAGiN0U0A\", senderid: \"ERUCHA\", channel: \"2\", DCS: \"0\", flashsms: \"0\", numbers: \""+visitor.getMeetingBooked().getVisitor().getContactNumber()+
+			//		"\" , text: \"testMessage\" }";
+			//System.out.println("data: "+ data);
+			//conn.setDoOutput(true);
+			//OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
+		    //wr.write(data);
+		    //wr.flush();
+		    //BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+	        //String result = rd.readLine();
+	        //wr.close();
+	        //rd.close();
 			
-			return stringBuffer.toString();
+			
+			sendmail(visitor.getMeetingBooked().getVisitor().getEmailId());
+			
+			//return result;
+			return"SUCCESS";
 		} catch (Exception e) {
 			System.out.println("Error SMS "+e);
 			return "Error "+e;
@@ -395,6 +440,71 @@ public class LoginController {
 				return jsonObject;
 			
 			}
+	  	
+
+	  	public void sendmail(String MailTo) throws AddressException, MessagingException, IOException {
+			SimpleMailMessage msg = new SimpleMailMessage();
+			msg.setFrom("raj.viradiya@syscort.com");
+	        msg.setTo(MailTo);
+
+	        msg.setSubject("Testing from Spring Boot");
+	        msg.setText("Hello World \n Spring Boot Email");
+
+	        System.out.println("sending msg");
+	        javaMailSender.send(msg);
+	        System.out.println("sent msg");
+		}
+	  	
+	  	@RequestMapping(value="/addCoVisitor", method=RequestMethod.POST)
+		@ResponseBody
+		public JSONObject addCoVisitor(@RequestBody CoVisitorDetails visitor) {
+			
+			JSONObject jsonObject = new JSONObject();
+			visitor.setCreatedDate(Date.valueOf(LocalDate.now()));
+			visitor.setCreatedTime(Time.valueOf(LocalTime.now()));
+			
+			CoVisitorDetails visitorSaved = coVisitorRepo.save(visitor);
+			if(null != visitorSaved) {
+				jsonObject.put("msg", "SUCCESS");
+			}else {
+				jsonObject.put("msg", "FAIL");
+			}
+			return jsonObject;
+		
+		}
+		
+		@RequestMapping(value="/viewAllCoVisitor", method=RequestMethod.POST)
+		@ResponseBody
+		public List<CoVisitorDetails> viewAllCoVisitor(@RequestBody MeetingStatus meeting) {
+			
+			List<CoVisitorDetails> allCoVisitor = coVisitorRepo.findByVisitor(meeting.getMeetingBooked().getVisitor());
+			return allCoVisitor;
+		}
+		
+		@RequestMapping(value="/getAllAsset", method=RequestMethod.POST)
+		@ResponseBody
+		public List<AssetDetails> getAllAsset(@RequestBody CoVisitorDetails coVisitor) {
+			
+			List<AssetDetails> CoVisitor = assetRepo.findByVisitor(coVisitor);
+			
+			return CoVisitor;
+		}
+		
+		@RequestMapping(value="/addCoVisitorAsset", method=RequestMethod.POST)
+		@ResponseBody
+		public JSONObject addCoVisitorAsset(@RequestBody AssetDetails asset) {
+			
+			JSONObject jsonObject = new JSONObject();
+			
+			AssetDetails assetSaved = assetRepo.save(asset);
+			if(null != assetSaved) {
+				jsonObject.put("msg", "SUCCESS");
+			}else {
+				jsonObject.put("msg", "FAIL");
+			}
+			return jsonObject;
+		
+		}
 	 
 	
 }

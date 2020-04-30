@@ -1,5 +1,6 @@
 package com.vms.project.dto;
 
+import java.io.Serializable;
 import java.sql.Blob;
 import java.sql.Date;
 import java.sql.Time;
@@ -18,11 +19,14 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import antlr.collections.List;
 
 @Entity
 @Table(name = "EMPLOYEE_MASTER")
-public class EmployeeMaster {
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class EmployeeMaster implements Serializable {
 
 	@Id
 	@Column (name = "emp_code")
@@ -41,6 +45,7 @@ public class EmployeeMaster {
 	private String empDesignation;
 	
 	@Column (name = "emp_role")
+	@NotNull
 	private String empRole;
 	
 	@ManyToOne
@@ -58,6 +63,9 @@ public class EmployeeMaster {
 	
 	@Column (name = "profile_attachment")
 	private Blob profileAttachment;
+	
+	@Column (name = "image")
+	private byte[] image;
 	
 	@Column (name = "reg_by")
 	private int regBy;
@@ -129,8 +137,6 @@ public class EmployeeMaster {
 		this.empMobile = empMobile;
 	}
 	
-	
-
 	public String getEmpPass() {
 		return empPass;
 	}
@@ -145,6 +151,14 @@ public class EmployeeMaster {
 
 	public void setProfileAttachment(Blob profileAttachment) {
 		this.profileAttachment = profileAttachment;
+	}
+
+	public byte[] getImage() {
+		return image;
+	}
+
+	public void setImage(byte[] image) {
+		this.image = image;
 	}
 
 	public int getRegBy() {

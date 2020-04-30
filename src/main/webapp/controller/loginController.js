@@ -4,7 +4,7 @@ app.controller('loginController', function($scope, $rootScope, $http) {
 	$scope.invalidUser = false;
 	$scope.login = function(){
 		$scope.param={
-				empMobile: $scope.mobile,
+				empCode: $scope.empId,
 				empPass: $scope.pass
 		};
 		$http.post("/doLogin",$scope.param).then(function mySuccess(response){
@@ -13,6 +13,7 @@ app.controller('loginController', function($scope, $rootScope, $http) {
 				console.log("authorized");
 				$scope.invalidUser = false;
 				window.localStorage.setItem("loginDetails", response.data.empDetails.empCode);
+				window.localStorage.setItem("loginRole", response.data.empDetails.empRole);
 				window.location.href  = "index.html"
 			}else{
 				$scope.invalidUser = true;
