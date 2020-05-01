@@ -1,0 +1,383 @@
+
+<!-- Begin Page Content -->
+<div ng-controller="manageEmployeeController" class="container-fluid mt-3">
+
+<!-- Page Heading -->
+<div class="row mb-2">
+<div class="col-sm-8 align-self-center">
+<h1 class="h4 text-gray-800">Employee Master</h1>
+</div>
+
+<div class="col-sm-4 text-right">
+<button type="button" class="btn btn-primary" ng-click="newEmp = {}; invalidMobile = false;" data-toggle="modal" data-target="#addNewEmpModal">Add Employee</button>
+</div>
+</div>
+<!-- End Page Heading -->
+
+<!--Add New Emp Popup-->
+<div class="modal fade" id="addNewEmpModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal-dialog modal-lg" role="document">
+<div class="modal-content">
+<form name="addForm">
+<div class="modal-header">
+<h5 class="modal-title BlackTxtColor" id="exampleModalLabel">Add New Employee</h5>
+<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+<span aria-hidden="true">&times;</span>
+</button>
+</div>
+<div class="modal-body">
+
+<div class="row">
+<div class="col-lg-6 border-right">
+<div class="row">
+
+<div class="col-lg-12">
+<div class="form-group">
+<label>Employee Code</label>
+<input type="number" ng-model="newEmp.empCode" class="form-control" required>
+</div>
+</div>
+
+<div class="col-lg-12">
+<div class="form-group">
+<label>Plant Code</label>
+<select id="plantCode1" ng-model="newEmp.empPlantCode" ng-options="plant.plantCode for plant in allPlants track by plant.plantCode" class="form-control" name="plantCode1" multiple required>
+</select>
+</div>
+</div>
+
+<div class="col-lg-12">
+<div class="form-group">
+<label>Grade ID</label>
+<input type="number" ng-model="newEmp.gradeId" class="form-control" required>
+</div>
+</div>
+
+<div class="col-lg-12">
+<div class="form-group">
+<label>Employee Name</label>
+<input ng-model="newEmp.empName" class="form-control" required>
+</div>
+</div>
+
+<div class="col-lg-12">
+<div class="form-group">
+<label>Employee Designation</label>
+<input ng-model="newEmp.empDesignation" class="form-control" required>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="col-lg-6">
+<div class="row">
+
+<div class="col-lg-12">
+<div class="form-group">
+<label>Employee Department</label>
+<select ng-model="newEmp.empDept" ng-options="dept.deptName for dept in allDept track by dept.deptCode" class="form-control" required>
+</select>
+</div>
+</div>
+
+<div class="col-lg-12">
+<div class="form-group">
+<label>Employee Mobile</label>
+<input type="text" ng-model="newEmp.empMobile" class="form-control" maxlength="10" minlength="10" required>
+<span ng-show="invalidMobile" style="color: red;">Please enter valid mobile Number</span>
+</div>
+</div>
+
+<div class="col-lg-12">
+<div class="form-group">
+<label>Employee Password</label>
+<input ng-model="newEmp.empPass" class="form-control" required>
+</div>
+</div>
+
+<div class="col-lg-12">
+<div class="form-group">
+<label>Profile Attachment</label>
+<div class="custom-file">
+<input type="file" class="custom-file-input" id="customFile">
+<label class="custom-file-label" for="customFile">Choose file</label>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="modal-footer">
+<button type="submit" class="btn btn-primary" ng-click="addNewEmp()">Submit</button>
+<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+</div>
+</form>
+</div>
+</div>
+</div>
+<!--//Add New Emp Popup-->
+
+<!--Edit New Emp Popup-->
+<div class="modal fade" id="editEmpModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal-dialog modal-lg" role="document">
+<div class="modal-content">
+<form name="editForm">
+<div class="modal-header">
+<h5 class="modal-title BlackTxtColor" id="exampleModalLabel">Edit Employee</h5>
+<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+<span aria-hidden="true">&times;</span>
+</button>
+</div>
+<div class="modal-body">
+
+<div class="row">
+<div class="col-lg-6 border-right">
+<div class="row">
+
+<div class="col-lg-12">
+<div class="form-group">
+<label>Employee Code</label>
+<input type="number" ng-model="editedEmp.empCode" class="form-control" required>
+</div>
+</div>
+
+<div class="col-lg-12">
+<div class="form-group">
+<label>Plant Code</label>
+<select id="plantCode2" ng-model="editedEmp.empPlantCode" ng-options="plant.plantCode for plant in allPlants track by plant.plantCode" class="form-control" name="plantCode2" multiple required>
+</select>
+</div>
+</div>
+
+<div class="col-lg-12">
+<div class="form-group">
+<label>Grade ID</label>
+<input type="number" ng-model="editedEmp.gradeId" class="form-control" required>
+</div>
+</div>
+
+<div class="col-lg-12">
+<div class="form-group">
+<label>Employee Name</label>
+<input ng-model="editedEmp.empName" class="form-control" required>
+</div>
+</div>
+
+<div class="col-lg-12">
+<div class="form-group">
+<label>Employee Designation</label>
+<input ng-model="editedEmp.empDesignation" class="form-control" required>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="col-lg-6">
+<div class="row">
+
+<div class="col-lg-12">
+<div class="form-group">
+<label>Employee Department</label>
+<select ng-model="editedEmp.empDept" ng-options="dept.deptName for dept in allDept track by dept.deptCode" class="form-control" required>
+</select>
+</div>
+</div>
+
+<div class="col-lg-12">
+<div class="form-group">
+<label>Employee Mobile</label>
+<input type="text" ng-model="editedEmp.empMobile" class="form-control" maxlength="10" minlength="10" required>
+<span ng-show="invalidEditedMobile" style="color: red;">Please enter valid mobile Number</span>
+</div>
+</div>
+
+<div class="col-lg-12">
+<div class="form-group">
+<label>Employee Password</label>
+<input ng-model="editedEmp.empPass" class="form-control" required>
+</div>
+</div>
+
+<div class="col-lg-12">
+<div class="form-group">
+<label>Profile Attachment</label>
+<div class="custom-file">
+<input type="file" class="custom-file-input" id="customFile">
+<label class="custom-file-label" for="customFile">Choose file</label>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="modal-footer">
+<button type="submit" class="btn btn-primary" ng-click="editEmp()">Submit</button>
+<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+</div>
+</form>
+</div>
+</div>
+</div>
+<!--//Edit New Emp Popup-->
+
+<!--View Details Popup-->
+<div class="modal fade" id="viewEmpDetails" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal-dialog modal-lg" role="document">
+<div class="modal-content">
+<div class="modal-header">
+<h5 class="modal-title BlackTxtColor" id="exampleModalLabel">View Employee Details</h5>
+<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+<span aria-hidden="true">&times;</span>
+</button>
+</div>
+<div class="modal-body">
+
+<div class="row">
+<div class="col-lg-6 border-right">
+<div class="row">
+<div class="col-sm-5 mb-3">Profile Attachment</div>
+<div class="col-sm-7 BlackTxtColor mb-3">: <img src="images/profile-pic.jpg" height="80px" /></div>
+</div>
+
+<div class="row">
+<div class="col-sm-5 mb-3">Employee Code</div>
+<div class="col-sm-7 BlackTxtColor mb-3">: {{viewEmp.empCode}}</div>
+</div>
+
+<div class="row">
+<div class="col-sm-5 mb-3">Plant Code</div>
+<div class="col-sm-7 BlackTxtColor mb-3">: {{viewEmp.plantCode}}</div>
+</div>
+
+<div class="row">
+<div class="col-sm-5 mb-3">Grade ID</div>
+<div class="col-sm-7 BlackTxtColor mb-3">: {{viewEmp.gradeId}}</div>
+</div>
+
+<div class="row">
+<div class="col-sm-5 mb-3">Employee Name</div>
+<div class="col-sm-7 BlackTxtColor mb-3">: {{viewEmp.empName}}</div>
+</div>
+
+<div class="row">
+<div class="col-sm-5 mb-3">Employee Designation</div>
+<div class="col-sm-7 BlackTxtColor mb-3">: {{viewEmp.empDesignation}}</div>
+</div>
+</div>
+
+<div class="col-lg-6">
+<div class="row">
+<div class="col-sm-5 mb-3">Employee Department</div>
+<div class="col-sm-7 BlackTxtColor mb-3">: {{viewEmp.empDept.deptName}}</div>
+</div>
+
+<div class="row">
+<div class="col-sm-5 mb-3">Employee Mobile</div>
+<div class="col-sm-7 BlackTxtColor mb-3">: {{viewEmp.empMobile}}</div>
+</div>
+
+<div class="row">
+<div class="col-sm-5 mb-3">Employee Password</div>
+<div class="col-sm-7 BlackTxtColor mb-3">: {{viewEmp.empPass}}</div>
+</div>
+
+
+<div class="row">
+<div class="col-sm-5 mb-3">Reg by</div>
+<div class="col-sm-7 BlackTxtColor mb-3">: {{viewEmp.regBy}}</div>
+</div>
+
+<div class="row">
+<div class="col-sm-5 mb-3">Reg Date</div>
+<div class="col-sm-7 BlackTxtColor mb-3">: {{viewEmp.regDate}}</div>
+</div>
+
+<div class="row">
+<div class="col-sm-5 mb-3">Reg Time</div>
+<div class="col-sm-7 BlackTxtColor mb-3">: {{viewEmp.regTime}}</div>
+</div>
+</div>
+</div>
+
+</div>
+<div class="modal-footer">
+<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+</div>
+</div>
+</div>
+</div>
+<!--View Details Popup-->
+
+<!-- delete empployee popup -->
+<div class="modal fade" id="deleteEmpModal" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-content">
+	        <div class="modal-header">
+	          <h5 class="modal-title BlackTxtColor" id="exampleModalLabel">Delete Employee</h5>
+	          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	          <span aria-hidden="true">&times;</span>
+	        </div>
+	        <div class="modal-body">
+	          <p>Are you sure, you want to delete the Employee?</p>
+	        </div>
+	        <div class="modal-footer">
+	        	<button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="deleteEmp()">Delete</button>
+	          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	        </div>
+      </div>
+ 	</div>
+ </div>
+<!-- delete employee popup ends -->
+
+
+
+<div class="bg-white p-3 mb-3">
+<div class="table-responsive my-3 px-3">
+<table class="table table" id="dataTable" width="100%" cellspacing="0">
+<thead>
+<tr>
+<th>Profile Attachment</th>
+<th>Emp. Code</th>
+<th>Plant Code</th>
+<th>Grade ID</th>
+<th>Emp Name</th>
+<th>Emp Designation</th>
+<th>Emp Dept</th>
+<th>Emp Mobile</th>
+<th>Reg by</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr ng-repeat="emp in allEmp">
+<td><img src="images/profile-pic.jpg" height="50px" /></td>
+<td>{{emp.empCode}}</td>
+<td>{{emp.plantCode}}</td>
+<td>{{emp.gradeId}}</td>
+<td>{{emp.empName}}</td>
+<td>{{emp.empDesignation}}</td>
+<td>{{emp.empDept.deptName}}</td>
+<td>{{emp.empMobile}}</td>
+<td>{{emp.regBy}}</td>
+<td><span data-toggle="modal" data-target="#viewEmpDetails" ng-click="viewSelectedEmp(emp)"><i class="fa fa-eye fa-lg fa-fw Pointer text-dark" data-toggle="tooltip" data-placement="top" title="View"></i></span> 
+<span data-toggle="modal" data-target="#editEmpModal" ng-click="editSelectedEmp(emp)"><i class="fa fa-edit fa-lg fa-fw Pointer text-primary" data-toggle="tooltip" data-placement="top" title="Edit"></i></span> 
+<span data-toggle="modal" data-target="#deleteEmpModal" ng-click="dtlSelectedEmp(emp)"><i class="fa fa-trash-alt fa-lg fa-fw Pointer text-danger" data-toggle="tooltip" data-placement="top" title="Delete"></i></span></td>
+</tr>
+
+</tbody>
+</table>
+</div>
+</div>
+
+
+
+</div>
+<!-- /End Page Content -->

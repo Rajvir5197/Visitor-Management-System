@@ -1,0 +1,235 @@
+<!-- Begin Page Content -->
+<div ng-controller="manageDeptController" class="container-fluid mt-3">
+
+<!-- Page Heading -->
+<div class="row mb-2">
+<div class="col-sm-8 align-self-center">
+<h1 class="h4 text-gray-800">Department Master</h1>
+</div>
+<div class="col-sm-4 text-right">
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addNewDeptModal" ng-click="newDept={};">Add Department</button>
+</div>
+</div>
+<!-- End Page Heading -->
+
+
+<!--Add New Dept Popup-->
+<div class="modal fade" id="addNewDeptModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal-dialog modal-md" role="document">
+<div class="modal-content">
+<form name="addForm">
+<div class="modal-header">
+<h5 class="modal-title BlackTxtColor" id="exampleModalLabel">Add New Department</h5>
+<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+<span aria-hidden="true">&times;</span>
+</button>
+</div>
+<div class="modal-body">
+
+
+<!-- <div class="row">
+<div class="col-lg-6 border-right"> -->
+<div class="row">
+
+<div class="col-lg-12">
+<div class="form-group">
+<label>Dept Code</label>
+<input type="number" ng-model="newDept.deptCode" class="form-control" required />
+</div>
+</div>
+
+<div class="col-lg-12">
+<div class="form-group">
+<label>Dept Name</label>
+<input ng-model="newDept.deptName" class="form-control" required />
+</div>
+</div>
+
+<div class="col-lg-12">
+<div class="form-group">
+<label>Dept Plant Code</label>
+<select id="deptPlantCode" ng-model="newDept.deptPlantCode" ng-options="plant.plantCode for plant in allPlants track by plant.plantCode" class="form-control" name="deptPlantCode" multiple required>
+</select>
+</div>
+</div>
+
+</div>
+</div>
+<div class="modal-footer">
+	<button type="submit" class="btn btn-primary" ng-click="addNewDept()">Submit</button>
+	<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+</div>
+</form>
+</div>
+</div>
+</div>
+<!--//Add New Dept Popup-->
+
+
+<!--Edit Dept Popup-->
+<div class="modal fade" id="editDeptModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal-dialog modal-md" role="document">
+<div class="modal-content">
+<form name="editForm">
+<div class="modal-header">
+<h5 class="modal-title BlackTxtColor" id="exampleModalLabel">Edit Department</h5>
+<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+<span aria-hidden="true">&times;</span>
+</button>
+</div>
+<div class="modal-body">
+
+<!-- <div class="row">
+ <div class="col-lg-6 border-right"> -->
+<div class="row">
+
+<div class="col-lg-12">
+<div class="form-group">
+<label>Dept Code</label>
+<input type="number" ng-model="editedDept.deptCode" class="form-control" required>
+</div>
+</div>
+
+<div class="col-lg-12">
+<div class="form-group">
+<label>Dept Name</label>
+<input ng-model="editedDept.deptName" class="form-control" required>
+</div>
+</div>
+
+<div class="col-lg-12">
+<div class="form-group">
+<label>Dept Plant Code</label>
+<select id="deptPlantCode" ng-model="editedDept.deptPlantCode" ng-options="plant.plantCode for plant in allPlants track by plant.plantCode" class="form-control" name="deptPlantCode" multiple required>
+</select>
+</div>
+</div>
+
+</div>
+
+</div>
+<div class="modal-footer">
+<button type="submit" class="btn btn-primary" ng-click="editDept()">Submit</button>
+<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+</div>
+</form>
+</div>
+</div>
+</div>
+<!--//Edit Dept Popup-->
+
+<!--View Details Popup-->
+<div class="modal fade" id="viewDeptDetails" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal-dialog modal-lg" role="document">
+<div class="modal-content">
+<div class="modal-header">
+<h5 class="modal-title BlackTxtColor" id="exampleModalLabel">View Department Details</h5>
+<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+<span aria-hidden="true">&times;</span>
+</button>
+</div>
+<div class="modal-body">
+
+<div class="row">
+<div class="col-lg-6 border-right">
+<div class="row">
+<div class="col-sm-5 mb-3">Department Code</div>
+<div class="col-sm-7 BlackTxtColor mb-3">: {{viewDept.deptCode}}</div>
+</div>
+
+<div class="row">
+<div class="col-sm-5 mb-3">Department Name</div>
+<div class="col-sm-7 BlackTxtColor mb-3">: {{viewDept.deptName}}</div>
+</div>
+
+<div class="row">
+<div class="col-sm-5 mb-3">Department Plant Code</div>
+<div class="col-sm-7 BlackTxtColor mb-3">: {{viewDept.deptPlantCode}}</div>
+</div>
+</div>
+
+<div class="col-lg-6 border-right">
+<div class="row">
+<div class="col-sm-5 mb-3">Reg by</div>
+<div class="col-sm-7 BlackTxtColor mb-3">: {{viewDept.regBy}}</div>
+</div>
+
+<div class="row">
+<div class="col-sm-5 mb-3">Reg Date</div>
+<div class="col-sm-7 BlackTxtColor mb-3">: {{viewDept.regDate}}</div>
+</div>
+
+<div class="row">
+<div class="col-sm-5 mb-3">Reg Time</div>
+<div class="col-sm-7 BlackTxtColor mb-3">: {{viewDept.regTime}}</div>
+</div>
+</div>
+</div>
+
+</div>
+<div class="modal-footer">
+<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+</div>
+</div>
+</div>
+</div>
+<!--View Details Popup-->
+
+<!-- delete department popup -->
+<div class="modal fade" id="deleteDeptModal" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-content">
+	        <div class="modal-header">
+	          <h5 class="modal-title BlackTxtColor" id="exampleModalLabel">Delete Department</h5>
+	          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	          <span aria-hidden="true">&times;</span>
+	        </div>
+	        <div class="modal-body">
+	          <p>Are you sure, you want to delete the Department?</p>
+	        </div>
+	        <div class="modal-footer">
+	        	<button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="deleteDept()">Delete</button>
+	          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	        </div>
+      </div>
+ 	</div>
+ </div>
+<!-- delete department popup ends -->
+
+
+
+<div class="bg-white p-3 mb-3">
+<div class="table-responsive my-3 px-3">
+<table class="table table" id="dataTable" width="100%" cellspacing="0">
+<thead>
+<tr>
+<th>Dept Code</th>
+<th>Dept Name</th>
+<th>Dept Plant Code</th>
+<th>Reg by</th>
+<th>Reg Date</th>
+<th>Reg Time</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr ng-repeat="dept in allDept">
+<td>{{dept.deptCode}}</td>
+<td>{{dept.deptName}}</td>
+<td>{{dept.plantCode}}</td>
+<td>{{dept.regBy}}</td>
+<td>{{dept.regDate}}</td>
+<td>{{dept.regTime}}</td>
+<td><span data-toggle="modal" ng-click="viewSelectedDept(dept)" data-target="#viewDeptDetails"><i class="fa fa-eye fa-lg fa-fw Pointer text-dark" data-toggle="tooltip" data-placement="top" title="View"></i></span> 
+<span data-toggle="modal" ng-click="editSelectedDept(dept)" data-target="#editDeptModal"><i class="fa fa-edit fa-lg fa-fw Pointer text-primary" data-toggle="tooltip" data-placement="top" title="Edit"></i></span> 
+<span data-toggle="modal" ng-click="dtlSelectedDept(dept)" data-target="#deleteDeptModal"><i class="fa fa-trash-alt fa-lg fa-fw Pointer text-danger" data-toggle="tooltip" data-placement="top" title="Delete"></i></span></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+
+</div>
+<!-- /End Page Content -->
