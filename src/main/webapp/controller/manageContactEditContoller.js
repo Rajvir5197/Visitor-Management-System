@@ -11,7 +11,7 @@ app.controller('manageContactEditController', function($scope, $rootScope, $http
 		if($scope.editForm.$valid){
 			if(!isNaN($rootScope.editedContact.mobileNumb) && angular.isNumber(+$rootScope.editedContact.mobileNumb)){
 				$rootScope.editedContact.regBy = $scope.UserID;
-				$http.post("/addNewOrEditContact", $rootScope.editedContact).then(function mySuccess(response){
+				$http.post("/Employee/addNewOrEditContact", $rootScope.editedContact).then(function mySuccess(response){
 					if(response.data.msg == "SUCCESS"){
 						window.location.href  = "#!ManageContact"
 					}

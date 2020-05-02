@@ -11,9 +11,24 @@ app.controller('securityController', function($scope, $rootScope, $http) {
 	}
 	
 	$scope.viewAllCoVisitor = function(){
-		$http.post("/viewAllCoVisitor", $rootScope.visitCheckin).then(function mySuccess(response){
+		$http.post("/Security/viewAllCoVisitor", $rootScope.visitCheckin).then(function mySuccess(response){
 			console.log(response.data);
 			$scope.allCoVisitor = response.data;
+			if($scope.allCoVisitor.length > 0){
+				angular.forEach($scope.allCoVisitor,function(coVisitor){
+					coVisitor.allowCheckOut = true;
+					$http.post("/Security/getAllAsset", coVisitor).then(function mySuccess(response){
+						angular.forEach(response.data,function(asset){
+							if(!asset.deliveredFlag){
+								coVisitor.allowCheckOut = false;
+							};
+						});
+					}, function myError(data){
+						console.log("some internal error");
+						console.log(data);
+					});
+				});
+			}
 		}, function myError(data){
 			console.log("some internal error");
 			console.log(data);
@@ -29,7 +44,7 @@ app.controller('securityController', function($scope, $rootScope, $http) {
 				$scope.newVisitor.secCheckin = true;
 				$scope.newVisitor.visitor = $rootScope.visitCheckin.meetingBooked.visitor;
 				$scope.newVisitor.createdBy = $scope.UserID;
-				$http.post("/addCoVisitor", $scope.newVisitor).then(function mySuccess(response){
+				$http.post("/Security/addCoVisitor", $scope.newVisitor).then(function mySuccess(response){
 					$('#addCoVisitorModal').hide();
 					$('.modal-backdrop').hide();
 					$scope.viewAllCoVisitor();
@@ -51,7 +66,7 @@ app.controller('securityController', function($scope, $rootScope, $http) {
 	
 	$scope.getCovisitorAsset = function(selectedCoVisitor){
 		$scope.selectedCoVisitor = selectedCoVisitor;
-		$http.post("/getAllAsset", selectedCoVisitor).then(function mySuccess(response){
+		$http.post("/Security/getAllAsset", selectedCoVisitor).then(function mySuccess(response){
 			$scope.allAsset = response.data;
 			$scope.newAsset={};
 		}, function myError(data){
@@ -64,7 +79,7 @@ app.controller('securityController', function($scope, $rootScope, $http) {
 		$scope.newAsset.assetStatus = "Not Delivered";
 		$scope.newAsset.deliveredFlag = false;
 		$scope.newAsset.visitor = $scope.selectedCoVisitor;
-		$http.post("/addCoVisitorAsset", $scope.newAsset).then(function mySuccess(response){
+		$http.post("/Security/addCoVisitorAsset", $scope.newAsset).then(function mySuccess(response){
 			if(response.data.msg == "SUCCESS"){
 				$scope.getCovisitorAsset($scope.selectedCoVisitor);
 			}
@@ -72,6 +87,37 @@ app.controller('securityController', function($scope, $rootScope, $http) {
 			console.log("some internal error");
 			console.log(data);
 		});
+	};
+	
+	$scope.deliverAsset = function(asset){
+		asset.assetStatus = "Delivered";
+		asset.deliveredFlag = true;
+		$http.post("/Security/addCoVisitorAsset", asset).then(function mySuccess(response){
+			if(response.data.msg == "SUCCESS"){
+				$scope.getCovisitorAsset($scope.selectedCoVisitor);
+			}
+		}, function myError(data){
+			console.log("some internal error");
+			console.log(data);
+		});
+	};
+	
+	$scope.selectedCoVisitorForCheckout = function(selectedCoVisitor){
+		$scope.selectedCoVisitor = selectedCoVisitor;
+	}
+	
+	$scope.checkoutCoVisitor = function(){
+		$scope.selectedCoVisitor.seccheckout = true;
+		$http.post("/Security/addCoVisitor", $scope.selectedCoVisitor).then(function mySuccess(response){
+			$('#addCoVisitorModal').hide();
+			$('.modal-backdrop').hide();
+			$scope.viewAllCoVisitor();
+			console.log(response.data);
+		}, function myError(data){
+			console.log("some internal error");
+			console.log(data);
+		});
+		
 	};
 	
 });

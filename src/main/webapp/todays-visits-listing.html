@@ -36,9 +36,9 @@
 <td>{{visits.meetingBooked.visitor.visitorName}}</td>
 <td>{{visits.meetingBooked.visitor.contactNumber}}</td>
 <td>{{visits.meetingBooked.visitor.numberOfCoVisitor}}</td>
-<td>{{visits.secCheckinAt}}</td>
-<td><button class="btn btn-success btn-sm" ng-click="empCheckIn(visits)" ng-disabled="visits.empCheckin">Check In</button></td>
-<td><button class="btn btn-danger btn-sm" data-toggle="modal" data-target="#cancelVisitModal" ng-disabled="visits.empCheckin" ng-click="cancelSelectedEmp(visits)">Cancel</button></td>
+<td>{{visits.secCheckinTime}}</td>
+<td><button class="btn btn-success btn-sm" ng-click="empCheckIn(visits)" ng-disabled="visits.empCheckin || !visits.secCheckin">Check In</button></td>
+<td><button class="btn btn-danger btn-sm" data-toggle="modal" data-target="#cancelVisitModal" ng-disabled="visits.empCheckin  || visits.secCheckin" ng-click="cancelSelectedEmp(visits)">Cancel</button></td>
 <td><button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#CheckOutModal" ng-click="checkoutSelectedEmp(visits)" ng-disabled="!visits.empCheckin || visits.empCheckout">Check Out</button></td>
 </tr>
 
@@ -89,7 +89,7 @@
 	          <p>Are you sure, you want to cancel the visit?</p>
 	        </div>
 	        <div class="modal-footer">
-	        	<button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="cancelVisit()">Delete</button>
+	        	<button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="cancelVisit()">Cancel</button>
 	          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 	        </div>
       </div>

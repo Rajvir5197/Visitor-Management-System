@@ -16,7 +16,7 @@ app.controller('manageDeptController', function($scope, $rootScope, $http) {
 	};
 
 	$scope.viewAllDept = function(){
-		$http.post("/viewAllDept").then(function mySuccess(response){
+		$http.post("/Department/viewAllDept").then(function mySuccess(response){
 			console.log(response.data);
 			$scope.allDept = response.data;
 			angular.forEach($scope.allDept,function(value){
@@ -29,7 +29,7 @@ app.controller('manageDeptController', function($scope, $rootScope, $http) {
 	};
 	
 	$scope.getAllPlants = function(){
-		$http.post("/viewAllPlant").then(function mySuccess(response){
+		$http.post("/Plant/viewAllPlant").then(function mySuccess(response){
 			console.log(response.data);
 			$scope.allPlants = response.data;
 		}, function myError(data){
@@ -56,7 +56,7 @@ app.controller('manageDeptController', function($scope, $rootScope, $http) {
 	$scope.addNewDept = function(){
 		if($scope.addForm.$valid){
 			$scope.newDept.regBy = $scope.UserID;
-			$http.post("/addNewOrEditDept", $scope.newDept).then(function mySuccess(response){
+			$http.post("/Department/addNewOrEditDept", $scope.newDept).then(function mySuccess(response){
 				$('#addNewDeptModal').hide();
 				$('.modal-backdrop').hide();
 				$scope.viewAllDept();
@@ -83,7 +83,7 @@ app.controller('manageDeptController', function($scope, $rootScope, $http) {
 	
 	$scope.deleteDept = function(){
 		$scope.deptToBeDeleted.regBy = $scope.UserID;
-		$http.post("/deleteDept", $scope.deptToBeDeleted).then(function mySuccess(response){
+		$http.post("/Department/deleteDept", $scope.deptToBeDeleted).then(function mySuccess(response){
 			$scope.viewAllDept();
 		}, function myError(data){
 			console.log("some internal error");

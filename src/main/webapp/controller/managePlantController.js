@@ -8,7 +8,7 @@ app.controller('managePlantController', function($scope, $rootScope, $http) {
 	}
 	$scope.allPlants = [];
 	$scope.viewAllPlant = function(){
-		$http.post("/viewAllPlant").then(function mySuccess(response){
+		$http.post("/Plant/viewAllPlant").then(function mySuccess(response){
 			console.log(response.data);
 			$scope.allPlants = response.data;
 		}, function myError(data){
@@ -33,7 +33,7 @@ app.controller('managePlantController', function($scope, $rootScope, $http) {
 	$scope.addNewPlant = function(){
 		if($scope.addForm.$valid){
 			$scope.newPlant.regBy = $scope.UserID;
-			$http.post("/addNewPlant", $scope.newPlant).then(function mySuccess(response){
+			$http.post("/Plant/addNewPlant", $scope.newPlant).then(function mySuccess(response){
 				$('#addNewPlantModal').hide();
 				$('.modal-backdrop').hide();
 				$scope.viewAllPlant();
@@ -47,7 +47,7 @@ app.controller('managePlantController', function($scope, $rootScope, $http) {
 	$scope.editPlant = function(){
 		if($scope.editForm.$valid){
 			$scope.edited.regBy = $scope.UserID;
-			$http.post("/editPlant", $scope.edited).then(function mySuccess(response){
+			$http.post("/Plant/editPlant", $scope.edited).then(function mySuccess(response){
 				$('#editPlantModal').hide();
 				$('.modal-backdrop').hide();
 				$scope.viewAllPlant();
@@ -60,7 +60,7 @@ app.controller('managePlantController', function($scope, $rootScope, $http) {
 	
 	$scope.deletePlant = function(){
 		$scope.plantToBeDeleted.regBy = $scope.UserID;
-		$http.post("/deletePlant", $scope.plantToBeDeleted).then(function mySuccess(response){
+		$http.post("/Plant/deletePlant", $scope.plantToBeDeleted).then(function mySuccess(response){
 			$scope.viewAllPlant();
 		}, function myError(data){
 			console.log("some internal error");

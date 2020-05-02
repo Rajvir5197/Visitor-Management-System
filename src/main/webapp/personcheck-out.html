@@ -102,7 +102,7 @@
 <td>{{coVisitor.coVisitorName}}</td>
 <td>{{coVisitor.coVisitorContact}}</td>
 <td><button type="button" class="btn btn-secondary btn-sm" ng-click="getCovisitorAsset(coVisitor)" data-toggle="modal" data-target="#viewAssetModal"><i class="fa fa-eye fa-fw fa-lg"></i> View</button></td>
-<td><button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#checkoutModal">Check Out</button></td>
+<td><button type="button" class="btn btn-primary btn-sm" ng-disabled="!coVisitor.allowCheckOut" data-toggle="modal" data-target="#checkoutModal" ng-click="selectedCoVisitorForCheckout(coVisitor)" >Check Out</button></td>
 </tr>
 
 </tbody>
@@ -139,7 +139,7 @@
 <tr ng-repeat="asset in allAsset">
 <td>{{asset.assetName}}</td>
 <td>{{asset.assetCount}}</td>
-<td><button ng-hide="asset.deliveredFlag"  type="button" class="btn btn-danger btn-sm" ><i class="fa fa-times fa-fw fa-lg"></i> {{asset.assetStatus}}</button>
+<td><button ng-hide="asset.deliveredFlag" ng-disabled="!visitCheckin.empCheckout" ng-click="deliverAsset(asset)"  type="button" class="btn btn-danger btn-sm" ><i class="fa fa-times fa-fw fa-lg"></i> {{asset.assetStatus}}</button>
 <button ng-show="asset.deliveredFlag" type="button" class="btn btn-success btn-sm" ><i class="fa fa-check fa-fw fa-lg"></i> {{asset.assetStatus}}</button>
 </td>
 </tr>
@@ -159,8 +159,8 @@
 </div>
 </div>
 <div class="modal-footer">
-<button type="button" ng-click="addAsset()" class="btn btn-primary">Add</button>
-<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+<button type="button" ng-click="addAsset()" ng-disabled="visitCheckin.empCheckin" class="btn btn-primary">Add</button>
+<button type="button" class="btn btn-secondary" ng-click="viewAllCoVisitor()" data-dismiss="modal">Cancel</button>
 </div>
 </div>
 </div>
@@ -183,13 +183,13 @@
 <div class="col-lg-12">
 <div class="form-group">
 <label>Remarks if any</label>
-<textarea class="form-control" rows="3"></textarea>
+<textarea ng-model="selectedCoVisitor.checkOutRemarks" class="form-control" rows="3"></textarea>
 </div>
 </div>
 </div>
 </div>
 <div class="modal-footer">
-<button type="button" class="btn btn-primary">Check Out</button>
+<button type="button" class="btn btn-primary" ng-click="checkoutCoVisitor()">Check Out</button>
 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
 </div>
 </div>

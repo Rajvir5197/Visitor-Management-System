@@ -9,7 +9,11 @@ app.controller('dashboardController', function($scope, $http, $rootScope) {
 	
 	$scope.allVisits = [];
 	$scope.viewAllVisits = function(){
-		$http.post("/viewAllVisits").then(function mySuccess(response){
+		$scope.param = {
+				empCode: $scope.UserID,
+				empRole: $scope.role
+		};
+		$http.post("/Employee/viewAllVisits",$scope.param).then(function mySuccess(response){
 			console.log(response.data);
 			$scope.allVisits = response.data;
 		}, function myError(data){
@@ -22,9 +26,20 @@ app.controller('dashboardController', function($scope, $http, $rootScope) {
 		$scope.viewAllVisits();$scope.viewAllVisits();
 	}
 	
-	$scope.securityCheckout = function(visit){
+	$scope.securityCheckin = function(visit){
 		$rootScope.visitCheckin = visit;
-		window.location = "#!securityCheckOut";
+		if($rootScope.visitCheckin.secCheckin){
+			window.location = "#!securityCheckOut";
+		}else{
+			$http.post("/Security/securityCheckin", $rootScope.visitCheckin).then(function mySuccess(response){
+				if(response.data.msg == 'SUCCESS'){
+					window.location = "#!securityCheckOut";
+				}
+			}, function myError(data){
+				console.log("some internal error");
+				console.log(data);
+			});
+		}
 	};
 	
 	

@@ -10,7 +10,7 @@ app.controller('manageContactController', function($scope, $rootScope, $http) {
 
 	$scope.invalidMobile = false;
 	$scope.viewAllContacts = function(){
-		$http.post("/viewAllContacts",$scope.UserID).then(function mySuccess(response){
+		$http.post("/Employee/viewAllContacts",$scope.UserID).then(function mySuccess(response){
 			console.log(response.data);
 			$scope.allContacts = response.data;
 		}, function myError(data){
@@ -38,7 +38,7 @@ app.controller('manageContactController', function($scope, $rootScope, $http) {
 		if($scope.addForm.$valid){
 			if(!isNaN($scope.newContact.mobileNumb) && angular.isNumber(+$scope.newContact.mobileNumb)){
 				$scope.newContact.regBy = $scope.UserID;
-				$http.post("/addNewOrEditContact", $scope.newContact).then(function mySuccess(response){
+				$http.post("/Employee/addNewOrEditContact", $scope.newContact).then(function mySuccess(response){
 					if(response.data.msg == "SUCCESS"){
 						window.location.href  = "#!ManageContact"
 					}
@@ -54,7 +54,7 @@ app.controller('manageContactController', function($scope, $rootScope, $http) {
 	
 	$scope.deleteContact = function(){
 		$scope.contactToBeDeleted.regBy = $scope.UserID;
-		$http.post("/deleteContact", $scope.contactToBeDeleted).then(function mySuccess(response){
+		$http.post("/Employee/deleteContact", $scope.contactToBeDeleted).then(function mySuccess(response){
 			$scope.viewAllContacts();
 		}, function myError(data){
 			console.log("some internal error");
