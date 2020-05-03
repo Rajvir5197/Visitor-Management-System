@@ -9,6 +9,7 @@ app.controller('manageVisitController', function($scope, $rootScope, $http) {
 	
 	$scope.allVisits = [];
 	$scope.invalidMobile = false;
+	$scope.invalidDate = false;
 	$scope.viewAllVisits = function(){
 		$scope.param = {
 				empCode: $scope.UserID,
@@ -41,19 +42,26 @@ app.controller('manageVisitController', function($scope, $rootScope, $http) {
 	
 	$scope.addNewVisit = function(){
 		$scope.invalidMobile = false;
+		$scope.invalidDate = false;
 		if($scope.addForm.$valid){
 			if(!isNaN($scope.newVisit.meetingBooked.visitor.contactNumber) && angular.isNumber(+$scope.newVisit.meetingBooked.visitor.contactNumber)){
-				$scope.newVisit.createdBy = $scope.UserID;
-				$scope.newVisit.lastUpdatedBy = $scope.UserID;
-				$scope.newVisit.meetingBooked.empId = $scope.UserID;
-				$http.post("/Employee/addNewVisit", $scope.newVisit).then(function mySuccess(response){
-					if(response.data.msg == "SUCCESS"){
-						window.location.href  = "#!viewAllVisit";
-					}
-				}, function myError(data){
-					console.log("some internal error");
-					console.log(data);
-				});
+				var todayDate = new Date();
+				todayDate.setHours(0,0,0,0)
+				if($scope.newVisit.meetingBooked.visitDate < todayDate){
+					$scope.invalidDate = true;
+				}else{
+					$scope.newVisit.createdBy = $scope.UserID;
+					$scope.newVisit.lastUpdatedBy = $scope.UserID;
+					$scope.newVisit.meetingBooked.empId = $scope.UserID;
+					$http.post("/Employee/addNewVisit", $scope.newVisit).then(function mySuccess(response){
+						if(response.data.msg == "SUCCESS"){
+							window.location.href  = "#!viewAllVisit";
+						}
+					}, function myError(data){
+						console.log("some internal error");
+						console.log(data);
+					});
+				}
 			}else{
 				$scope.invalidMobile = true;
 			}
@@ -75,7 +83,7 @@ app.controller('manageVisitController', function($scope, $rootScope, $http) {
 	
 	$scope.checkoutSelectedEmp = function(visits){
 		$scope.selectedVisit = visits;
-		$scope.selectedVisit.meetingBooked.Remarks = '';
+		$scope.selectedVisit.meetingBooked.remarks = '';
 		
 	};
 	

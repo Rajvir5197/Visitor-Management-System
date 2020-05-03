@@ -10,6 +10,9 @@ app.controller('securityController', function($scope, $rootScope, $http) {
 		window.location = "#!dashboard";
 	}
 	
+	$rootScope.visitCheckin.enableVisitorCheckOut = true;
+	window.localStorage.setItem("checkOutFlag",$rootScope.visitCheckin.enableVisitorCheckOut);
+	
 	$scope.viewAllCoVisitor = function(){
 		$http.post("/Security/viewAllCoVisitor", $rootScope.visitCheckin).then(function mySuccess(response){
 			console.log(response.data);
@@ -17,6 +20,10 @@ app.controller('securityController', function($scope, $rootScope, $http) {
 			if($scope.allCoVisitor.length > 0){
 				angular.forEach($scope.allCoVisitor,function(coVisitor){
 					coVisitor.allowCheckOut = true;
+					if(!coVisitor.seccheckout){
+						$rootScope.visitCheckin.enableVisitorCheckOut = false;
+						window.localStorage.setItem("checkOutFlag",$rootScope.visitCheckin.enableVisitorCheckOut);
+					}
 					$http.post("/Security/getAllAsset", coVisitor).then(function mySuccess(response){
 						angular.forEach(response.data,function(asset){
 							if(!asset.deliveredFlag){
@@ -104,12 +111,17 @@ app.controller('securityController', function($scope, $rootScope, $http) {
 	
 	$scope.selectedCoVisitorForCheckout = function(selectedCoVisitor){
 		$scope.selectedCoVisitor = selectedCoVisitor;
+		if($scope.selectedCoVisitor.seccheckout){
+			alert('already checked out')
+		}else{
+			$('#checkoutModal').show();
+		}
 	}
 	
 	$scope.checkoutCoVisitor = function(){
 		$scope.selectedCoVisitor.seccheckout = true;
 		$http.post("/Security/addCoVisitor", $scope.selectedCoVisitor).then(function mySuccess(response){
-			$('#addCoVisitorModal').hide();
+			$('#checkoutModal').hide();
 			$('.modal-backdrop').hide();
 			$scope.viewAllCoVisitor();
 			console.log(response.data);

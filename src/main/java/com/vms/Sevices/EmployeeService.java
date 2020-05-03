@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
@@ -18,6 +19,7 @@ import javax.mail.MessagingException;
 import javax.mail.internet.AddressException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -55,6 +57,7 @@ public class EmployeeService {
 
 	@Autowired
 	TaskRepository taskRepository;
+	
 	public List<Employee> allEmployee() {
 
 		return repository.findAll();
@@ -99,7 +102,7 @@ public class EmployeeService {
 	public List<ContactManager> viewAllContacts(int loginId) {
 
 		List<ContactManager> allContacts = contactRepository.findByRegBy(loginId);
-
+		
 		return allContacts;
 	}
 
@@ -131,6 +134,7 @@ public class EmployeeService {
 		
 		List<String> statusNotIn = new ArrayList<String>();
 		statusNotIn.add("Cancel");
+		statusNotIn.add("Sec Checked Out");
 		List<MeetingStatus> allMeetings = meetingStatusRepository.findByMeetingBookedVisitDateAndStatusIsNotIn(Date.valueOf(LocalDate.now()),statusNotIn);
 
 		return allMeetings;
@@ -238,7 +242,9 @@ public class EmployeeService {
 	
 	public List<Task> viewTask(int loginId) {
 
-		List<Task> allTask = taskRepository.viewByEmployee(loginId);
+		List<String> statusNotIn = new ArrayList<String>();
+		statusNotIn.add("COMPLETED");
+		List<Task> allTask = taskRepository.findByCreatedByAndTaskStatusNotIn(loginId,statusNotIn);
 
 		return allTask;
 	}
@@ -263,7 +269,7 @@ public class EmployeeService {
 		JSONObject jsonObject = new JSONObject();
 		task.setCompletedDate(Date.valueOf(LocalDate.now()));
 		task.setCompletedTime(Time.valueOf(LocalTime.now()));
-		task.setTaskStatus("CREATED");
+		task.setTaskStatus("COMPLETED");
 		Task TaskSaved = taskRepository.save(task);
 		if (null != TaskSaved) {
 			jsonObject.put("msg", "SUCCESS");

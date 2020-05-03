@@ -46,7 +46,7 @@
 </div>
 
 <a href="" ng-click="securityCheckin(visit)" class="btn btn-primary mr-2">Check In <i class="fa fa-check-circle"></i></a>
-<a href="" class="btn btn-danger">Check Out<i class="fa fa-times-circle"></i></a>
+<button ng-disabled="!visit.secCheckin || !visit.empCheckout" ng-click="securityCheckout(visit)" class="btn btn-danger">Check Out<i class="fa fa-times-circle"></i></button>
 </div>
 </div>
 </div>

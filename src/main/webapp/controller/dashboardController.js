@@ -22,8 +22,43 @@ app.controller('dashboardController', function($scope, $http, $rootScope) {
 		});
 	};
 	
+	$scope.viewAllContacts = function(){
+		$http.post("/Employee/viewAllContacts",$scope.UserID).then(function mySuccess(response){
+			console.log(response.data);
+			$scope.allContacts = response.data;
+		}, function myError(data){
+			console.log("some internal error");
+			console.log(data);
+		});
+	};
+	
+	$scope.getTasks = function(){
+		$http.post("/Employee/viewTask",$scope.UserID).then(function mySuccess(response){
+			console.log(response.data);
+			$scope.allTask = response.data;
+		}, function myError(data){
+			console.log("some internal error");
+			console.log(data);
+		});
+	}
+	
+	$scope.getAllPlants = function(){
+		$http.post("/Plant/viewAllPlant").then(function mySuccess(response){
+			console.log(response.data);
+			$scope.allPlants = response.data;
+		}, function myError(data){
+			console.log("some internal error");
+			console.log(data);
+		});
+	};
+	
 	if($scope.role == "Security"){
-		$scope.viewAllVisits();$scope.viewAllVisits();
+		$scope.viewAllVisits();
+	}else{
+		$scope.viewAllContacts();
+		$scope.getTasks();
+		$scope.viewAllVisits();
+		$scope.getAllPlants();
 	}
 	
 	$scope.securityCheckin = function(visit){
@@ -42,22 +77,35 @@ app.controller('dashboardController', function($scope, $http, $rootScope) {
 		}
 	};
 	
+	$scope.securityCheckout = function(visit){
+		$http.post("/Security/securityCheckout", visit).then(function mySuccess(response){
+			if(response.data.msg == 'SUCCESS'){
+				$scope.viewAllVisits();
+			}
+		}, function myError(data){
+			console.log("some internal error");
+			console.log(data);
+		});
+	}
 	
+	$scope.addTask = function(){
+		$scope.newTask.createdBy = $scope.UserID;
+		$http.post("/Employee/addTask",$scope.newTask).then(function mySuccess(response){
+			if(response.data.msg == "SUCCESS"){
+				$scope.getTasks();
+				$('#addNewTask').hide();
+				$('.modal-backdrop').hide();
+			}
+		}, function myError(data){
+			console.log("some internal error");
+			console.log(data);
+		});
+	}
 	
-	
-	
-	
-	/*$rootScope.noReturn = 0;
-	console.log('inside dashboard controller');*/
-	$scope.add = function(){
-		$scope.param={
-			visitorId: $scope.visitorId
-		};
-		
-		$http.post("/addVisitor",$scope.param).then(function mySuccess(response){
-			console.log(response.data);
-			if(response.data.data == 'SUCCESS'){
-				console.log('added');
+	$scope.updateTask = function(task){
+		$http.post("/Employee/completeTask",task).then(function mySuccess(response){
+			if(response.data.msg == "SUCCESS"){
+				$scope.getTasks();
 			}
 		}, function myError(data){
 			console.log("some internal error");
@@ -65,12 +113,44 @@ app.controller('dashboardController', function($scope, $http, $rootScope) {
 		});
 	};
 	
-	$scope.sendMssg = function(){
-		$http.post("/sendMessage",$scope.param).then(function mySuccess(response){
-			console.log(response.data);
-		}, function myError(data){
-			console.log("some internal error");
-			console.log(data);
-		});
+	$scope.setVisit = function(contact){
+		$scope.visit = {};
+		$scope.visit.meetingBooked = {};
+		$scope.visit.meetingBooked.visitor = {};
+		$scope.visit.meetingBooked.visitor.visitorName = contact.firstName +" "+ contact.lastName;
+		$scope.visit.meetingBooked.visitor.emailId = contact.emailId;
+		$scope.visit.meetingBooked.visitor.contactNumber = contact.mobileNumb;
+		$scope.visit.meetingBooked.visitor.organisation = contact.company;
 	};
+	
+	$scope.addNewVisit = function(){
+		$scope.invalidMobile = false;
+		$scope.invalidDate = false;
+		if($scope.addVisitForm.$valid){
+			if(!isNaN($scope.visit.meetingBooked.visitor.contactNumber) && angular.isNumber(+$scope.visit.meetingBooked.visitor.contactNumber)){
+				var todayDate = new Date();
+				todayDate.setHours(0,0,0,0)
+				if($scope.visit.meetingBooked.visitDate < todayDate){
+					$scope.invalidDate = true;
+				}else{
+					$scope.visit.createdBy = $scope.UserID;
+					$scope.visit.lastUpdatedBy = $scope.UserID;
+					$scope.visit.meetingBooked.empId = $scope.UserID;
+					$http.post("/Employee/addNewVisit", $scope.visit).then(function mySuccess(response){
+						if(response.data.msg == "SUCCESS"){
+							$('#VisitScheduleModal').hide();
+							$('.modal-backdrop').hide();
+							window.location.href  = "#!employeeDashboard";
+						}
+					}, function myError(data){
+						console.log("some internal error");
+						console.log(data);
+					});
+				}
+			}else{
+				$scope.invalidMobile = true;
+			}
+		}
+	};
+	
 });

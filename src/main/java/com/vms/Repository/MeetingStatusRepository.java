@@ -1,6 +1,7 @@
 package com.vms.Repository;
 
 import java.sql.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,4 +16,5 @@ public interface MeetingStatusRepository extends JpaRepository<MeetingStatus, In
 	public List<MeetingStatus> findByCreatedByAndMeetingBookedVisitDateAndStatusIsNotIn(@Param("createdBy") int empCode,@Param("visitDate") Date visitDate, @Param("status") List<String> status);
 	
 	public List<MeetingStatus> findByMeetingBookedVisitDateAndStatusIsNotIn(@Param("visitDate") Date visitDate, @Param("status") List<String> status);
+
 }

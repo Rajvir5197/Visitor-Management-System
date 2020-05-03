@@ -48,7 +48,7 @@ public class MeetingBooking {
 	private Plant visitLocation;
 	
 	@Column (name = "remarks")
-	private String Remarks;
+	private String remarks;
 	
 	@OneToOne(mappedBy = "meetingBooked")
 	private MeetingStatus meetingStatus;
@@ -100,13 +100,13 @@ public class MeetingBooking {
 	public void setVisitLocation(Plant visitLocation) {
 		this.visitLocation = visitLocation;
 	}
-	
+	 
 	public String getRemarks() {
-		return Remarks;
+		return remarks;
 	}
 
 	public void setRemarks(String remarks) {
-		Remarks = remarks;
+		this.remarks = remarks;
 	}
 
 	public Visitor getVisitor() {

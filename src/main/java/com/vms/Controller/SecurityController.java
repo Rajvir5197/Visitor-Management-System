@@ -59,5 +59,13 @@ public class SecurityController {
 		return service.securityCheckin(meeting);
 
 	}
+	
+	@RequestMapping(value = "/securityCheckout", method = RequestMethod.POST)
+	@ResponseBody
+	public JSONObject securityCheckout(@RequestBody MeetingStatus meeting) {
+
+		return service.securityCheckout(meeting);
+
+	}
 
 }

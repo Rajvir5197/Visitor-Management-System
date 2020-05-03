@@ -115,4 +115,31 @@ public class SecurityService {
 
 	}
 
+	public JSONObject securityCheckout(MeetingStatus meeting) {
+
+		JSONObject jsonObject = new JSONObject();
+		try {
+			Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			meeting.setLastUpdatedDate(Date.valueOf(LocalDate.now()));
+			meeting.setLastUpdatedTime(Time.valueOf(LocalTime.now()));
+			meeting.setStatus("Sec Checked Out");
+			meeting.setSecCheckout(true);
+			meeting.setSecCheckoutDate(Date.valueOf(LocalDate.now()));
+			meeting.setSecCheckoutTime(Time.valueOf(LocalTime.now()));
+
+			MeetingStatus meetingSaved = meetingStatusRepository.save(meeting);
+			if (null != meetingSaved) {
+				jsonObject.put("msg", "SUCCESS");
+			} else {
+				jsonObject.put("msg", "FAIL");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			jsonObject.put("msg", "FAIL");
+		}
+		return jsonObject;
+
+	}
+
 }

@@ -11,7 +11,7 @@ import com.vms.Model.Task;
 @Repository
 public interface TaskRepository extends JpaRepository<Task, Integer> {
 	
-	public List<Task> viewByEmployee(@Param("createdBy") int userId);
+	public List<Task> findByCreatedByAndTaskStatusNotIn(@Param("createdBy") int userId, @Param("taskStatus") List<String> status);
 
 
 }

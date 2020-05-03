@@ -70,7 +70,7 @@
 <div class="col-lg-4">
 <div class="row">
 <div class="col-sm-5 mb-3">Remark</div>
-<div class="col-sm-7 BlackTxtColor mb-3">: {{visitCheckin.meetingBooked.Remarks}}</div>
+<div class="col-sm-7 BlackTxtColor mb-3">: {{visitCheckin.meetingBooked.remarks}}</div>
 </div>
 </div>
 </div>
@@ -83,7 +83,7 @@
 
 <div class="col-lg-9 mb-3">
 <h2 class="m-0 FontSize22 p-3 bg-light BlackTxtColor border border-bottom-0">Co-Visitor Information
-<button type="button" style="margin-left: 45%;" class="btn btn-primary" data-toggle="modal" data-target="#addCoVisitorModal" ng-click="newVisitor = {};">Add Co-Visitor</button>
+<button type="button" style="margin-left: 45%;" ng-disabled="visitCheckin.empCheckin" class="btn btn-primary" data-toggle="modal" data-target="#addCoVisitorModal" ng-click="newVisitor = {};">Add Co-Visitor</button>
 </h2>
 
 <div class="table-responsive">
@@ -102,7 +102,7 @@
 <td>{{coVisitor.coVisitorName}}</td>
 <td>{{coVisitor.coVisitorContact}}</td>
 <td><button type="button" class="btn btn-secondary btn-sm" ng-click="getCovisitorAsset(coVisitor)" data-toggle="modal" data-target="#viewAssetModal"><i class="fa fa-eye fa-fw fa-lg"></i> View</button></td>
-<td><button type="button" class="btn btn-primary btn-sm" ng-disabled="!coVisitor.allowCheckOut" data-toggle="modal" data-target="#checkoutModal" ng-click="selectedCoVisitorForCheckout(coVisitor)" >Check Out</button></td>
+<td><button type="button" class="btn btn-primary btn-sm" ng-disabled="!coVisitor.allowCheckOut" ng-click="selectedCoVisitorForCheckout(coVisitor)" >Check Out</button></td>
 </tr>
 
 </tbody>
