@@ -4,7 +4,7 @@ app.controller('manageDeptController', function($scope, $rootScope, $http) {
 	$scope.UserID = window.localStorage.getItem("loginDetails");
 	
 	if($scope.UserID == undefined || $scope.UserID == null ){
-		window.location = "login.html";
+		window.location = "/VisitorManagementSystem-0.0.1-SNAPSHOT/login.html";
 	}
 	
 	$scope.getPlantCode = function(dept){
@@ -16,7 +16,7 @@ app.controller('manageDeptController', function($scope, $rootScope, $http) {
 	};
 
 	$scope.viewAllDept = function(){
-		$http.post("/Department/viewAllDept").then(function mySuccess(response){
+		$http.post("/VisitorManagementSystem-0.0.1-SNAPSHOT/Department/viewAllDept").then(function mySuccess(response){
 			console.log(response.data);
 			$scope.allDept = response.data;
 			angular.forEach($scope.allDept,function(value){
@@ -29,7 +29,7 @@ app.controller('manageDeptController', function($scope, $rootScope, $http) {
 	};
 	
 	$scope.getAllPlants = function(){
-		$http.post("/Plant/viewAllPlant").then(function mySuccess(response){
+		$http.post("/VisitorManagementSystem-0.0.1-SNAPSHOT/Plant/viewAllPlant").then(function mySuccess(response){
 			console.log(response.data);
 			$scope.allPlants = response.data;
 		}, function myError(data){
@@ -56,7 +56,7 @@ app.controller('manageDeptController', function($scope, $rootScope, $http) {
 	$scope.addNewDept = function(){
 		if($scope.addForm.$valid){
 			$scope.newDept.regBy = $scope.UserID;
-			$http.post("/Department/addNewOrEditDept", $scope.newDept).then(function mySuccess(response){
+			$http.post("/VisitorManagementSystem-0.0.1-SNAPSHOT/Department/addNewOrEditDept", $scope.newDept).then(function mySuccess(response){
 				$('#addNewDeptModal').modal('hide');
 				$scope.viewAllDept();
 			}, function myError(data){
@@ -69,7 +69,7 @@ app.controller('manageDeptController', function($scope, $rootScope, $http) {
 	$scope.editDept = function(){
 		if($scope.editForm.$valid){
 			$scope.editedDept.regBy = $scope.UserID;
-			$http.post("/addNewOrEditDept", $scope.editedDept).then(function mySuccess(response){
+			$http.post("/VisitorManagementSystem-0.0.1-SNAPSHOT/addNewOrEditDept", $scope.editedDept).then(function mySuccess(response){
 				$('#editDeptModal').modal('hide');
 				$scope.viewAllDept();
 			}, function myError(data){
@@ -81,7 +81,7 @@ app.controller('manageDeptController', function($scope, $rootScope, $http) {
 	
 	$scope.deleteDept = function(){
 		$scope.deptToBeDeleted.regBy = $scope.UserID;
-		$http.post("/Department/deleteDept", $scope.deptToBeDeleted).then(function mySuccess(response){
+		$http.post("/VisitorManagementSystem-0.0.1-SNAPSHOT/Department/deleteDept", $scope.deptToBeDeleted).then(function mySuccess(response){
 			$scope.viewAllDept();
 		}, function myError(data){
 			console.log("some internal error");

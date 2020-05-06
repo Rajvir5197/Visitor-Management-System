@@ -1,14 +1,21 @@
 app.controller('manageVisitController', function($scope, $rootScope, $http) {
 	
 	$scope.UserID = window.localStorage.getItem("loginDetails");
+	$scope.role = window.localStorage.getItem("loginRole");
 	
 	if($scope.UserID == undefined || $scope.UserID == null ){
 		window.location = "login.html";
 	}
 	
 	$scope.allVisits = [];
+	$scope.invalidMobile = false;
+	$scope.invalidDate = false;
 	$scope.viewAllVisits = function(){
-		$http.post("/viewAllVisits").then(function mySuccess(response){
+		$scope.param = {
+				empCode: $scope.UserID,
+				empRole: $scope.role
+		};
+		$http.post("/VisitorManagementSystem-0.0.1-SNAPSHOT/Employee/viewAllVisits",$scope.param).then(function mySuccess(response){
 			console.log(response.data);
 			$scope.allVisits = response.data;
 		}, function myError(data){
@@ -16,42 +23,54 @@ app.controller('manageVisitController', function($scope, $rootScope, $http) {
 			console.log(data);
 		});
 	};
+	
+	$scope.viewEmpPlant = function(){
+		$scope.param = {
+				empCode: $scope.UserID,
+				empRole: $scope.role
+		};
+		$http.post("/VisitorManagementSystem-0.0.1-SNAPSHOT/Employee/getEmpPlant",$scope.param).then(function mySuccess(response){
+			$scope.EmpPlants = response.data.empPlantCode;
+		}, function myError(data){
+			console.log("some internal error");
+			console.log(data);
+		});
+	};
+	
 	$scope.viewAllVisits();
+	$scope.viewEmpPlant();
 	
 	$scope.addNewVisit = function(){
-		//if($scope.addForm.$valid){
-			$scope.newVisit.meetingBooked.createdBy = $scope.UserID;
-			$scope.newVisit.lastUpdatedBy = $scope.UserID;
-			$scope.newVisit.meetingBooked.empId = $scope.UserID;
-			$http.post("/addNewVisit", $scope.newVisit).then(function mySuccess(response){
-				if(response.data.msg == "SUCCESS"){
-					$http.post("/sendMessage", response.data.meetingData).then(function mySuccess(data){
-						if(data.data.status == "failure"){
-							alert("couldn't send the msg");
-							$http.post("/deleteVisit", response.data.meetingData).then(function mySuccess(data){
-								console.log("data deleted");
-							}, function myError(data){
-								console.log("some internal error");
-								console.log(data);
-							});
-						}else{
-							window.location.href  = "#!viewAllVisit"
+		$scope.invalidMobile = false;
+		$scope.invalidDate = false;
+		if($scope.addForm.$valid){
+			if(!isNaN($scope.newVisit.meetingBooked.visitor.contactNumber) && angular.isNumber(+$scope.newVisit.meetingBooked.visitor.contactNumber)){
+				var todayDate = new Date();
+				todayDate.setHours(0,0,0,0)
+				if($scope.newVisit.meetingBooked.visitDate < todayDate){
+					$scope.invalidDate = true;
+				}else{
+					$scope.newVisit.createdBy = $scope.UserID;
+					$scope.newVisit.lastUpdatedBy = $scope.UserID;
+					$scope.newVisit.meetingBooked.empId = $scope.UserID;
+					$http.post("/VisitorManagementSystem-0.0.1-SNAPSHOT/Employee/addNewVisit", $scope.newVisit).then(function mySuccess(response){
+						if(response.data.msg == "SUCCESS"){
+							window.location.href  = "#!viewAllVisit";
 						}
 					}, function myError(data){
 						console.log("some internal error");
 						console.log(data);
 					});
 				}
-			}, function myError(data){
-				console.log("some internal error");
-				console.log(data);
-			});
-		//}
+			}else{
+				$scope.invalidMobile = true;
+			}
+		}
 	};
 	
 	$scope.empCheckIn = function(visits){
 		visits.lastUpdatedBy = $scope.UserID;
-		$http.post("/empCheckIn", visits).then(function mySuccess(response){
+		$http.post("/VisitorManagementSystem-0.0.1-SNAPSHOT/Employee/empCheckIn", visits).then(function mySuccess(response){
 			if(response.data.msg == "SUCCESS"){
 				//console.log(data);
 				$scope.viewAllVisits();
@@ -64,13 +83,13 @@ app.controller('manageVisitController', function($scope, $rootScope, $http) {
 	
 	$scope.checkoutSelectedEmp = function(visits){
 		$scope.selectedVisit = visits;
-		$scope.selectedVisit.meetingBooked.Remarks = '';
+		$scope.selectedVisit.meetingBooked.remarks = '';
 		
 	};
 	
 	$scope.empCheckOut = function(){
 		$scope.selectedVisit.lastUpdatedBy = $scope.UserID;
-		$http.post("/empCheckOut", $scope.selectedVisit).then(function mySuccess(response){
+		$http.post("/VisitorManagementSystem-0.0.1-SNAPSHOT/Employee/empCheckOut", $scope.selectedVisit).then(function mySuccess(response){
 			if(response.data.msg == "SUCCESS"){
 				$scope.viewAllVisits();
 			}
@@ -86,7 +105,7 @@ app.controller('manageVisitController', function($scope, $rootScope, $http) {
 	};
 	
 	$scope.cancelVisit = function(){
-		$http.post("/deleteVisit", $scope.selectedCancelVisit).then(function mySuccess(data){
+		$http.post("/VisitorManagementSystem-0.0.1-SNAPSHOT/Employee/cancelVisit", $scope.selectedCancelVisit).then(function mySuccess(data){
 			console.log("data deleted");
 			$scope.viewAllVisits();
 		}, function myError(data){

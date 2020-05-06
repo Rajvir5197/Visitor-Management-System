@@ -2,13 +2,18 @@
 <html>
 <head>
 	<meta charset = "UTF-8" />
-  	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-  	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+<!-- Bootstrap library -->
+  	<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script> -->
   	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.js"></script>
   	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-route.js"></script>
   	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-resource.js"></script>
+  	<!-- for webcam -->
+		<script type="text/javascript" src="js/webcam.min.js"></script>
   	
 	<title>Welcome To Rucha Group</title>
+	
 	
 	<!-- Custom fonts for this template-->
 	<link href="css/all.min.css" rel="stylesheet" type="text/css">
@@ -16,6 +21,45 @@
 	<!-- Custom styles for this template -->
 	<link href="css/sb-admin-2.min.css" rel="stylesheet">
 	<link href="css/dataTables.bootstrap4.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" />
+	
+	<style type="text/css">
+		.tooltip {
+		  position: relative;
+		  display: inline-block;
+		  opacity: 1;
+		}
+		
+		.tooltip .tooltiptext {
+		  visibility: hidden;
+		  width: 120px;
+		  background-color: #c3c0c0;
+		  color: #fff;
+		  text-align: center;
+		  border-radius: 6px;
+		  padding: 5px 0;
+		
+		  /* Position the tooltip */
+		  position: absolute;
+		  z-index: 1;
+		  
+		  width: 120px;
+		  bottom: 100%;
+		  left: 50%;
+		  margin-left: -60px;
+		}
+		
+		.tooltip:hover .tooltiptext {
+		  visibility: visible;
+		}
+		
+		#my_camera{
+		 width: 320px;
+		 height: 240px;
+		 border: 1px solid black;
+		}
+	
+	</style>
 	
 </head>
 <body id="page-top" ng-app="myApp">
@@ -27,6 +71,7 @@
 	<script src="controller/manageContactController.js"></script>
 	<script src="controller/manageContactEditContoller.js"></script>
 	<script src="controller/manageVisitController.js"></script>
+	<script src="controller/securityController.js"></script>
   	
 	<div style="width: 100%;" ng-controller="indexController">
  		<!-- Page Wrapper -->
@@ -46,18 +91,18 @@
 		
 		<!-- Super Admin Menu -->
 		<li class="nav-item">
-		<a class="nav-link" href="#!dashboard">
+		<a class="nav-link" href="" ng-click="navToDashboard()">
 		<i class="fas fa-fw fa-tachometer-alt"></i>
 		<span>Dashboard</span></a>
 		</li>
 		
-		<li class="nav-item">
+		<li ng-show="role == 'Super Admin'" class="nav-item">
 		<a class="nav-link" href="#!ViewAllPlants">
 		<i class="fas fa-fw fa-industry"></i>
 		<span>Manage Plants</span></a>
 		</li>
 		
-		<li class="nav-item">
+		<li ng-show="role == 'Super Admin' || role == 'Employee'" class="nav-item">
 		<a class="nav-link collapsed" href="" data-toggle="collapse" data-target="#masterMVisit" aria-expanded="true" aria-controls="masterMVisit">
 		<i class="fas fa-fw fa-file-signature"></i>
 		<span>Manage Visit</span>
@@ -71,13 +116,13 @@
 		</div>
 		</li>
 		
-		<li class="nav-item">
+		<li ng-show="role == 'Super Admin' || role == 'Employee'" class="nav-item">
 		<a class="nav-link" href="#!ManageContact">
 		<i class="fas fa-fw fa-address-card"></i>
 		<span>Manage Contact</span></a>
 		</li>
 		
-		<li class="nav-item">
+		<li ng-show="role == 'Super Admin'" class="nav-item">
 		<a class="nav-link collapsed" href="" data-toggle="collapse" data-target="#masterMenu" aria-expanded="true" aria-controls="masterMenu">
 		<i class="fas fa-fw fa-cogs"></i>
 		<span>Master</span>
@@ -90,7 +135,7 @@
 		</div>
 		</li>
 		
-		<li class="nav-item">
+		<li ng-show="role == 'Super Admin'" class="nav-item">
 		<a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#ReportsMenu" aria-expanded="true" aria-controls="ReportsMenu">
 		<i class="fas fa-fw fa-file-alt"></i>
 		<span>Reports</span>
@@ -104,7 +149,7 @@
 		</div>
 		</li>
 		
-		<li class="nav-item">
+		<li ng-show="role == 'Super Admin'" class="nav-item">
 		<a class="nav-link" href="#">
 		<i class="fas fa-fw fa-tools"></i>
 		<span>Authorization</span></a>
@@ -272,6 +317,11 @@
 		<!-- Page level custom scripts -->
 		<script src="js/datatables-demo.js"></script>
 		<script src="js/bs-custom-file-input.js"></script>
+		
+		<!-- for datepicker -->
+		<script type="text/javascript" src="js/moment.js"></script>
+  		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+				
 		<script>
 		$(document).ready(function () {
 		  bsCustomFileInput.init()
@@ -282,6 +332,29 @@
 		$(function () {
 		  $('[data-toggle="tooltip"]').tooltip()
 		})
+		</script>
+		
+		<script type="text/javascript">
+
+			Webcam.set({
+			  width: 320,
+			  height: 240,
+			  image_format: 'jpeg',
+			  jpeg_quality: 90
+			 });
+			 
+		
+			<!-- Code to handle taking the snapshot and displaying it locally -->
+			function take_snapshot() {
+			 
+			 // take snapshot and get image data
+			 Webcam.snap( function(data_uri) {
+			  // display results in page
+			  document.getElementById('results').innerHTML = 
+			  '<img src="'+data_uri+'"/>';
+			  } );
+			}
+		
 		</script>
 		
 		<!-- end of footer -->

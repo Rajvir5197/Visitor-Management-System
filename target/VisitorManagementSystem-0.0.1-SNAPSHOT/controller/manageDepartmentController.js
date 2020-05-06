@@ -4,19 +4,42 @@ app.controller('manageDeptController', function($scope, $rootScope, $http) {
 	$scope.UserID = window.localStorage.getItem("loginDetails");
 	
 	if($scope.UserID == undefined || $scope.UserID == null ){
-		window.location = "login.html";
+		window.location = "/VisitorManagementSystem-0.0.1-SNAPSHOT/login.html";
 	}
+	
+	$scope.getPlantCode = function(dept){
+		$scope.plantCodeArray = [];
+		angular.forEach(dept.deptPlantCode,function(value){
+			$scope.plantCodeArray.push(value.plantCode);
+		});
+		dept.plantCode = $scope.plantCodeArray.join();
+	};
 
 	$scope.viewAllDept = function(){
-		$http.post("/viewAllDept").then(function mySuccess(response){
+		$http.post("/VisitorManagementSystem-0.0.1-SNAPSHOT/Department/viewAllDept").then(function mySuccess(response){
 			console.log(response.data);
 			$scope.allDept = response.data;
+			angular.forEach($scope.allDept,function(value){
+				$scope.getPlantCode(value);
+			});
 		}, function myError(data){
 			console.log("some internal error");
 			console.log(data);
 		});
 	};
+	
+	$scope.getAllPlants = function(){
+		$http.post("/VisitorManagementSystem-0.0.1-SNAPSHOT/Plant/viewAllPlant").then(function mySuccess(response){
+			console.log(response.data);
+			$scope.allPlants = response.data;
+		}, function myError(data){
+			console.log("some internal error");
+			console.log(data);
+		});
+	};
+	
 	$scope.viewAllDept();
+	$scope.getAllPlants();
 	
 	$scope.viewSelectedDept = function(dept){
 		$scope.viewDept = dept;
@@ -33,9 +56,8 @@ app.controller('manageDeptController', function($scope, $rootScope, $http) {
 	$scope.addNewDept = function(){
 		if($scope.addForm.$valid){
 			$scope.newDept.regBy = $scope.UserID;
-			$http.post("/addNewOrEditDept", $scope.newDept).then(function mySuccess(response){
-				$('#addNewDeptModal').hide();
-				$('.modal-backdrop').hide();
+			$http.post("/VisitorManagementSystem-0.0.1-SNAPSHOT/Department/addNewOrEditDept", $scope.newDept).then(function mySuccess(response){
+				$('#addNewDeptModal').modal('hide');
 				$scope.viewAllDept();
 			}, function myError(data){
 				console.log("some internal error");
@@ -47,9 +69,8 @@ app.controller('manageDeptController', function($scope, $rootScope, $http) {
 	$scope.editDept = function(){
 		if($scope.editForm.$valid){
 			$scope.editedDept.regBy = $scope.UserID;
-			$http.post("/addNewOrEditDept", $scope.editedDept).then(function mySuccess(response){
-				$('#editDeptModal').hide();
-				$('.modal-backdrop').hide();
+			$http.post("/VisitorManagementSystem-0.0.1-SNAPSHOT/addNewOrEditDept", $scope.editedDept).then(function mySuccess(response){
+				$('#editDeptModal').modal('hide');
 				$scope.viewAllDept();
 			}, function myError(data){
 				console.log("some internal error");
@@ -60,7 +81,7 @@ app.controller('manageDeptController', function($scope, $rootScope, $http) {
 	
 	$scope.deleteDept = function(){
 		$scope.deptToBeDeleted.regBy = $scope.UserID;
-		$http.post("/deleteDept", $scope.deptToBeDeleted).then(function mySuccess(response){
+		$http.post("/VisitorManagementSystem-0.0.1-SNAPSHOT/Department/deleteDept", $scope.deptToBeDeleted).then(function mySuccess(response){
 			$scope.viewAllDept();
 		}, function myError(data){
 			console.log("some internal error");

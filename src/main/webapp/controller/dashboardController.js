@@ -4,31 +4,31 @@ app.controller('dashboardController', function($scope, $http, $rootScope) {
 	$scope.role = window.localStorage.getItem("loginRole");
 	
 	if($scope.UserID == undefined || $scope.UserID == null ){
-		window.location = "login.html";
+		window.location = "/VisitorManagementSystem-0.0.1-SNAPSHOT/login.html";
 	}
 	
 	$scope.allVisits = [];
 	$scope.getCounts = function(){
-		$http.post("/Employee/CancelVisitCount",$scope.UserID).then(function mySuccess(response){
+		$http.post("/VisitorManagementSystem-0.0.1-SNAPSHOT/Employee/CancelVisitCount",$scope.UserID).then(function mySuccess(response){
 			$scope.cancelVisitCount = response.data;
 		}, function myError(data){
 			console.log("some internal error");
 			console.log(data);
 		});
-		$http.post("/Employee/TotalVisitCount",$scope.UserID).then(function mySuccess(response){
+		$http.post("/VisitorManagementSystem-0.0.1-SNAPSHOT/Employee/TotalVisitCount",$scope.UserID).then(function mySuccess(response){
 			$scope.totalVisitCount = response.data;
 		}, function myError(data){
 			console.log("some internal error");
 			console.log(data);
 		});
-		$http.post("/Employee/TodaysVisitCount",$scope.UserID).then(function mySuccess(response){
+		$http.post("/VisitorManagementSystem-0.0.1-SNAPSHOT/Employee/TodaysVisitCount",$scope.UserID).then(function mySuccess(response){
 			$scope.todaysVisitCount = response.data;
 		}, function myError(data){
 			console.log("some internal error");
 			console.log(data);
 		});
 		
-		$http.post("/Employee/AttendedVisitCount",$scope.UserID).then(function mySuccess(response){
+		$http.post("/VisitorManagementSystem-0.0.1-SNAPSHOT/Employee/AttendedVisitCount",$scope.UserID).then(function mySuccess(response){
 			$scope.attendedVisitCount = response.data;
 		}, function myError(data){
 			console.log("some internal error");
@@ -38,7 +38,7 @@ app.controller('dashboardController', function($scope, $http, $rootScope) {
 	
 	$scope.viewAllCoVisitor = function(visitor){
 		visitor.enableVisitorCheckOut = true;
-		$http.post("/Security/viewAllCoVisitor", visitor).then(function mySuccess(response){
+		$http.post("/VisitorManagementSystem-0.0.1-SNAPSHOT/Security/viewAllCoVisitor", visitor).then(function mySuccess(response){
 			$scope.allCoVisitor = response.data;
 			if($scope.allCoVisitor.length > 0){
 				angular.forEach($scope.allCoVisitor,function(coVisitor){
@@ -63,7 +63,7 @@ app.controller('dashboardController', function($scope, $http, $rootScope) {
 				empCode: $scope.UserID,
 				empRole: $scope.role
 		};
-		$http.post("/Employee/viewAllVisits",$scope.param).then(function mySuccess(response){
+		$http.post("/VisitorManagementSystem-0.0.1-SNAPSHOT/Employee/viewAllVisits",$scope.param).then(function mySuccess(response){
 			console.log(response.data);
 			$scope.allVisits = response.data;
 			if($scope.role != "Security"){
@@ -80,7 +80,7 @@ app.controller('dashboardController', function($scope, $http, $rootScope) {
 	};
 	
 	$scope.viewAllContacts = function(){
-		$http.post("/Employee/viewAllContacts",$scope.UserID).then(function mySuccess(response){
+		$http.post("/VisitorManagementSystem-0.0.1-SNAPSHOT/Employee/viewAllContacts",$scope.UserID).then(function mySuccess(response){
 			console.log(response.data);
 			$scope.allContacts = response.data;
 		}, function myError(data){
@@ -90,7 +90,7 @@ app.controller('dashboardController', function($scope, $http, $rootScope) {
 	};
 	
 	$scope.getTasks = function(){
-		$http.post("/Employee/viewTask",$scope.UserID).then(function mySuccess(response){
+		$http.post("/VisitorManagementSystem-0.0.1-SNAPSHOT/Employee/viewTask",$scope.UserID).then(function mySuccess(response){
 			console.log(response.data);
 			$scope.allTask = response.data;
 		}, function myError(data){
@@ -100,7 +100,7 @@ app.controller('dashboardController', function($scope, $http, $rootScope) {
 	}
 	
 	$scope.getAllPlants = function(){
-		$http.post("/Plant/viewAllPlant").then(function mySuccess(response){
+		$http.post("/VisitorManagementSystem-0.0.1-SNAPSHOT/Plant/viewAllPlant").then(function mySuccess(response){
 			console.log(response.data);
 			$scope.allPlants = response.data;
 		}, function myError(data){
@@ -123,7 +123,7 @@ app.controller('dashboardController', function($scope, $http, $rootScope) {
 		if($rootScope.visitCheckin.secCheckin){
 			window.location = "#!securityCheckOut";
 		}else{
-			$http.post("/Security/securityCheckin", $rootScope.visitCheckin).then(function mySuccess(response){
+			$http.post("/VisitorManagementSystem-0.0.1-SNAPSHOT/Security/securityCheckin", $rootScope.visitCheckin).then(function mySuccess(response){
 				if(response.data.msg == 'SUCCESS'){
 					window.location = "#!securityCheckOut";
 				}
@@ -135,7 +135,7 @@ app.controller('dashboardController', function($scope, $http, $rootScope) {
 	};
 	
 	$scope.securityCheckout = function(visit){
-		$http.post("/Security/securityCheckout", visit).then(function mySuccess(response){
+		$http.post("/VisitorManagementSystem-0.0.1-SNAPSHOT/Security/securityCheckout", visit).then(function mySuccess(response){
 			if(response.data.msg == 'SUCCESS'){
 				$scope.viewAllVisits();
 			}
@@ -147,7 +147,7 @@ app.controller('dashboardController', function($scope, $http, $rootScope) {
 	
 	$scope.addTask = function(){
 		$scope.newTask.createdBy = $scope.UserID;
-		$http.post("/Employee/addTask",$scope.newTask).then(function mySuccess(response){
+		$http.post("/VisitorManagementSystem-0.0.1-SNAPSHOT/Employee/addTask",$scope.newTask).then(function mySuccess(response){
 			if(response.data.msg == "SUCCESS"){
 				$scope.getTasks();
 				$('#addNewTask').modal('hide');
@@ -159,7 +159,7 @@ app.controller('dashboardController', function($scope, $http, $rootScope) {
 	}
 	
 	$scope.updateTask = function(task){
-		$http.post("/Employee/completeTask",task).then(function mySuccess(response){
+		$http.post("/VisitorManagementSystem-0.0.1-SNAPSHOT/Employee/completeTask",task).then(function mySuccess(response){
 			if(response.data.msg == "SUCCESS"){
 				$scope.getTasks();
 			}
@@ -192,7 +192,7 @@ app.controller('dashboardController', function($scope, $http, $rootScope) {
 					$scope.visit.createdBy = $scope.UserID;
 					$scope.visit.lastUpdatedBy = $scope.UserID;
 					$scope.visit.meetingBooked.empId = $scope.UserID;
-					$http.post("/Employee/addNewVisit", $scope.visit).then(function mySuccess(response){
+					$http.post("/VisitorManagementSystem-0.0.1-SNAPSHOT/Employee/addNewVisit", $scope.visit).then(function mySuccess(response){
 						if(response.data.msg == "SUCCESS"){
 							$('#VisitScheduleModal').modal('hide');
 							window.location.href  = "#!employeeDashboard";

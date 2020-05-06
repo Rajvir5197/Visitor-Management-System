@@ -3,13 +3,13 @@ app.controller('manageEmployeeController', function($scope, $rootScope, $http) {
 	$scope.UserID = window.localStorage.getItem("loginDetails");
 	
 	if($scope.UserID == undefined || $scope.UserID == null ){
-		window.location = "login.html";
+		window.location = "/VisitorManagementSystem-0.0.1-SNAPSHOT/login.html";
 	}
 	$scope.allEmp = [];
 	$scope.invalidEditedMobile = false;
 	$scope.invalidMobile = false;
 	$scope.viewAllEmp = function(){
-		$http.post("/Employee/viewAllEmp").then(function mySuccess(response){
+		$http.post("/VisitorManagementSystem-0.0.1-SNAPSHOT/Employee/viewAllEmp").then(function mySuccess(response){
 			console.log(response.data);
 			$scope.allEmp = response.data;
 			angular.forEach($scope.allEmp,function(value){
@@ -22,7 +22,7 @@ app.controller('manageEmployeeController', function($scope, $rootScope, $http) {
 	};
 	
 	$scope.getAllDepartment = function(){
-		$http.post("/Department/viewAllDept").then(function mySuccess(response){
+		$http.post("/VisitorManagementSystem-0.0.1-SNAPSHOT/Department/viewAllDept").then(function mySuccess(response){
 			console.log(response.data);
 			$scope.allDept = response.data;
 		}, function myError(data){
@@ -32,7 +32,7 @@ app.controller('manageEmployeeController', function($scope, $rootScope, $http) {
 	};
 	
 	$scope.getAllPlants = function(){
-		$http.post("/Plant/viewAllPlant").then(function mySuccess(response){
+		$http.post("/VisitorManagementSystem-0.0.1-SNAPSHOT/Plant/viewAllPlant").then(function mySuccess(response){
 			console.log(response.data);
 			$scope.allPlants = response.data;
 		}, function myError(data){
@@ -70,7 +70,7 @@ app.controller('manageEmployeeController', function($scope, $rootScope, $http) {
 		if($scope.addForm.$valid){
 			if(!isNaN($scope.newEmp.empMobile) && angular.isNumber(+$scope.newEmp.empMobile)){
 				$scope.newEmp.regBy = $scope.UserID;
-				$http.post("/Employee/addNewOrEditEmp", $scope.newEmp).then(function mySuccess(response){
+				$http.post("/VisitorManagementSystem-0.0.1-SNAPSHOT/Employee/addNewOrEditEmp", $scope.newEmp).then(function mySuccess(response){
 					$('#addNewEmpModal').modal('hide');
 					$scope.viewAllEmp();
 					console.log(response.data);
@@ -100,7 +100,7 @@ app.controller('manageEmployeeController', function($scope, $rootScope, $http) {
 					fd.append('file', file);
 					fd.append('empDetails', JSON.stringify($scope.newEmp));
 					
-					$http.post("/Employee/addNewOrEditEmp", fd, {
+					$http.post("/VisitorManagementSystem-0.0.1-SNAPSHOT/Employee/addNewOrEditEmp", fd, {
 						transformRequest : angular.identity,
 						headers : {'Content-Type' : undefined}
 					}).then(function mySuccess(response){
@@ -111,7 +111,7 @@ app.controller('manageEmployeeController', function($scope, $rootScope, $http) {
 						console.log(data);
 					});
 				}else{
-					$http.post("/Employee/addNewEmp", $scope.newEmp).then(function mySuccess(response){
+					$http.post("/VisitorManagementSystem-0.0.1-SNAPSHOT/Employee/addNewEmp", $scope.newEmp).then(function mySuccess(response){
 						$('#addNewEmpModal').modal('hide');
 						$scope.viewAllEmp();
 					}, function myError(data){
@@ -135,7 +135,7 @@ app.controller('manageEmployeeController', function($scope, $rootScope, $http) {
 		if($scope.editForm.$valid){
 			if(!isNaN($scope.editedEmp.empMobile) && angular.isNumber(+$scope.editedEmp.empMobile)){
 				$scope.editedEmp.regBy = $scope.UserID;
-				$http.post("/Employee/addNewOrEditEmp", $scope.editedEmp).then(function mySuccess(response){
+				$http.post("/VisitorManagementSystem-0.0.1-SNAPSHOT/Employee/addNewOrEditEmp", $scope.editedEmp).then(function mySuccess(response){
 					$('#editEmpModal').modal('hide');
 					$scope.viewAllEmp();
 					console.log(response.data);
@@ -165,7 +165,7 @@ app.controller('manageEmployeeController', function($scope, $rootScope, $http) {
 					fd.append('file', file);
 					fd.append('empDetails', JSON.stringify($scope.editedEmp));
 					
-					$http.post("/Employee/addNewOrEditEmp", fd, {
+					$http.post("/VisitorManagementSystem-0.0.1-SNAPSHOT/Employee/addNewOrEditEmp", fd, {
 						transformRequest : angular.identity,
 						headers : {'Content-Type' : undefined}
 					}).then(function mySuccess(response){
@@ -176,7 +176,7 @@ app.controller('manageEmployeeController', function($scope, $rootScope, $http) {
 						console.log(data);
 					});
 				}else{
-					$http.post("/Employee/editEmp", $scope.editedEmp).then(function mySuccess(response){
+					$http.post("/VisitorManagementSystem-0.0.1-SNAPSHOT/Employee/editEmp", $scope.editedEmp).then(function mySuccess(response){
 						$('#editEmpModal').modal('hide');
 						$scope.viewAllEmp();
 					}, function myError(data){
@@ -198,7 +198,7 @@ app.controller('manageEmployeeController', function($scope, $rootScope, $http) {
 	
 	$scope.deleteEmp = function(){
 		$scope.EmpToBeDeleted.regBy = $scope.UserID;
-		$http.post("/Employee/deleteEmp", $scope.EmpToBeDeleted).then(function mySuccess(response){
+		$http.post("/VisitorManagementSystem-0.0.1-SNAPSHOT/Employee/deleteEmp", $scope.EmpToBeDeleted).then(function mySuccess(response){
 			$scope.viewAllEmp();
 		}, function myError(data){
 			console.log("some internal error");

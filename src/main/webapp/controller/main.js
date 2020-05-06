@@ -2,40 +2,40 @@ var app = angular.module('myApp', ['ngRoute','ngResource']);
 app.config(function($routeProvider){
     $routeProvider
         .when('/login',{
-            templateUrl: '/login.php',
+            templateUrl: '/VisitorManagementSystem-0.0.1-SNAPSHOT/login.html',
             controller: 'loginController'
         }).when('/secDashboard',{
-            templateUrl: '/security-dashboard.html',
+            templateUrl: '/VisitorManagementSystem-0.0.1-SNAPSHOT/security-dashboard.html',
             controller: 'dashboardController'
         }).when('/employeeDashboard',{
-            templateUrl: '/dashboard.html',
+            templateUrl: '/VisitorManagementSystem-0.0.1-SNAPSHOT/dashboard.html',
             controller: 'dashboardController'
         }).when('/ViewAllPlants',{
-            templateUrl: '/manage-plant-view-all.html',
+            templateUrl: '/VisitorManagementSystem-0.0.1-SNAPSHOT/manage-plant-view-all.html',
             controller: 'managePlantController'
         }).when('/ViewAllDepartment',{
-            templateUrl: '/department-master-view-all.html',
+            templateUrl: '/VisitorManagementSystem-0.0.1-SNAPSHOT/department-master-view-all.html',
             controller: 'manageDeptController'
         }).when('/ViewAllEmployee',{
-            templateUrl: '/employee-master-view-all.html',
+            templateUrl: '/VisitorManagementSystem-0.0.1-SNAPSHOT/employee-master-view-all.html',
             controller: 'manageEmployeeController'
         }).when('/ManageContact',{
-            templateUrl: '/manage-contact-view-all.html',
+            templateUrl: '/VisitorManagementSystem-0.0.1-SNAPSHOT/manage-contact-view-all.html',
             controller: 'manageContactController'
         }).when('/addContact',{
-            templateUrl: '/manage-contact-add-new.html',
+            templateUrl: '/VisitorManagementSystem-0.0.1-SNAPSHOT/manage-contact-add-new.html',
             controller: 'manageContactController'
         }).when('/editContact',{
-            templateUrl: '/manage-contact-edit.html',
+            templateUrl: '/VisitorManagementSystem-0.0.1-SNAPSHOT/manage-contact-edit.html',
             controller: 'manageContactEditController'
         }).when('/viewAllVisit',{
-            templateUrl: '/todays-visits-listing.html',
+            templateUrl: '/VisitorManagementSystem-0.0.1-SNAPSHOT/todays-visits-listing.html',
             controller: 'manageVisitController'
         }).when('/addVisit',{
-            templateUrl: '/manage-visits-add-new.html',
+            templateUrl: '/VisitorManagementSystem-0.0.1-SNAPSHOT/manage-visits-add-new.html',
             controller: 'manageVisitController'
         }).when('/securityCheckOut',{
-            templateUrl: '/personcheck-out.html',
+            templateUrl: '/VisitorManagementSystem-0.0.1-SNAPSHOT/personcheck-out.html',
             controller: 'securityController'
         });
 });
@@ -61,7 +61,7 @@ app.controller('indexController', function($scope, $rootScope, $http) {
 	$scope.role = window.localStorage.getItem("loginRole");
 	
 	if($rootScope.UserName == undefined || $rootScope.UserName == null ){
-		window.location = "login.html";
+		window.location = "/VisitorManagementSystem-0.0.1-SNAPSHOT/login.html";
 	}else{
 		if($scope.role == "Security"){
 			window.location = "#!secDashboard";
@@ -72,7 +72,7 @@ app.controller('indexController', function($scope, $rootScope, $http) {
 	$scope.logoutUser = function(){
 		window.localStorage.removeItem("loginDetails");
 		window.localStorage.removeItem("loginRole");
-		window.location.href  = "login.html";
+		window.location.href  = "/VisitorManagementSystem-0.0.1-SNAPSHOT/login.html";
 	};
 	
 	$scope.navToDashboard = function(){
