@@ -71,8 +71,7 @@ app.controller('manageEmployeeController', function($scope, $rootScope, $http) {
 			if(!isNaN($scope.newEmp.empMobile) && angular.isNumber(+$scope.newEmp.empMobile)){
 				$scope.newEmp.regBy = $scope.UserID;
 				$http.post("/Employee/addNewOrEditEmp", $scope.newEmp).then(function mySuccess(response){
-					$('#addNewEmpModal').hide();
-					$('.modal-backdrop').hide();
+					$('#addNewEmpModal').modal('hide');
 					$scope.viewAllEmp();
 					console.log(response.data);
 				}, function myError(data){
@@ -95,22 +94,31 @@ app.controller('manageEmployeeController', function($scope, $rootScope, $http) {
 		if($scope.addForm.$valid){
 			if(!isNaN($scope.newEmp.empMobile) && angular.isNumber(+$scope.newEmp.empMobile)){
 				$scope.newEmp.regBy = $scope.UserID;
-				var file = $scope.myFile;
-				var fd = new FormData();
-				fd.append('file', file);
-				fd.append('empDetails', JSON.stringify($scope.newEmp));
-				
-				$http.post("/Employee/addNewOrEditEmp", fd, {
-					transformRequest : angular.identity,
-					headers : {'Content-Type' : undefined}
-				}).then(function mySuccess(response){
-					$('#addNewEmpModal').hide();
-					$('.modal-backdrop').hide();
-					$scope.viewAllEmp();
-				}, function myError(data){
-					console.log("some internal error");
-					console.log(data);
-				});
+				if($scope.myFile != null && $scope.myFile != undefined){
+					var file = $scope.myFile;
+					var fd = new FormData();
+					fd.append('file', file);
+					fd.append('empDetails', JSON.stringify($scope.newEmp));
+					
+					$http.post("/Employee/addNewOrEditEmp", fd, {
+						transformRequest : angular.identity,
+						headers : {'Content-Type' : undefined}
+					}).then(function mySuccess(response){
+						$('#addNewEmpModal').modal('hide');
+						$scope.viewAllEmp();
+					}, function myError(data){
+						console.log("some internal error");
+						console.log(data);
+					});
+				}else{
+					$http.post("/Employee/addNewEmp", $scope.newEmp).then(function mySuccess(response){
+						$('#addNewEmpModal').modal('hide');
+						$scope.viewAllEmp();
+					}, function myError(data){
+						console.log("some internal error");
+						console.log(data);
+					});
+				}
 			}else{
 				$scope.invalidMobile = true;
 			}
@@ -128,8 +136,7 @@ app.controller('manageEmployeeController', function($scope, $rootScope, $http) {
 			if(!isNaN($scope.editedEmp.empMobile) && angular.isNumber(+$scope.editedEmp.empMobile)){
 				$scope.editedEmp.regBy = $scope.UserID;
 				$http.post("/Employee/addNewOrEditEmp", $scope.editedEmp).then(function mySuccess(response){
-					$('#editEmpModal').hide();
-					$('.modal-backdrop').hide();
+					$('#editEmpModal').modal('hide');
 					$scope.viewAllEmp();
 					console.log(response.data);
 				}, function myError(data){
@@ -152,22 +159,32 @@ app.controller('manageEmployeeController', function($scope, $rootScope, $http) {
 		if($scope.editForm.$valid){
 			if(!isNaN($scope.editedEmp.empMobile) && angular.isNumber(+$scope.editedEmp.empMobile)){
 				$scope.editedEmp.regBy = $scope.UserID;
-				var file = $scope.myFile;
-				var fd = new FormData();
-				fd.append('file', file);
-				fd.append('empDetails', JSON.stringify($scope.editedEmp));
+				if($scope.myFile != null && $scope.myFile != undefined){
+					var file = $scope.myFile;
+					var fd = new FormData();
+					fd.append('file', file);
+					fd.append('empDetails', JSON.stringify($scope.editedEmp));
+					
+					$http.post("/Employee/addNewOrEditEmp", fd, {
+						transformRequest : angular.identity,
+						headers : {'Content-Type' : undefined}
+					}).then(function mySuccess(response){
+						$('#editEmpModal').modal('hide');
+						$scope.viewAllEmp();
+					}, function myError(data){
+						console.log("some internal error");
+						console.log(data);
+					});
+				}else{
+					$http.post("/Employee/editEmp", $scope.editedEmp).then(function mySuccess(response){
+						$('#editEmpModal').modal('hide');
+						$scope.viewAllEmp();
+					}, function myError(data){
+						console.log("some internal error");
+						console.log(data);
+					});
+				}
 				
-				$http.post("/Employee/addNewOrEditEmp", fd, {
-					transformRequest : angular.identity,
-					headers : {'Content-Type' : undefined}
-				}).then(function mySuccess(response){
-					$('#editEmpModal').hide();
-					$('.modal-backdrop').hide();
-					$scope.viewAllEmp();
-				}, function myError(data){
-					console.log("some internal error");
-					console.log(data);
-				});
 			}else{
 				$scope.invalidEditedMobile = true;
 			}
@@ -188,4 +205,5 @@ app.controller('manageEmployeeController', function($scope, $rootScope, $http) {
 			console.log(data);
 		});
 	};
+
 });

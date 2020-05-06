@@ -58,7 +58,7 @@ public class Employee implements Serializable {
 	@Column (name = "profile_attachment")
 	private Blob profileAttachment;
 	
-	@Column (name = "image")
+	@Column (name = "image", length = 20000)
 	private byte[] image;
 	
 	@Column (name = "reg_by")
@@ -186,5 +186,7 @@ public class Employee implements Serializable {
 	public void setEmpPlantCode(Set<Plant> empPlantCode) {
 		this.empPlantCode = empPlantCode;
 	}
+	
+	
 	
 }

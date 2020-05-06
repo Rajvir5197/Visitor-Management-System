@@ -1,4 +1,49 @@
+<!-- <script type="text/javascript">
+	 Webcam.attach( '#my_camera' );
 
+</script> -->
+
+<script type="text/javascript">
+
+const video = document.getElementById('video');
+const canvas = document.getElementById('canvas');
+const snap = document.getElementById("snap");
+const errorMsgElement = document.querySelector('span#errorMsg');
+
+const constraints = {
+  audio: true,
+  video: {
+    width: 1280, height: 720
+  }
+};
+
+// Access webcam
+async function init() {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia(constraints);
+    handleSuccess(stream);
+    console.log("in init");
+  } catch (e) {
+    errorMsgElement.innerHTML = `navigator.getUserMedia error:${e.toString()}`;
+  }
+};
+
+// Success
+function handleSuccess(stream) {
+  window.stream = stream;
+  video.srcObject = stream;
+}
+
+// Load init
+init();
+
+// Draw image
+var context = canvas.getContext('2d');
+snap.addEventListener("click", function() {
+	context.drawImage(video, 0, 0, 640, 480);
+});
+
+</script>
 <!-- Begin Page Content -->
 <div ng-controller="securityController" class="container-fluid mt-3">
 
@@ -79,6 +124,7 @@
 <div class="row">
 <div class="col-lg-3 mb-3">
 <img src="images/profile-pic.jpg" class="img-fluid border p-2" />
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#captureImageModal"></button>
 </div>
 
 <div class="col-lg-9 mb-3">
@@ -102,7 +148,7 @@
 <td>{{coVisitor.coVisitorName}}</td>
 <td>{{coVisitor.coVisitorContact}}</td>
 <td><button type="button" class="btn btn-secondary btn-sm" ng-click="getCovisitorAsset(coVisitor)" data-toggle="modal" data-target="#viewAssetModal"><i class="fa fa-eye fa-fw fa-lg"></i> View</button></td>
-<td><button type="button" class="btn btn-primary btn-sm" ng-disabled="!coVisitor.allowCheckOut" ng-click="selectedCoVisitorForCheckout(coVisitor)" >Check Out</button></td>
+<td><button type="button" class="btn btn-primary btn-sm" ng-disabled="!coVisitor.allowCheckOut || !visitCheckin.empCheckout || coVisitor.seccheckout" data-toggle="modal" data-target="#checkoutModal" ng-click="selectedCoVisitorForCheckout(coVisitor)" >Check Out</button></td>
 </tr>
 
 </tbody>
@@ -249,6 +295,45 @@
 </div>
 <!-- add co visitor ends -->
 
+
+<div class="modal fade" id="captureImageModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal-dialog" role="document">
+<div class="modal-content">
+<div class="modal-header">
+<h5 class="modal-title BlackTxtColor" id="exampleModalLabel">Check Out</h5>
+<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+<span aria-hidden="true">&times;</span>
+</button>
+</div>
+<div class="modal-body">
+<div class="row">
+<div class="col-lg-12">
+<div class="form-group">
+
+<div class="video-wrap">
+    <video id="video" playsinline autoplay></video>
+</div>
+<div class="controller">
+    <button id="snap">Capture</button>
+</div>
+<canvas id="canvas" width="640" height="480"></canvas>
+
+<!-- <div id="my_camera"></div>
+<input type=button value="Take Snapshot" onClick="take_snapshot()"> -->
+ 
+<div id="results" ></div>
+
+</div>
+</div>
+</div>
+</div>
+<!-- <div class="modal-footer">
+<button type="button" class="btn btn-primary" ng-click="checkoutCoVisitor()">Check Out</button>
+<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+</div> -->
+</div>
+</div>
+</div>
 
 </div>
 <!-- /End Page Content -->

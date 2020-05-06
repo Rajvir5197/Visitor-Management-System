@@ -4,16 +4,16 @@
 	<meta charset = "UTF-8" />
 
 <!-- Bootstrap library -->
-	<script src="js/jquery-3.5.0.js"></script>
-  	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  	<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script> -->
   	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.js"></script>
   	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-route.js"></script>
   	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-resource.js"></script>
-  	<script type="text/javascript" src="js/moment.js"></script>
-  	<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
+  	<!-- for webcam -->
+		<script type="text/javascript" src="js/webcam.min.js"></script>
   	
 	<title>Welcome To Rucha Group</title>
+	
 	
 	<!-- Custom fonts for this template-->
 	<link href="css/all.min.css" rel="stylesheet" type="text/css">
@@ -21,6 +21,45 @@
 	<!-- Custom styles for this template -->
 	<link href="css/sb-admin-2.min.css" rel="stylesheet">
 	<link href="css/dataTables.bootstrap4.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" />
+	
+	<style type="text/css">
+		.tooltip {
+		  position: relative;
+		  display: inline-block;
+		  opacity: 1;
+		}
+		
+		.tooltip .tooltiptext {
+		  visibility: hidden;
+		  width: 120px;
+		  background-color: #c3c0c0;
+		  color: #fff;
+		  text-align: center;
+		  border-radius: 6px;
+		  padding: 5px 0;
+		
+		  /* Position the tooltip */
+		  position: absolute;
+		  z-index: 1;
+		  
+		  width: 120px;
+		  bottom: 100%;
+		  left: 50%;
+		  margin-left: -60px;
+		}
+		
+		.tooltip:hover .tooltiptext {
+		  visibility: visible;
+		}
+		
+		#my_camera{
+		 width: 320px;
+		 height: 240px;
+		 border: 1px solid black;
+		}
+	
+	</style>
 	
 </head>
 <body id="page-top" ng-app="myApp">
@@ -278,6 +317,11 @@
 		<!-- Page level custom scripts -->
 		<script src="js/datatables-demo.js"></script>
 		<script src="js/bs-custom-file-input.js"></script>
+		
+		<!-- for datepicker -->
+		<script type="text/javascript" src="js/moment.js"></script>
+  		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+				
 		<script>
 		$(document).ready(function () {
 		  bsCustomFileInput.init()
@@ -288,6 +332,29 @@
 		$(function () {
 		  $('[data-toggle="tooltip"]').tooltip()
 		})
+		</script>
+		
+		<script type="text/javascript">
+
+			Webcam.set({
+			  width: 320,
+			  height: 240,
+			  image_format: 'jpeg',
+			  jpeg_quality: 90
+			 });
+			 
+		
+			<!-- Code to handle taking the snapshot and displaying it locally -->
+			function take_snapshot() {
+			 
+			 // take snapshot and get image data
+			 Webcam.snap( function(data_uri) {
+			  // display results in page
+			  document.getElementById('results').innerHTML = 
+			  '<img src="'+data_uri+'"/>';
+			  } );
+			}
+		
 		</script>
 		
 		<!-- end of footer -->

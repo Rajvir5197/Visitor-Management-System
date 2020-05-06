@@ -8,6 +8,56 @@ app.controller('dashboardController', function($scope, $http, $rootScope) {
 	}
 	
 	$scope.allVisits = [];
+	$scope.getCounts = function(){
+		$http.post("/Employee/CancelVisitCount",$scope.UserID).then(function mySuccess(response){
+			$scope.cancelVisitCount = response.data;
+		}, function myError(data){
+			console.log("some internal error");
+			console.log(data);
+		});
+		$http.post("/Employee/TotalVisitCount",$scope.UserID).then(function mySuccess(response){
+			$scope.totalVisitCount = response.data;
+		}, function myError(data){
+			console.log("some internal error");
+			console.log(data);
+		});
+		$http.post("/Employee/TodaysVisitCount",$scope.UserID).then(function mySuccess(response){
+			$scope.todaysVisitCount = response.data;
+		}, function myError(data){
+			console.log("some internal error");
+			console.log(data);
+		});
+		
+		$http.post("/Employee/AttendedVisitCount",$scope.UserID).then(function mySuccess(response){
+			$scope.attendedVisitCount = response.data;
+		}, function myError(data){
+			console.log("some internal error");
+			console.log(data);
+		});
+	};
+	
+	$scope.viewAllCoVisitor = function(visitor){
+		visitor.enableVisitorCheckOut = true;
+		$http.post("/Security/viewAllCoVisitor", visitor).then(function mySuccess(response){
+			$scope.allCoVisitor = response.data;
+			if($scope.allCoVisitor.length > 0){
+				angular.forEach($scope.allCoVisitor,function(coVisitor){
+					if(!coVisitor.seccheckout){
+						visitor.enableVisitorCheckOut = false;
+					}
+				});
+			}else{
+				if(!visitor.empCheckout){
+					visitor.enableVisitorCheckOut = false;
+				}
+			}
+		}, function myError(data){
+			console.log("some internal error");
+			console.log(data);
+		});
+	
+	};
+	
 	$scope.viewAllVisits = function(){
 		$scope.param = {
 				empCode: $scope.UserID,
@@ -16,6 +66,13 @@ app.controller('dashboardController', function($scope, $http, $rootScope) {
 		$http.post("/Employee/viewAllVisits",$scope.param).then(function mySuccess(response){
 			console.log(response.data);
 			$scope.allVisits = response.data;
+			if($scope.role != "Security"){
+				$scope.getCounts();
+			}else{
+				angular.forEach($scope.allVisits,function(visit){
+					$scope.viewAllCoVisitor(visit);
+				});
+			}
 		}, function myError(data){
 			console.log("some internal error");
 			console.log(data);
@@ -56,9 +113,9 @@ app.controller('dashboardController', function($scope, $http, $rootScope) {
 		$scope.viewAllVisits();
 	}else{
 		$scope.viewAllContacts();
-		$scope.getTasks();
 		$scope.viewAllVisits();
 		$scope.getAllPlants();
+		$scope.getTasks();
 	}
 	
 	$scope.securityCheckin = function(visit){
@@ -93,8 +150,7 @@ app.controller('dashboardController', function($scope, $http, $rootScope) {
 		$http.post("/Employee/addTask",$scope.newTask).then(function mySuccess(response){
 			if(response.data.msg == "SUCCESS"){
 				$scope.getTasks();
-				$('#addNewTask').hide();
-				$('.modal-backdrop').hide();
+				$('#addNewTask').modal('hide');
 			}
 		}, function myError(data){
 			console.log("some internal error");
@@ -138,8 +194,7 @@ app.controller('dashboardController', function($scope, $http, $rootScope) {
 					$scope.visit.meetingBooked.empId = $scope.UserID;
 					$http.post("/Employee/addNewVisit", $scope.visit).then(function mySuccess(response){
 						if(response.data.msg == "SUCCESS"){
-							$('#VisitScheduleModal').hide();
-							$('.modal-backdrop').hide();
+							$('#VisitScheduleModal').modal('hide');
 							window.location.href  = "#!employeeDashboard";
 						}
 					}, function myError(data){

@@ -57,8 +57,7 @@ app.controller('manageDeptController', function($scope, $rootScope, $http) {
 		if($scope.addForm.$valid){
 			$scope.newDept.regBy = $scope.UserID;
 			$http.post("/Department/addNewOrEditDept", $scope.newDept).then(function mySuccess(response){
-				$('#addNewDeptModal').hide();
-				$('.modal-backdrop').hide();
+				$('#addNewDeptModal').modal('hide');
 				$scope.viewAllDept();
 			}, function myError(data){
 				console.log("some internal error");
@@ -71,8 +70,7 @@ app.controller('manageDeptController', function($scope, $rootScope, $http) {
 		if($scope.editForm.$valid){
 			$scope.editedDept.regBy = $scope.UserID;
 			$http.post("/addNewOrEditDept", $scope.editedDept).then(function mySuccess(response){
-				$('#editDeptModal').hide();
-				$('.modal-backdrop').hide();
+				$('#editDeptModal').modal('hide');
 				$scope.viewAllDept();
 			}, function myError(data){
 				console.log("some internal error");

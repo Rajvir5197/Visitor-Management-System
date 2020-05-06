@@ -2,13 +2,13 @@
 <!-- Begin Page Content -->
 <div ng-controller="manageVisitController" class="container-fluid mt-3">
 
-<!-- <script type="text/javascript">
+<script type="text/javascript">
     $(function () {
         $('#datetimepicker3').datetimepicker({
             format: 'LT'
         });
     });
-</script> -->
+</script>
 
 <!-- Page Heading -->
 <div class="row mb-2">
@@ -92,10 +92,10 @@
 <div class="col-lg-4">
     <div class="form-group">
     	<label>Visit Time<span class="text-danger">*</span></label>
-        <div class='input-group date' id='datetimepicker3'>
-            <input ng-model="newVisit.meetingBooked.visitTime" type='text' class="form-control" required />
+        <div class='input-group date' >
+            <input ng-model="newVisit.meetingBooked.visitTime" id='datetimepicker3' type='text' class="form-control" required />
             <span class="input-group-addon">
-                <span class="glyphicon glyphicon-time"></span>
+                <span class="fa fa-clock FloatIcon"></span>
             </span>
         </div>
     </div>

@@ -34,8 +34,7 @@ app.controller('managePlantController', function($scope, $rootScope, $http) {
 		if($scope.addForm.$valid){
 			$scope.newPlant.regBy = $scope.UserID;
 			$http.post("/Plant/addNewPlant", $scope.newPlant).then(function mySuccess(response){
-				$('#addNewPlantModal').hide();
-				$('.modal-backdrop').hide();
+				$('#addNewPlantModal').modal('hide');
 				$scope.viewAllPlant();
 			}, function myError(data){
 				console.log("some internal error");
@@ -48,8 +47,7 @@ app.controller('managePlantController', function($scope, $rootScope, $http) {
 		if($scope.editForm.$valid){
 			$scope.edited.regBy = $scope.UserID;
 			$http.post("/Plant/editPlant", $scope.edited).then(function mySuccess(response){
-				$('#editPlantModal').hide();
-				$('.modal-backdrop').hide();
+				$('#editPlantModal').modal('hide');
 				$scope.viewAllPlant();
 			}, function myError(data){
 				console.log("some internal error");

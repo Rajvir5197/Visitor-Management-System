@@ -22,7 +22,7 @@
 
 <div class="row">
 <div class="col-sm-6 align-self-center FontSize18">Total Visits</div>
-<div class="col-sm-6 text-right FontSize28">1001</div>
+<div class="col-sm-6 text-right FontSize28">{{totalVisitCount}}</div>
 </div>
 </div>
 </div>
@@ -33,7 +33,7 @@
 
 <div class="row">
 <div class="col-sm-6 align-self-center FontSize18">Todays Visit</div>
-<div class="col-sm-6 text-right FontSize28">501</div>
+<div class="col-sm-6 text-right FontSize28">{{todaysVisitCount}}</div>
 </div>
 </div>
 </div>
@@ -44,7 +44,7 @@
 
 <div class="row">
 <div class="col-sm-6 align-self-center FontSize18">Cancel Visit</div>
-<div class="col-sm-6 text-right FontSize28">101</div>
+<div class="col-sm-6 text-right FontSize28">{{cancelVisitCount}}</div>
 </div>
 </div>
 </div>
@@ -55,7 +55,7 @@
 
 <div class="row">
 <div class="col-sm-6 align-self-center FontSize18">Attended Visit</div>
-<div class="col-sm-6 text-right FontSize28">52</div>
+<div class="col-sm-6 text-right FontSize28">{{attendedVisitCount}}</div>
 </div>
 </div>
 </div>
@@ -71,6 +71,7 @@
 <i class="fa fa-bullhorn fa-fw"></i> Upcoming Visits
 </h2>
 <div class="p-2" style="max-height:360px; overflow-y:scroll; overflow-x:hidden;">
+<span ng-hide="allVisits.length > 0">No Upcoming Visit</span>
 <ul class="listNew">
 <li ng-repeat="visit in allVisits"><i class="fa fa-user fa-fw"></i> {{visit.meetingBooked.visitor.visitorName}}</li>
 </ul> 
@@ -91,8 +92,11 @@
 </div>
 </h2>
 <div class="p-2" style="max-height:360px; overflow-y:scroll; overflow-x:hidden;">
+<span ng-hide="allTask.length > 0">No Task added</span>
 <ul class="listNew">
-<li ng-repeat="task in allTask" class="Rel"><i class="fa fa-file-alt fa-fw"></i> {{task.taskName}}
+<li ng-repeat="task in allTask" class="Rel"><i class="fa fa-file-alt fa-fw"></i>
+<div class="tooltip"> {{task.taskName}}
+<span class="tooltiptext">{{task.taskDescription}}</span></div>
 <button class="btn btn-primary btn-sm ContFloatingBtn" ng-click="updateTask(task)">Pending</button>
 </li>
 
@@ -132,7 +136,7 @@
 
 <div class="w-100 px-2 mt-2">
 <div class="input-group mb-2">
-<input type="text" class="form-control" placeholder="Search">
+<input type="text" class="form-control" placeholder="Search" ng-model="query">
 <div class="input-group-prepend">
 <div class="input-group-text rounded-right border-left"><i class="fa fa-search"></i></div>
 </div>
@@ -140,8 +144,9 @@
 </div>
 
 <div class="p-2" style="max-height:480px; overflow-y:scroll; overflow-x:hidden;">
+<span ng-hide="allContacts.length > 0">No Contacts</span>
 <ul class="listNew">
-<li ng-repeat="contact in allContacts" class="Rel"><i class="fa fa-user fa-fw"></i><a href="tel:{{contact.mobileNumb}}">{{contact.firstName}} {{contact.lastName}} </a>
+<li ng-repeat="contact in allContacts | filter: query" class="Rel"><i class="fa fa-user fa-fw"></i><a href="tel:{{contact.mobileNumb}}">{{contact.firstName}} {{contact.lastName}} </a>
 <button class="btn btn-primary btn-sm ContFloatingBtn" data-toggle="modal" data-target="#VisitScheduleModal" ng-click="setVisit(contact)">Set Visit</button></li>
 </ul> 
 </div>

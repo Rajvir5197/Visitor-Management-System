@@ -43,6 +43,18 @@ public class EmployeeController {
 			@RequestParam("empDetails") String jsonEmployee) {
 		return service.addOrEditEmployee(jsonEmployee, file);
 	}
+	
+	@RequestMapping(value = "/addNewEmp", method = RequestMethod.POST)
+	@ResponseBody
+	public JSONObject addNewEmp(@RequestBody Employee employee) {
+		return service.addNewEmp(employee);
+	}
+	
+	@RequestMapping(value = "/editEmp", method = RequestMethod.POST)
+	@ResponseBody
+	public JSONObject editEmp(@RequestBody Employee employee) {
+		return service.addNewEmp(employee);
+	}
 
 	@RequestMapping(value = "/deleteEmp", method = RequestMethod.POST)
 	@ResponseBody
@@ -150,6 +162,32 @@ public class EmployeeController {
 
 		return service.completeTask(task);
 	}
+	@RequestMapping(value = "/TotalVisitCount", method = RequestMethod.POST)
+	@ResponseBody
+	public int getTotalVisitCount(@RequestBody int loginId) {
+		return service.getTotalVisitCount(loginId);
+	}
+
+	@RequestMapping(value = "/TodaysVisitCount", method = RequestMethod.POST)
+	@ResponseBody
+	public int getTodaysVisitCount(@RequestBody int loginId) {
+
+		return service.getTodaysVisitCount(loginId);
+	}
+
+	@RequestMapping(value = "/CancelVisitCount", method = RequestMethod.POST)
+	@ResponseBody
+	public int getCancelVisitCount(@RequestBody int loginId) {
+		return service.getCancelVisitCount(loginId);
+	}
+
+	@RequestMapping(value = "/AttendedVisitCount", method = RequestMethod.POST)
+	@ResponseBody
+	public int getAttendedVisitCount(@RequestBody int loginId) {
+		return service.getAttendedVisitCount(loginId);
+	}
+	
+	
 
 
 }

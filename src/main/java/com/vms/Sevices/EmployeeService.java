@@ -1,7 +1,15 @@
 package com.vms.Sevices;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.sql.Date;
+import java.sql.SQLException;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
@@ -14,9 +22,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Optional;
+import java.util.zip.DataFormatException;
+import java.util.zip.Deflater;
+import java.util.zip.Inflater;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.AddressException;
+import javax.sql.rowset.serial.SerialBlob;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
@@ -57,10 +69,31 @@ public class EmployeeService {
 
 	@Autowired
 	TaskRepository taskRepository;
-	
+
 	public List<Employee> allEmployee() {
 
-		return repository.findAll();
+		List<Employee> E = repository.findAll();
+		for(Employee emp : E) {
+			if(emp.getImage() != null) {
+
+				emp.setImage(decompressBytes(emp.getImage()));
+			}
+		}
+		
+		return E;
+	}
+	
+	public JSONObject addNewEmp(Employee employee) {
+		JSONObject jsonObject = new JSONObject();
+		employee.setRegDate(Date.valueOf(LocalDate.now()));
+		employee.setRegTime(Time.valueOf(LocalTime.now()));
+		Employee employeeSaved = repository.save(employee);
+		if (null != employeeSaved) {
+			jsonObject.put("data", "SUCCESS");
+		} else {
+			jsonObject.put("data", "FAIL");
+		}
+		return jsonObject;
 	}
 
 	public JSONObject addOrEditEmployee(String jsonEmployee, MultipartFile file) {
@@ -69,9 +102,9 @@ public class EmployeeService {
 		JSONObject jsonObject = new JSONObject();
 		String fileName = StringUtils.cleanPath(file.getOriginalFilename());
 		try {
-
 			Employee employee = mapper.readValue(jsonEmployee, Employee.class);
-			// employee.setProfileAttachment(new SerialBlob(file.getBytes()));
+			//employee.setProfileAttachment(new SerialBlob(file.getBytes()));
+			employee.setImage(compressBytes(file.getBytes()));
 			employee.setRegDate(Date.valueOf(LocalDate.now()));
 			employee.setRegTime(Time.valueOf(LocalTime.now()));
 			Employee employeeSaved = repository.save(employee);
@@ -81,12 +114,56 @@ public class EmployeeService {
 				jsonObject.put("data", "FAIL");
 			}
 		} /*
-			 * catch (SQLException e) { e.printStackTrace(); }
-			 */ catch (IOException e) {
+			 * catch (SQLException e) {
+			 * 
+			 * e.printStackTrace();
+			 * 
+			 * }
+			 */
+			  catch (IOException e) {
 			e.printStackTrace();
 		}
 		return jsonObject;
 	}
+	
+	// compress the image bytes before storing it in the database
+    public static byte[] compressBytes(byte[] data) {
+        Deflater deflater = new Deflater();
+        deflater.setInput(data);
+        deflater.finish();
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream(data.length);
+        byte[] buffer = new byte[1024];
+        while (!deflater.finished()) {
+            int count = deflater.deflate(buffer);
+            outputStream.write(buffer, 0, count);
+        }
+        try {
+            outputStream.close();
+        } catch (IOException e) {
+        }
+        System.out.println("before compressed" + data.length);
+        System.out.println("Compressed Image Byte Size - " + outputStream.toByteArray().length);
+        return outputStream.toByteArray();
+    }
+   
+ // uncompress the image bytes before returning it to the angular application
+        public static byte[] decompressBytes(byte[] data) {
+            Inflater inflater = new Inflater();
+            inflater.setInput(data);
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream(data.length);
+            byte[] buffer = new byte[1024];
+            try {
+                while (!inflater.finished()) {
+                    int count = inflater.inflate(buffer);
+                    outputStream.write(buffer, 0, count);
+                }
+                outputStream.close();
+            } catch (IOException ioe) {
+            } catch (DataFormatException e) {
+            	
+            }
+            return outputStream.toByteArray();
+        }
 
 	public JSONObject deleteEmployee(Employee employee) {
 
@@ -102,7 +179,10 @@ public class EmployeeService {
 	public List<ContactManager> viewAllContacts(int loginId) {
 
 		List<ContactManager> allContacts = contactRepository.findByRegBy(loginId);
-		
+		/*
+		 * int count = meetingStatusRepository.CreatedBy(loginId);
+		 * System.out.println("count: " +count);
+		 */
 		return allContacts;
 	}
 
@@ -131,20 +211,23 @@ public class EmployeeService {
 	}
 
 	public List<MeetingStatus> viewAllVisit() {
-		
+
 		List<String> statusNotIn = new ArrayList<String>();
 		statusNotIn.add("Cancel");
 		statusNotIn.add("Sec Checked Out");
-		List<MeetingStatus> allMeetings = meetingStatusRepository.findByMeetingBookedVisitDateAndStatusIsNotIn(Date.valueOf(LocalDate.now()),statusNotIn);
+		List<MeetingStatus> allMeetings = meetingStatusRepository
+				.findByMeetingBookedVisitDateAndStatusIsNotIn(Date.valueOf(LocalDate.now()), statusNotIn);
 
 		return allMeetings;
 	}
-	
+
 	public List<MeetingStatus> viewAllVisitOfEmployee(int empCode) {
-		
+
 		List<String> statusNotIn = new ArrayList<String>();
 		statusNotIn.add("Cancel");
-		List<MeetingStatus> allMeetings = meetingStatusRepository.findByCreatedByAndMeetingBookedVisitDateAndStatusIsNotIn(empCode, Date.valueOf(LocalDate.now()),statusNotIn);
+		List<MeetingStatus> allMeetings = meetingStatusRepository
+				.findByCreatedByAndMeetingBookedVisitDateAndStatusIsNotInAndEmpCheckout(empCode, Date.valueOf(LocalDate.now()),
+						statusNotIn,false);
 
 		return allMeetings;
 	}
@@ -155,7 +238,7 @@ public class EmployeeService {
 		try {
 			Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			///java.util.Date d = sdf.parse(sdf.format(timestamp));
+			/// java.util.Date d = sdf.parse(sdf.format(timestamp));
 			meeting.setCreatedDate(Date.valueOf(LocalDate.now()));
 			meeting.setCreatedTime(Time.valueOf(LocalTime.now()));
 			meeting.setLastUpdatedDate(Date.valueOf(LocalDate.now()));
@@ -163,7 +246,7 @@ public class EmployeeService {
 			meeting.setStatus("Booked");
 
 			MeetingStatus meetingSaved = meetingStatusRepository.save(meeting);
-			//String mailStatus = sendMessage(meeting);
+			 //String mailStatus = sendMessage(meeting);
 			if (null != meetingSaved /* && "SUCCESS".equalsIgnoreCase(mailStatus) */) {
 				jsonObject.put("msg", "SUCCESS");
 				jsonObject.put("meetingData", meetingSaved);
@@ -212,9 +295,9 @@ public class EmployeeService {
 		return jsonObject;
 
 	}
-	
+
 	public JSONObject empCheckOut(MeetingStatus meeting) {
-		
+
 		JSONObject jsonObject = new JSONObject();
 		try {
 			Timestamp timestamp = new Timestamp(System.currentTimeMillis());
@@ -225,11 +308,11 @@ public class EmployeeService {
 			meeting.setEmpCheckout(true);
 			meeting.setEmpCheckoutDate(Date.valueOf(LocalDate.now()));
 			meeting.setEmpCheckoutTime(Time.valueOf(LocalTime.now()));
-			
+
 			MeetingStatus meetingSaved = meetingStatusRepository.save(meeting);
-			if(null != meetingSaved) {
+			if (null != meetingSaved) {
 				jsonObject.put("msg", "SUCCESS");
-			}else {
+			} else {
 				jsonObject.put("msg", "FAIL");
 			}
 		} catch (Exception e) {
@@ -237,19 +320,19 @@ public class EmployeeService {
 			jsonObject.put("msg", "FAIL");
 		}
 		return jsonObject;
-	
-	}
-	
-	public List<Task> viewTask(int loginId) {
 
+	}
+
+	public List<Task> viewTask(int loginId) {
+		System.out.println(getTotalVisitCount(loginId));
 		List<String> statusNotIn = new ArrayList<String>();
 		statusNotIn.add("COMPLETED");
-		List<Task> allTask = taskRepository.findByCreatedByAndTaskStatusNotIn(loginId,statusNotIn);
+		List<Task> allTask = taskRepository.findByCreatedByAndTaskStatusNotIn(loginId, statusNotIn);
 
 		return allTask;
 	}
-	
-	public JSONObject addTask(Task task){
+
+	public JSONObject addTask(Task task) {
 
 		JSONObject jsonObject = new JSONObject();
 		task.setCreatedDate(Date.valueOf(LocalDate.now()));
@@ -263,9 +346,9 @@ public class EmployeeService {
 		}
 		return jsonObject;
 	}
-	
+
 	public JSONObject completeTask(Task task) {
-		
+
 		JSONObject jsonObject = new JSONObject();
 		task.setCompletedDate(Date.valueOf(LocalDate.now()));
 		task.setCompletedTime(Time.valueOf(LocalTime.now()));
@@ -279,42 +362,98 @@ public class EmployeeService {
 		return jsonObject;
 	}
 
+	public int getTotalVisitCount(int loginId) {
+		List<MeetingStatus> allVisit = meetingStatusRepository.findByCreatedBy(loginId);
+		int count = 0;
+		for (MeetingStatus ms : allVisit) {
+			count++;
+		}
+
+		return count;
+	}
+
+	public int getTodaysVisitCount(int loginId) {
+		List<MeetingStatus> allVisit = meetingStatusRepository.findByCreatedBy(loginId);
+		int count = 0;
+		Date currentDate = Date.valueOf(LocalDate.now());
+		for (MeetingStatus ms : allVisit) {
+
+			if ((currentDate.compareTo(ms.getMeetingBooked().getVisitDate()) == 0)
+					&& (!"Cancel".equalsIgnoreCase(ms.getStatus()))) {
+				count++;
+			}
+		}
+
+		return count;
+	}
+
+	public int getCancelVisitCount(int loginId) {
+		List<MeetingStatus> allVisit = meetingStatusRepository.findByCreatedBy(loginId);
+		int count = 0;
+		Date currentDate = Date.valueOf(LocalDate.now());
+		for (MeetingStatus ms : allVisit) {
+
+			if ("Cancel".equalsIgnoreCase(ms.getStatus())) {
+				count++;
+			}
+		}
+
+		return count;
+	}
+
+	public int getAttendedVisitCount(int loginId) {
+		List<MeetingStatus> allVisit = meetingStatusRepository.findByCreatedBy(loginId);
+		int count = 0;
+		Date currentDate = Date.valueOf(LocalDate.now());
+		for (MeetingStatus ms : allVisit) {
+
+			if ("Checked Out".equalsIgnoreCase(ms.getStatus())) {
+				count++;
+			}
+		}
+
+		return count;
+	}
+
 	public String sendMessage(@RequestBody MeetingStatus visitor) {
 		try {
 			// Construct data
 			// APIKey=R8ntvc8nnU26zeAGiN0U0A&senderid=ERUCHA&channel=2&DCS=0&
 			// flashsms=0&number=919028xxxxxx&text=test%20message&route=1
-			// SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-			// String apiKey = "APIKey=" +
-			// URLEncoder.encode("R8ntvc8nnU26zeAGiN0U0A","UTF-8")+"&senderid="+URLEncoder.encode("ERUCHA","UTF-8")+"&channel="+URLEncoder.encode("2","UTF-8")+"&DCS="+URLEncoder.encode("0","UTF-8")+"&flashsms="+URLEncoder.encode("0","UTF-8");
-			// String message = "Your Meeting is schedule on "+
-			// sdf.format(visitor.getMeetingBooked().getVisitDate()) +"
-			// "+visitor.getMeetingBooked().getVisitTime()
-			// +" with "+visitor.getMeetingBooked().getEmpId()+" at
-			// "+visitor.getMeetingBooked().getVisitLocation()+"&route=1";
-			// String numbers = "&numbers=" +
-			// URLEncoder.encode(""+visitor.getMeetingBooked().getVisitor().getContactNumber(),"UTF-8");
+			 SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+			 String apiKey = "APIKey=" +
+			 URLEncoder.encode("R8ntvc8nnU26zeAGiN0U0A","UTF-8")+"&senderid="+URLEncoder.encode("ERUCHA","UTF-8")+"&channel="+URLEncoder.encode("2","UTF-8")+"&DCS="+URLEncoder.encode("0","UTF-8")+"&flashsms="+URLEncoder.encode("0","UTF-8");
+			 String message = "Your Meeting is schedule on "+
+			 sdf.format(visitor.getMeetingBooked().getVisitDate()) +
+			 " "+visitor.getMeetingBooked().getVisitTime()
+			 +" with "+visitor.getMeetingBooked().getEmpId()+" at"+
+			 visitor.getMeetingBooked().getVisitLocation().getPlantName();
+			 String numbers = "&number=" +
+			 URLEncoder.encode(""+visitor.getMeetingBooked().getVisitor().getContactNumber(),"UTF-8");
 
 			// Send data
-			// HttpURLConnection conn = (HttpURLConnection) new
-			// URL("http://bulksms.vrudheesolutions.com/api/mt/SendSMS?").openConnection();
-			// conn.setRequestProperty("Content-Type", "application/json");
-			// String data = apiKey + numbers +"&text=" +
-			// URLEncoder.encode(message,"UTF-8"); //+ sender;
-			// String data1 ="{APIKey: \"R8ntvc8nnU26zeAGiN0U0A\", senderid: \"ERUCHA\",
-			// channel: \"2\", DCS: \"0\", flashsms: \"0\", numbers:
-			// \""+visitor.getMeetingBooked().getVisitor().getContactNumber()+
-			// "\" , text: \"testMessage\" }";
-			// System.out.println("data: "+ data);
-			// conn.setDoOutput(true);
-			// OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
-			// wr.write(data);
-			// wr.flush();
-			// BufferedReader rd = new BufferedReader(new
-			// InputStreamReader(conn.getInputStream()));
-			// String result = rd.readLine();
-			// wr.close();
-			// rd.close();
+			 HttpURLConnection conn = (HttpURLConnection) new
+			 URL("http://bulksms.vrudheesolutions.com/api/mt/SendSMS?").openConnection();
+			 conn.setRequestProperty("Content-Type", "application/json");
+			 String data = apiKey + numbers +"&text=" + message
+			 //URLEncoder.encode(message,"UTF-8")
+			 +"&route=1"; //+ sender;
+			/*
+			 * String data1 ="{APIKey: \"R8ntvc8nnU26zeAGiN0U0A\", senderid: \"ERUCHA\",
+			 * channel: \"2\", DCS: \"0\", flashsms: \"0\", numbers:
+			 * \""+visitor.getMeetingBooked().getVisitor().getContactNumber()+
+			 * "\" , text: \"testMessage\" }";
+			 */
+			 System.out.println("data: "+ data);
+			 conn.setDoOutput(true);
+			 OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
+			 wr.write(data);
+			 wr.flush();
+			 BufferedReader rd = new BufferedReader(new
+			 InputStreamReader(conn.getInputStream()));
+			 String result = rd.readLine();
+			 wr.close();
+			 rd.close();
 
 			sendmail(visitor.getMeetingBooked().getVisitor().getEmailId());
 
@@ -340,7 +479,7 @@ public class EmployeeService {
 	}
 
 	public Employee getEmpPlant(Employee employee) {
-		
+
 		Optional<Employee> l = repository.findById(employee.getEmpCode());
 		return l.get();
 	}
@@ -368,5 +507,6 @@ public class EmployeeService {
 		return jsonObject;
 
 	}
+
 
 }
