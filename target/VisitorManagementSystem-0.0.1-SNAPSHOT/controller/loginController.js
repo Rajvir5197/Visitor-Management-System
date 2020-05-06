@@ -7,7 +7,7 @@ app.controller('loginController', function($scope, $rootScope, $http) {
 				empCode: $scope.empId,
 				empPass: $scope.pass
 		};
-		$http.post("/VisitorManagementSystem/Login/doLogin",$scope.param).then(function mySuccess(response){
+		$http.post("/VisitorManagementSystem-0.0.1-SNAPSHOT/Login/doLogin",$scope.param).then(function mySuccess(response){
 			console.log(response.data);
 			if(response.data.data == 'SUCCESS'){
 				console.log("authorized");
