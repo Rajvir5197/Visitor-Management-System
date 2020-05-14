@@ -1,0 +1,180 @@
+
+<!-- Begin Page Content -->
+<div class="container-fluid mt-3">
+
+<!-- Page Heading -->
+<div class="row mb-2">
+<div class="col-sm-12">
+<h1 class="h4 text-gray-800"><span ng-if="reportType == 'cancelEmp'">Employee Report For Cancelled Visitor</span>
+<span ng-if="reportType == 'cancelPlant'">Plant Wise Report For Cancelled Visitor</span>
+<span ng-if="reportType == 'cancelPlantHr'">Plant Wise HR Report For Cancelled Visitor</span>
+</h1>
+</div>
+</div>
+<!-- End Page Heading -->
+
+
+<div class="bg-white px-3 pt-3 mb-3">
+<div ng-if="reportType == 'cancelEmp'" class="row">
+<div class="col-lg-4 mb-3">
+<div class="row">
+<div class="col-sm-4 align-self-center">From Date</div>
+<div class="col-sm-8">
+<div class="FaIcon">
+<i class="fa fa-calendar-alt FloatIcon"></i>
+<input type="date" id="selectedFromDateEmp" ng-model="selectedFromDateEmp" class="form-control">
+</div>
+</div>
+</div>
+</div>
+
+<div class="col-lg-4 mb-3">
+<div class="row">
+<div class="col-sm-4 align-self-center">To Date</div>
+<div class="col-sm-8">
+<div class="FaIcon">
+<i class="fa fa-calendar-alt FloatIcon"></i>
+<input type="date" ng-model="selectedToDate" class="form-control">
+</div>
+</div>
+</div>
+</div>
+
+<div class="col-lg-4 mb-3">
+<a href="http://localhost:8085/visitor-Management-System/Admin/downloadReport/CancelVisiteports.xlsx" class="btn btn-primary">Download</a>
+</div>
+</div>
+
+
+<div ng-if="reportType == 'cancelPlant'" class="row">
+<div class="col-lg-3 mb-3">
+<div class="row">
+<div class="col-sm-4 align-self-center">From Date</div>
+<div class="col-sm-8">
+<div class="FaIcon">
+<i class="fa fa-calendar-alt FloatIcon"></i>
+<input type="date" ng-model="selectedFromDate" class="form-control">
+</div>
+</div>
+</div>
+</div>
+
+<div class="col-lg-3 mb-3">
+<div class="row">
+<div class="col-sm-4 align-self-center">To Date</div>
+<div class="col-sm-8">
+<div class="FaIcon">
+<i class="fa fa-calendar-alt FloatIcon"></i>
+<input type="date" ng-model="selectedToDate" class="form-control">
+</div>
+</div>
+</div>
+</div>
+
+<div class="col-lg-3 mb-3">
+<div class="row">
+<div class="col-sm-4 align-self-center">Select Plant</div>
+<div class="col-sm-8">
+<select class="form-control" ng-model="selectedPlant" >
+<option>All Plant</option>
+<option ng-repeat="plant in allPlants">{{plant.plantName}}</option>
+</select>
+</div>
+</div>
+</div>
+
+<div class="col-lg-3 mb-3">
+<div class="row">
+<div class="col-sm-4 align-self-center">Select Dept.</div>
+<div class="col-sm-8">
+<select class="form-control" ng-model="selectedDept">
+<option>All Dept</option>
+<option ng-repeat="dept in allDept">{{dept.deptName}}</option>
+</select>
+</div>
+</div>
+</div>
+
+<div class="col-lg-12 mb-3 text-right">
+<button type="button" class="btn btn-primary">Submit</button>
+<a href="http://localhost:8085/visitor-Management-System/Admin/downloadReport/CancelVisiteports.xlsx" class="btn btn-primary">Download</a>
+</div>
+</div>
+
+<div ng-if="reportType == 'cancelPlantHr'" class="row">
+<div class="col-lg-3 mb-3">
+<div class="row">
+<div class="col-sm-4 align-self-center">From Date</div>
+<div class="col-sm-8">
+<div class="FaIcon">
+<i class="fa fa-calendar-alt FloatIcon"></i>
+<input type="date" class="form-control">
+</div>
+</div>
+</div>
+</div>
+
+<div class="col-lg-3 mb-3">
+<div class="row">
+<div class="col-sm-4 align-self-center">To Date</div>
+<div class="col-sm-8">
+<div class="FaIcon">
+<i class="fa fa-calendar-alt FloatIcon"></i>
+<input type="date" class="form-control">
+</div>
+</div>
+</div>
+</div>
+
+<div class="col-lg-4 mb-3">
+<div class="row">
+<div class="col-sm-4 align-self-center">Department</div>
+<div class="col-sm-8">
+<select class="form-control" ng-model="selectedDept">
+<option>All Dept</option>
+<option ng-repeat="dept in allDept">{{dept.deptName}}</option>
+</select>
+</div>
+</div>
+</div>
+
+<div class="col-lg-2 mb-3">
+<button type="button" class="btn btn-primary">Submit</button>
+<a href="http://localhost:8085/visitor-Management-System/Admin/downloadReport/CancelVisiteports.xlsx" class="btn btn-primary">Download</a>
+</div>
+</div>
+
+</div>
+
+
+<div class="bg-white p-3 mb-3">
+<div class="table-responsive my-3 px-3">
+<table class="table table" id="dataTable" width="100%" cellspacing="0">
+<thead>
+<tr>
+<th>Sr.No.</th>
+<th>Visitor Name</th>
+<th>Visitor Org.</th>
+<th>Visitor Phone</th>
+<th>Visit Date</th>
+<th>Visit Time</th>
+</tr>
+</thead>
+<tbody>
+<tr ng-repeat="visit in allVisits">
+<td>{{$index + 1}}</td>
+<td>{{visit.meetingBooked.visitor.visitorName}}</td>
+<td>{{visit.meetingBooked.visitor.organisation}}</td>
+<td>{{visit.meetingBooked.visitor.contactNumber}}</td>
+<td>{{visit.meetingBooked.visitDate}}</td>
+<td>{{visit.meetingBooked.visitTime}}</td>
+</tr>
+
+</tbody>
+</table>
+</div>
+</div>
+
+
+</div>
+<!-- /End Page Content -->
