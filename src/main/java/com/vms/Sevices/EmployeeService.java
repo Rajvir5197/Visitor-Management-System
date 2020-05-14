@@ -474,7 +474,7 @@ public class EmployeeService {
 			 wr.close();
 			 rd.close();
 
-			sendmail(visitor.getMeetingBooked().getVisitor().getEmailId());
+			//sendmail(visitor.getMeetingBooked().getVisitor().getEmailId());
 
 			// return result;
 			return "SUCCESS";
@@ -573,7 +573,9 @@ public class EmployeeService {
 	
 
 	  public  ByteArrayInputStream customersToExcel(List<MeetingStatus> visits) throws IOException {
-	    String[] COLUMNs = {"Visitor Name", "Visitor Org", "visitor Phone", "Visit Date", "Visit Time"};
+	    
+		  logger.info("start of customersToExcel method");
+		  String[] COLUMNs = {"Visitor Name", "Visitor Org", "visitor Phone", "Visit Date", "Visit Time"};
 	    try(
 	        Workbook workbook = new XSSFWorkbook();
 	        ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -599,11 +601,8 @@ public class EmployeeService {
 	        cell.setCellStyle(headerCellStyle);
 	      }
 	   
-	      // CellStyle for Age
-	      CellStyle ageCellStyle = workbook.createCellStyle();
-	      ageCellStyle.setDataFormat(createHelper.createDataFormat().getFormat("#"));
-	   
 	      int rowIdx = 1;
+	      logger.info("size of data:"+visits.size());
 	      for (MeetingStatus visit : visits) {
 	        Row row = sheet.createRow(rowIdx++);
 	   
@@ -616,6 +615,7 @@ public class EmployeeService {
 	      }
 	   
 	      workbook.write(out);
+	      logger.info("end of customersToExcel method");
 	      return new ByteArrayInputStream(out.toByteArray());
 	    }
 	  }
