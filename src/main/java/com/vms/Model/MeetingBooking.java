@@ -41,7 +41,7 @@ public class MeetingBooking {
 	
 	@Column (name = "visit_date")
 	@NotNull
-	private LocalDate visitDate;
+	private Date visitDate;
 	
 	@Column (name = "visit_time")
 	@NotNull
@@ -82,11 +82,11 @@ public class MeetingBooking {
 		this.meetingType = meetingType;
 	}
 
-	public LocalDate getVisitDate() {
+	public Date getVisitDate() {
 		return visitDate;
 	}
 
-	public void setVisitDate(LocalDate visitDate) {
+	public void setVisitDate(Date visitDate) {
 		this.visitDate = visitDate;
 	}
 

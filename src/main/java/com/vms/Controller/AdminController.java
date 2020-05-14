@@ -45,7 +45,7 @@ public class AdminController {
 	
 	@RequestMapping(value = "/getVisitsbetweenDates", method = RequestMethod.POST)
 	@ResponseBody
-	public List<MeetingStatus> getVisitsbetweenDates(@RequestBody LocalDate startDate,@RequestBody LocalDate endDate) {
+	public List<MeetingStatus> getVisitsbetweenDates(@RequestBody Date startDate,@RequestBody Date endDate) {
 
 		return service.getVisitsbetweenDates(startDate,endDate);
 		

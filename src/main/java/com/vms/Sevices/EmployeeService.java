@@ -227,12 +227,15 @@ public class EmployeeService {
 
 	public List<MeetingStatus> viewAllVisit() {
 
+		logger.info("start of viewAllVisit method");
 		List<String> statusNotIn = new ArrayList<String>();
 		statusNotIn.add("Cancel");
 		statusNotIn.add("Sec Checked Out");
+		logger.info("visitDate: "+Date.valueOf(LocalDate.now()));
 		List<MeetingStatus> allMeetings = meetingStatusRepository
-				.findByMeetingBookedVisitDateAndStatusIsNotIn(LocalDate.now(), statusNotIn);
+				.findByMeetingBookedVisitDateAndStatusIsNotIn(Date.valueOf(LocalDate.now()), statusNotIn);
 
+		logger.info("end of viewAllVisit method with meeting count: "+allMeetings.size());
 		return allMeetings;
 	}
 
@@ -241,9 +244,11 @@ public class EmployeeService {
 		List<String> statusNotIn = new ArrayList<String>();
 		statusNotIn.add("Cancel");
 		List<MeetingStatus> allMeetings = meetingStatusRepository
-				.findByCreatedByAndMeetingBookedVisitDateAndStatusIsNotInAndEmpCheckout(empCode, LocalDate.now(),
+				.findByCreatedByAndMeetingBookedVisitDateAndStatusIsNotInAndEmpCheckout(empCode, Date.valueOf(LocalDate.now()),
 						statusNotIn,false);
-
+		for(MeetingStatus ms : allMeetings) {
+			ms.getMeetingBooked().setVisitDate(Date.valueOf(LocalDate.now()));
+		}
 		return allMeetings;
 	}
 
@@ -388,28 +393,27 @@ public class EmployeeService {
 	}
 
 	public int getTodaysVisitCount(int loginId) {
-		logger.info("start of getTodaysVisitCount method");
-		List<MeetingStatus> allVisit = meetingStatusRepository.findByCreatedBy(loginId);
-		int count = 0;
-		LocalDate currentDate = LocalDate.now();
-		logger.info("current Date: "+currentDate);
-		for (MeetingStatus ms : allVisit) {
-			logger.info("status of meeting "+ms.getMeetingId()+" is "+ms.getStatus());
-			logger.info("visit date of meeeting "+ms.getMeetingId()+" is "+ms.getMeetingBooked().getVisitDate());
-			logger.info("value of date compareTo current date is "+currentDate.compareTo(ms.getMeetingBooked().getVisitDate()));
-			if ((currentDate.compareTo(ms.getMeetingBooked().getVisitDate()) == 0)
-					&& (!"Cancel".equalsIgnoreCase(ms.getStatus()))) {
-				count++;
-			}
-		}
-		logger.info("end of getTodaysVisitCount method with count = "+count);
+		/*
+		 * logger.info("start of getTodaysVisitCount method"); List<MeetingStatus>
+		 * allVisit = meetingStatusRepository.findByCreatedBy(loginId); int count = 0;
+		 * Date currentDate = Date.valueOf(LocalDate.now());
+		 * logger.info("current Date: "+currentDate); for (MeetingStatus ms : allVisit)
+		 * { logger.info("status of meeting "+ms.getMeetingId()+" is "+ms.getStatus());
+		 * logger.info("visit date of meeeting "+ms.getMeetingId()+" is "+ms.
+		 * getMeetingBooked().getVisitDate());
+		 * logger.info("value of date compareTo current date is "+currentDate.compareTo(
+		 * ms.getMeetingBooked().getVisitDate())); if
+		 * ((currentDate.compareTo(ms.getMeetingBooked().getVisitDate()) == 0) &&
+		 * (!"Cancel".equalsIgnoreCase(ms.getStatus()))) { count++; } }
+		 * logger.info("end of getTodaysVisitCount method with count = "+count);
+		 */
+		int count = getTotalVisitCount(loginId) - getCancelVisitCount(loginId) -getAttendedVisitCount(loginId);
 		return count;
 	}
 
 	public int getCancelVisitCount(int loginId) {
 		List<MeetingStatus> allVisit = meetingStatusRepository.findByCreatedBy(loginId);
 		int count = 0;
-		Date currentDate = Date.valueOf(LocalDate.now());
 		for (MeetingStatus ms : allVisit) {
 
 			if ("Cancel".equalsIgnoreCase(ms.getStatus())) {
@@ -559,7 +563,7 @@ public class EmployeeService {
 		return allCancelMeetings;
 	}
 	
-	public List<MeetingStatus> getVisitsbetweenDates(LocalDate startDate, LocalDate endDate) {
+	public List<MeetingStatus> getVisitsbetweenDates(Date startDate, Date endDate) {
 		// TODO Auto-generated method stub 
 
 		List<String> statusNotIn = new ArrayList<String>();
