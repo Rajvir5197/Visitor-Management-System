@@ -3,6 +3,7 @@ package com.vms.Controller;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +45,7 @@ public class AdminController {
 	
 	@RequestMapping(value = "/getVisitsbetweenDates", method = RequestMethod.POST)
 	@ResponseBody
-	public List<MeetingStatus> getVisitsbetweenDates(@RequestBody Date startDate,@RequestBody Date endDate) {
+	public List<MeetingStatus> getVisitsbetweenDates(@RequestBody LocalDate startDate,@RequestBody LocalDate endDate) {
 
 		return service.getVisitsbetweenDates(startDate,endDate);
 		

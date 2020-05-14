@@ -231,7 +231,7 @@ public class EmployeeService {
 		statusNotIn.add("Cancel");
 		statusNotIn.add("Sec Checked Out");
 		List<MeetingStatus> allMeetings = meetingStatusRepository
-				.findByMeetingBookedVisitDateAndStatusIsNotIn(Date.valueOf(LocalDate.now()), statusNotIn);
+				.findByMeetingBookedVisitDateAndStatusIsNotIn(LocalDate.now(), statusNotIn);
 
 		return allMeetings;
 	}
@@ -241,7 +241,7 @@ public class EmployeeService {
 		List<String> statusNotIn = new ArrayList<String>();
 		statusNotIn.add("Cancel");
 		List<MeetingStatus> allMeetings = meetingStatusRepository
-				.findByCreatedByAndMeetingBookedVisitDateAndStatusIsNotInAndEmpCheckout(empCode, Date.valueOf(LocalDate.now()),
+				.findByCreatedByAndMeetingBookedVisitDateAndStatusIsNotInAndEmpCheckout(empCode, LocalDate.now(),
 						statusNotIn,false);
 
 		return allMeetings;
@@ -559,7 +559,7 @@ public class EmployeeService {
 		return allCancelMeetings;
 	}
 	
-	public List<MeetingStatus> getVisitsbetweenDates(Date startDate, Date endDate) {
+	public List<MeetingStatus> getVisitsbetweenDates(LocalDate startDate, LocalDate endDate) {
 		// TODO Auto-generated method stub 
 
 		List<String> statusNotIn = new ArrayList<String>();
