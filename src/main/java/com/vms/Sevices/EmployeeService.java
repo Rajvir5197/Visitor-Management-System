@@ -391,7 +391,7 @@ public class EmployeeService {
 		logger.info("start of getTodaysVisitCount method");
 		List<MeetingStatus> allVisit = meetingStatusRepository.findByCreatedBy(loginId);
 		int count = 0;
-		Date currentDate = Date.valueOf(LocalDate.now());
+		LocalDate currentDate = LocalDate.now();
 		logger.info("current Date: "+currentDate);
 		for (MeetingStatus ms : allVisit) {
 			logger.info("status of meeting "+ms.getMeetingId()+" is "+ms.getStatus());

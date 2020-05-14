@@ -2,6 +2,7 @@ package com.vms.Model;
 
 import java.sql.Date;
 import java.sql.Time;
+import java.time.LocalDate;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -40,7 +41,7 @@ public class MeetingBooking {
 	
 	@Column (name = "visit_date")
 	@NotNull
-	private Date visitDate;
+	private LocalDate visitDate;
 	
 	@Column (name = "visit_time")
 	@NotNull
@@ -81,11 +82,11 @@ public class MeetingBooking {
 		this.meetingType = meetingType;
 	}
 
-	public Date getVisitDate() {
+	public LocalDate getVisitDate() {
 		return visitDate;
 	}
 
-	public void setVisitDate(Date visitDate) {
+	public void setVisitDate(LocalDate visitDate) {
 		this.visitDate = visitDate;
 	}
 
