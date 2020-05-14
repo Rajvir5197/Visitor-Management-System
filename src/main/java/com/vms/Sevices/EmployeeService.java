@@ -430,7 +430,7 @@ public class EmployeeService {
 		Date currentDate = Date.valueOf(LocalDate.now());
 		for (MeetingStatus ms : allVisit) {
 
-			if ("Checked Out".equalsIgnoreCase(ms.getStatus())) {
+			if ("Sec Checked Out".equalsIgnoreCase(ms.getStatus())) {
 				count++;
 			}
 		}
