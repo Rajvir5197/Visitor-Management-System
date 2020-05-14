@@ -1,3 +1,5 @@
+C:\Users\User\git\Visitor-management-system\src\main\java\com\vms\ServerConfig.java
+C:\Users\User\git\Visitor-management-system\src\main\java\com\vms\Sevices\MyUserDetailsService.java
 C:\Users\User\git\Visitor-management-system\src\main\java\com\vms\Repository\CoVisitorRepository.java
 C:\Users\User\git\Visitor-management-system\src\main\java\com\vms\Sevices\PlantService.java
 C:\Users\User\git\Visitor-management-system\src\main\java\com\vms\Repository\DepartmentRepository.java
@@ -8,6 +10,7 @@ C:\Users\User\git\Visitor-management-system\src\main\java\com\vms\Repository\Log
 C:\Users\User\git\Visitor-management-system\src\main\java\com\vms\Sevices\LoginService.java
 C:\Users\User\git\Visitor-management-system\src\main\java\com\vms\Model\Employee.java
 C:\Users\User\git\Visitor-management-system\src\main\java\com\vms\Model\MeetingStatus.java
+C:\Users\User\git\Visitor-management-system\src\main\java\com\vms\Model\MyUserDetails.java
 C:\Users\User\git\Visitor-management-system\src\main\java\com\vms\ServletInitializer.java
 C:\Users\User\git\Visitor-management-system\src\main\java\com\vms\Controller\PlantController.java
 C:\Users\User\git\Visitor-management-system\src\main\java\com\vms\Repository\MeetingStatusRepository.java
@@ -26,6 +29,7 @@ C:\Users\User\git\Visitor-management-system\src\main\java\com\vms\Repository\Mee
 C:\Users\User\git\Visitor-management-system\src\main\java\com\vms\Controller\AdminController.java
 C:\Users\User\git\Visitor-management-system\src\main\java\com\vms\Model\Plant.java
 C:\Users\User\git\Visitor-management-system\src\main\java\com\vms\Repository\ContactRepository.java
+C:\Users\User\git\Visitor-management-system\src\main\java\com\vms\SecurityConfiguration.java
 C:\Users\User\git\Visitor-management-system\src\main\java\com\vms\VisitorManagementSystemApplication.java
 C:\Users\User\git\Visitor-management-system\src\main\java\com\vms\Repository\AssetRepository.java
 C:\Users\User\git\Visitor-management-system\src\main\java\com\vms\Sevices\DepartmentService.java

@@ -187,7 +187,11 @@ public class EmployeeController {
 		return service.getAttendedVisitCount(loginId);
 	}
 	
-	
+	@RequestMapping(value = "/GetLoggedInDetails", method = RequestMethod.POST)
+	@ResponseBody
+	public Employee getLoggedInDetails(@RequestBody int loginId) {
+		return service.getLoggedInDetails(loginId);
+	}
 
 
 }

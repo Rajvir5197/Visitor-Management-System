@@ -48,6 +48,9 @@ public class MeetingStatus {
 	@Column (name = "emp_checkin_time")
 	private Time empCheckinTime;
 	
+	@Column (name = "sec_checkin_by")
+	private String secCheckinBy;
+	
 	@Column (name = "sec_checkout")
 	private boolean secCheckout;
 	
@@ -65,6 +68,9 @@ public class MeetingStatus {
 	
 	@Column (name = "emp_checkout_time")
 	private Time empCheckoutTime;
+	
+	@Column (name = "sec_checkout_by")
+	private String secCheckoutBy;
 	
 	@Column (name = "status")
 	private String status;
@@ -254,6 +260,22 @@ public class MeetingStatus {
 
 	public void setSecCheckoutDate(Date secCheckoutDate) {
 		this.secCheckoutDate = secCheckoutDate;
+	}
+
+	public String getSecCheckinBy() {
+		return secCheckinBy;
+	}
+
+	public void setSecCheckinBy(String secCheckinBy) {
+		this.secCheckinBy = secCheckinBy;
+	}
+
+	public String getSecCheckoutBy() {
+		return secCheckoutBy;
+	}
+
+	public void setSecCheckoutBy(String secCheckoutBy) {
+		this.secCheckoutBy = secCheckoutBy;
 	}
 	
 	

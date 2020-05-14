@@ -20,7 +20,6 @@ com\vms\Repository\TaskRepository.class
 com\vms\Model\MeetingBooking.class
 com\vms\Repository\ContactRepository.class
 com\vms\Controller\EmployeeController.class
-com\vms\DefaultView.class
 com\vms\Sevices\SecurityService.class
 com\vms\Repository\MeetingStatusRepository.class
 com\vms\Model\Department.class

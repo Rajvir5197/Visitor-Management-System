@@ -38,8 +38,8 @@
 <div><span class="fa fa-users fa-2x"></span></div>
 
 <div class="row">
-<div class="col-sm-7 align-self-center FontSize18">Total Visits</div>
-<div class="col-sm-5 text-right FontSize28">1001</div>
+<div class="col-sm-8 align-self-center FontSize18">Total Visits</div>
+<div class="col-sm-4 text-right FontSize28">1001</div>
 </div>
 </div>
 </div>
@@ -49,8 +49,8 @@
 <div><span class="fa fa-calendar-alt fa-2x"></span></div>
 
 <div class="row">
-<div class="col-sm-7 align-self-center FontSize18">Todays Visit</div>
-<div class="col-sm-5 text-right FontSize28">501</div>
+<div class="col-sm-8 align-self-center FontSize18">Todays Visit</div>
+<div class="col-sm-4 text-right FontSize28">501</div>
 </div>
 </div>
 </div>
@@ -60,8 +60,8 @@
 <div><span class="fa fa-user-times fa-2x"></span></div>
 
 <div class="row">
-<div class="col-sm-7 align-self-center FontSize18">Cancel Visit</div>
-<div class="col-sm-5 text-right FontSize28">101</div>
+<div class="col-sm-8 align-self-center FontSize18">Cancel Visit</div>
+<div class="col-sm-4 text-right FontSize28">101</div>
 </div>
 </div>
 </div>
@@ -71,8 +71,8 @@
 <div><span class="fa fa-address-card fa-2x"></span></div>
 
 <div class="row">
-<div class="col-sm-7 align-self-center FontSize18">Attended Visit</div>
-<div class="col-sm-5 text-right FontSize28">52</div>
+<div class="col-sm-8 align-self-center FontSize18">Attended Visit</div>
+<div class="col-sm-4 text-right FontSize28">52</div>
 </div>
 </div>
 </div>

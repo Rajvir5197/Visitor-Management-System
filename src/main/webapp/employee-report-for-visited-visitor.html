@@ -1,0 +1,403 @@
+
+<!-- Begin Page Content -->
+<div ng-controller="reportController" class="container-fluid mt-3">
+
+<!-- Page Heading -->
+<div class="row mb-2">
+<div class="col-sm-12">
+<h1 class="h4 text-gray-800"><span ng-if="reportType == 'emp'">Employee Report For Visited Visitor</span>
+<span ng-if="reportType == 'plant'">Plant Wise Report For Visited Visitor</span>
+<span ng-if="reportType == 'plantHr'">Plant Wise HR Report For Visited Visitor</span>
+</h1>
+</div>
+</div>
+<!-- End Page Heading -->
+
+
+
+<div class="bg-white px-3 pt-3 mb-3">
+<div ng-if="reportType == 'emp'" class="row">
+<div class="col-lg-4 mb-3">
+<div class="row">
+<div class="col-sm-4 align-self-center">From Date</div>
+<div class="col-sm-8">
+<div class="FaIcon">
+<i class="fa fa-calendar-alt FloatIcon"></i>
+<input type="date" id="selectedFromDateEmp" ng-model="selectedFromDateEmp" class="form-control">
+</div>
+</div>
+</div>
+</div>
+
+<div class="col-lg-4 mb-3">
+<div class="row">
+<div class="col-sm-4 align-self-center">To Date</div>
+<div class="col-sm-8">
+<div class="FaIcon">
+<i class="fa fa-calendar-alt FloatIcon"></i>
+<input type="date" id="selectedToDate" ng-model="selectedToDate" class="form-control">
+</div>
+</div>
+</div>
+</div>
+
+<div class="col-lg-4 mb-3">
+<button type="button" class="btn btn-primary" ng-click="getVisitsbetweenDates()">Submit</button>
+<a href="http://localhost:8085/visitor-Management-System/Admin/downloadReport/reports.xlsx" class="btn btn-primary">Download</a>
+</div>
+</div>
+
+
+<div ng-if="reportType == 'plant'" class="row">
+<div class="col-lg-3 mb-3">
+<div class="row">
+<div class="col-sm-4 align-self-center">From Date</div>
+<div class="col-sm-8">
+<div class="FaIcon">
+<i class="fa fa-calendar-alt FloatIcon"></i>
+<input type="date" ng-model="selectedFromDate" class="form-control">
+</div>
+</div>
+</div>
+</div>
+
+<div class="col-lg-3 mb-3">
+<div class="row">
+<div class="col-sm-4 align-self-center">To Date</div>
+<div class="col-sm-8">
+<div class="FaIcon">
+<i class="fa fa-calendar-alt FloatIcon"></i>
+<input type="date" ng-model="selectedToDate" class="form-control">
+</div>
+</div>
+</div>
+</div>
+
+<div class="col-lg-3 mb-3">
+<div class="row">
+<div class="col-sm-4 align-self-center">Select Plant</div>
+<div class="col-sm-8">
+<select class="form-control" ng-model="selectedPlant" >
+<option>All Plant</option>
+<option ng-repeat="plant in allPlants">{{plant.plantName}}</option>
+</select>
+</div>
+</div>
+</div>
+
+<div class="col-lg-3 mb-3">
+<div class="row">
+<div class="col-sm-4 align-self-center">Select Dept.</div>
+<div class="col-sm-8">
+<select class="form-control" ng-model="selectedDept">
+<option>All Dept</option>
+<option ng-repeat="dept in allDept">{{dept.deptName}}</option>
+</select>
+</div>
+</div>
+</div>
+
+<div class="col-lg-12 mb-3 text-right">
+<button type="button" class="btn btn-primary">Submit</button>
+<a href="http://localhost:8085/visitor-Management-System/Admin/downloadReport/reports.xlsx" class="btn btn-primary">Download</a>
+</div>
+</div>
+
+<div ng-if="reportType == 'plantHr'" class="row">
+<div class="col-lg-3 mb-3">
+<div class="row">
+<div class="col-sm-4 align-self-center">From Date</div>
+<div class="col-sm-8">
+<div class="FaIcon">
+<i class="fa fa-calendar-alt FloatIcon"></i>
+<input type="date" class="form-control">
+</div>
+</div>
+</div>
+</div>
+
+<div class="col-lg-3 mb-3">
+<div class="row">
+<div class="col-sm-4 align-self-center">To Date</div>
+<div class="col-sm-8">
+<div class="FaIcon">
+<i class="fa fa-calendar-alt FloatIcon"></i>
+<input type="date" class="form-control">
+</div>
+</div>
+</div>
+</div>
+
+<div class="col-lg-4 mb-3">
+<div class="row">
+<div class="col-sm-4 align-self-center">Department</div>
+<div class="col-sm-8">
+<select class="form-control" ng-model="selectedDept">
+<option>All Dept</option>
+<option ng-repeat="dept in allDept">{{dept.deptName}}</option>
+</select>
+</div>
+</div>
+</div>
+
+<div class="col-lg-2 mb-3">
+<button type="button" class="btn btn-primary">Submit</button>
+<a href="http://localhost:8085/visitor-Management-System/Admin/downloadReport/reports.xlsx" class="btn btn-primary">Download</a>
+</div>
+</div>
+
+
+</div>
+
+
+
+<div class="bg-white p-3 mb-3">
+<div class="table-responsive my-3 px-3">
+<table class="table table" id="dataTable" width="100%" cellspacing="0">
+<thead>
+<tr>
+<th>Sr.No.</th>
+<th>Visitor Name</th>
+<th>Visitor Org.</th>
+<th>Visitor Phone</th>
+<th>Visit Date</th>
+<th>Visit Time</th>
+<th>View Details</th>
+</tr>
+</thead>
+<tbody id="visitData">
+<tr ng-repeat="visit in allVisits">
+<td>{{$index + 1}}</td>
+<td>{{visit.meetingBooked.visitor.visitorName}}</td>
+<td>{{visit.meetingBooked.visitor.organisation}}</td>
+<td>{{visit.meetingBooked.visitor.contactNumber}}</td>
+<td>{{visit.meetingBooked.visitDate}}</td>
+<td>{{visit.meetingBooked.visitTime}}</td>
+<td>
+<span data-toggle="modal" data-target="#viewDetailsModal" ng-click="getCoVisitor(visit)"><i class="fa fa-eye fa-lg fa-fw Pointer text-dark" data-toggle="tooltip" data-placement="top" title="" data-original-title="View"></i></span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<!--CheckOut-->
+<div class="modal fade" id="viewDetailsModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal-dialog modal-lg" role="document">
+<div class="modal-content">
+<div class="modal-header">
+<h5 class="modal-title BlackTxtColor" id="exampleModalLabel">Employee Report For Visited Visitor</h5>
+<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+<span aria-hidden="true">&times;</span>
+</button>
+</div>
+<div class="modal-body">
+
+<div class="row mb-3">
+<div class="col-lg-12">
+<h5 class="BlackTxtColor border-bottom pb-2 text-info">Visitor Details</h5>
+</div>
+</div>
+
+
+<div class="row">
+<div class="col-lg-6 border-right">
+<div class="row">
+<div class="col-sm-4 mb-3">Visitor Name</div>
+<div class="col-sm-8 mb-3 BlackTxtColor">: {{selectedVisitor.meetingBooked.visitor.visitorName}}</div>
+</div>
+
+<div class="row">
+<div class="col-sm-4 mb-3">Mail Id</div>
+<div class="col-sm-8 mb-3 BlackTxtColor">: {{selectedVisitor.meetingBooked.visitor.emailId}}</div>
+</div>
+
+<div class="row">
+<div class="col-sm-4 mb-3">Phone No.</div>
+<div class="col-sm-8 mb-3 BlackTxtColor">: {{selectedVisitor.meetingBooked.visitor.contactNumber}}</div>
+</div>
+
+<div class="row">
+<div class="col-sm-4 mb-3">Org. Name</div>
+<div class="col-sm-8 mb-3 BlackTxtColor">: {{selectedVisitor.meetingBooked.visitor.organisation}}</div>
+</div>
+</div>
+
+<div class="col-lg-6">
+<div class="row">
+<div class="col-sm-4 mb-3">Photo</div>
+<div class="col-sm-8 mb-3 BlackTxtColor">: <img src="images/profile-pic.jpg" width="80px" class="border p-1" /></div>
+</div>
+
+<div class="row">
+<div class="col-sm-4 mb-3">Visit No.</div>
+<div class="col-sm-8 mb-3 BlackTxtColor">: {{selectedVisitor.meetingBooked.visitNo}}</div>
+</div>
+
+<div class="row">
+<div class="col-sm-4 mb-3">Visit At Plant</div>
+<div class="col-sm-8 mb-3 BlackTxtColor">: {{selectedVisitor.meetingBooked.visitLocation.plantName}}</div>
+</div>
+</div>
+</div>
+
+
+<div class="row mb-3">
+<div class="col-lg-12">
+<h5 class="BlackTxtColor border-bottom pb-2 text-info">Visit Details</h5>
+</div>
+</div>
+
+
+<div class="row">
+<div class="col-lg-12"><h6 class="BlackTxtColor"><strong>Visit set details</strong></h6></div>
+<div class="col-lg-6 border-right">
+<div class="row">
+<div class="col-sm-4 mb-3">Set Date</div>
+<div class="col-sm-8 mb-3 BlackTxtColor">: {{selectedVisitor.meetingBooked.visitDate}}</div>
+</div>
+
+<div class="row">
+<div class="col-sm-4 mb-3">Set Time</div>
+<div class="col-sm-8 mb-3 BlackTxtColor">: {{selectedVisitor.meetingBooked.visitTime}}</div>
+</div>
+</div>
+
+<div class="col-lg-6">
+<div class="row">
+<div class="col-sm-4 mb-3">Meeting Type</div>
+<div class="col-sm-8 mb-3 BlackTxtColor">: {{selectedVisitor.meetingBooked.meetingType}}</div>
+</div>
+</div>
+</div>
+
+<div class="row">
+<div class="col-lg-12"><h6 class="BlackTxtColor"><strong>Visit Check in/out details</strong></h6></div>
+<div class="col-lg-6 border-right">
+<div class="row">
+<div class="col-sm-4 mb-3">Sec. check in date</div>
+<div class="col-sm-8 mb-3 BlackTxtColor">: {{selectedVisitor.secCheckinDate}}</div>
+</div>
+
+<div class="row">
+<div class="col-sm-4 mb-3">Sec. check in time</div>
+<div class="col-sm-8 mb-3 BlackTxtColor">: {{selectedVisitor.secCheckinTime}}</div>
+</div>
+</div>
+
+<div class="col-lg-6">
+<div class="row">
+<div class="col-sm-4 mb-3">Sec. check out date</div>
+<div class="col-sm-8 mb-3 BlackTxtColor">: {{selectedVisitor.secCheckoutDate}}</div>
+</div>
+
+<div class="row">
+<div class="col-sm-4 mb-3">Time</div>
+<div class="col-sm-8 mb-3 BlackTxtColor">: {{selectedVisitor.secCheckoutTime}}</div>
+</div>
+</div>
+</div>
+
+<div class="row">
+<div class="col-lg-12"><h6 class="BlackTxtColor"><strong>Check In check out by {{selectedVisitor.meetingBooked.empName}}</strong></h6></div>
+<div class="col-lg-6 border-right">
+<div class="row">
+<div class="col-sm-4 mb-3">Check in date</div>
+<div class="col-sm-8 mb-3 BlackTxtColor">: {{selectedVisitor.empCheckinDate}}</div>
+</div>
+
+<div class="row">
+<div class="col-sm-4 mb-3">In time</div>
+<div class="col-sm-8 mb-3 BlackTxtColor">: {{selectedVisitor.empCheckinTime}}</div>
+</div>
+
+<div class="row">
+<div class="col-sm-4 mb-3">Check out date</div>
+<div class="col-sm-8 mb-3 BlackTxtColor">: {{selectedVisitor.empCheckoutDate}}</div>
+</div>
+</div>
+
+<div class="col-lg-6">
+<div class="row">
+<div class="col-sm-4 mb-3">Time</div>
+<div class="col-sm-8 mb-3 BlackTxtColor">: {{selectedVisitor.empCheckoutTime}}</div>
+</div>
+
+<div class="row">
+<div class="col-sm-4 mb-3">Remark</div>
+<div class="col-sm-8 mb-3 BlackTxtColor">: {{selectedVisitor.meetingBooked.remarks}}</div>
+</div>
+</div>
+</div>
+
+
+<div class="row mb-3">
+<div class="col-lg-12">
+<h5 class="BlackTxtColor border-bottom pb-2 text-info">Co- visitor Details</h5>
+</div>
+</div>
+
+<div class="row">
+<div class="col-lg-6 border-right">
+<div class="row">
+<div class="col-sm-4 mb-3">Names of co-visitors</div>
+<div class="col-sm-8 mb-3 BlackTxtColor">: {{allCoVisitor}}</div>
+</div>
+
+<div class="row">
+<div class="col-sm-4 mb-3">Reason</div>
+<div class="col-sm-8 mb-3 BlackTxtColor">: -</div>
+</div>
+</div>
+
+<div class="col-lg-6">
+<div class="row">
+<div class="col-sm-4 mb-3">Total person with count</div>
+<div class="col-sm-8 mb-3 BlackTxtColor">: {{selectedVisitor.meetingBooked.visitor.numberOfCoVisitor}}</div>
+</div>
+</div>
+</div>
+
+
+<div class="row mb-3">
+<div class="col-lg-12">
+<h5 class="BlackTxtColor border-bottom pb-2 text-info">Security Details</h5>
+</div>
+</div>
+
+
+<div class="row">
+<div class="col-lg-6 border-right">
+<div class="row">
+<div class="col-sm-4 mb-3">Security code</div>
+<div class="col-sm-8 mb-3 BlackTxtColor">: 123445</div>
+</div>
+
+<div class="row">
+<div class="col-sm-4 mb-3">Check in sec. name</div>
+<div class="col-sm-8 mb-3 BlackTxtColor">: {{selectedVisitor.secCheckinBy}}</div>
+</div>
+</div>
+
+<div class="col-lg-6">
+<div class="row">
+<div class="col-sm-4 mb-3">Check out sec. name</div>
+<div class="col-sm-8 mb-3 BlackTxtColor">: {{selectedVisitor.secCheckoutBy}}</div>
+</div>
+</div>
+</div>
+
+
+
+</div>
+<div class="modal-footer">
+<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+</div>
+</div>
+</div>
+</div>
+<!--//CheckOut-->
+
+</div>
+<!-- /End Page Content -->

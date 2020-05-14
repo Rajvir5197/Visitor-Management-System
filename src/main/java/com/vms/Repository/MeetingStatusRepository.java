@@ -19,4 +19,10 @@ public interface MeetingStatusRepository extends JpaRepository<MeetingStatus, In
 	public List<MeetingStatus> findByMeetingBookedVisitDateAndStatusIsNotIn(@Param("visitDate") Date visitDate, @Param("status") List<String> status);
 
 	public List<MeetingStatus> findByCreatedBy(@Param("createdBy") int userId);
+	
+	public List<MeetingStatus> findByStatusIsNotIn(@Param("status") List<String> status);
+	
+	public List<MeetingStatus> findByStatus(@Param("status") String status);
+	
+	public List<MeetingStatus> findByMeetingBookedVisitDateBetweenAndStatusIsNotIn(Date startDate, Date endDate,@Param("status") List<String> status);
 }

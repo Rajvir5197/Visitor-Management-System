@@ -21,8 +21,8 @@
 <div><span class="fa fa-users fa-2x"></span></div>
 
 <div class="row">
-<div class="col-sm-6 align-self-center FontSize18">Total Visits</div>
-<div class="col-sm-6 text-right FontSize28">{{totalVisitCount}}</div>
+<div class="col-sm-8 align-self-center FontSize18">Total Visits</div>
+<div class="col-sm-4 text-right FontSize28">{{totalVisitCount}}</div>
 </div>
 </div>
 </div>
@@ -32,8 +32,8 @@
 <div><span class="fa fa-calendar-alt fa-2x"></span></div>
 
 <div class="row">
-<div class="col-sm-6 align-self-center FontSize18">Todays Visit</div>
-<div class="col-sm-6 text-right FontSize28">{{todaysVisitCount}}</div>
+<div class="col-sm-8 align-self-center FontSize18">Todays Visit</div>
+<div class="col-sm-4 text-right FontSize28">{{todaysVisitCount}}</div>
 </div>
 </div>
 </div>
@@ -43,8 +43,8 @@
 <div><span class="fa fa-user-times fa-2x"></span></div>
 
 <div class="row">
-<div class="col-sm-6 align-self-center FontSize18">Cancel Visit</div>
-<div class="col-sm-6 text-right FontSize28">{{cancelVisitCount}}</div>
+<div class="col-sm-8 align-self-center FontSize18">Cancel Visit</div>
+<div class="col-sm-4 text-right FontSize28">{{cancelVisitCount}}</div>
 </div>
 </div>
 </div>
@@ -54,8 +54,8 @@
 <div><span class="fa fa-address-card fa-2x"></span></div>
 
 <div class="row">
-<div class="col-sm-6 align-self-center FontSize18">Attended Visit</div>
-<div class="col-sm-6 text-right FontSize28">{{attendedVisitCount}}</div>
+<div class="col-sm-8 align-self-center FontSize18">Attended Visit</div>
+<div class="col-sm-4 text-right FontSize28">{{attendedVisitCount}}</div>
 </div>
 </div>
 </div>
@@ -67,21 +67,40 @@
 <div class="row">
 <div class="col-lg-6 mb-3">
 <div class="w-100 bg-white">
-<h2 class="m-0 FontSize22 p-3 bg-light BlackTxtColor border-bottom">
+<h2 class="m-0 FontSize22 p-3 TopBarBgColor text-white border-bottom">
 <i class="fa fa-bullhorn fa-fw"></i> Upcoming Visits
 </h2>
 <div class="p-2" style="max-height:360px; overflow-y:scroll; overflow-x:hidden;">
 <span ng-hide="allVisits.length > 0">No Upcoming Visit</span>
-<ul class="listNew">
+<!-- <ul class="listNew">
 <li ng-repeat="visit in allVisits"><i class="fa fa-user fa-fw"></i> {{visit.meetingBooked.visitor.visitorName}}</li>
-</ul> 
+</ul>  -->
+<div ng-show="allVisits.length > 0" class="table-responsive">
+<table class="table">
+<thead>
+<tr>
+<th class="BlackTxtColor">Visitor Name</th>
+<th class="BlackTxtColor">Visit Date</th>
+<th class="BlackTxtColor">Time</th>
+</tr>
+</thead>
+
+<tbody>
+<tr ng-repeat="visit in allVisits">
+<td>{{visit.meetingBooked.visitor.visitorName}}</td>
+<td>{{visit.meetingBooked.visitDate}}</td>
+<td>{{visit.meetingBooked.visitTime}}</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 </div>
 </div>
 
 <div class="col-lg-6 mb-3">
 <div class="w-100 bg-white">
-<h2 class="m-0 FontSize22 p-3 bg-light BlackTxtColor border-bottom">
+<h2 class="m-0 FontSize22 p-3 TopBarBgColor text-white border-bottom">
 <div class="row">
 	<div class="col-lg-8">
 		<i class="fa fa-file-alt fa-fw"></i> To do list
@@ -109,7 +128,7 @@
 <div class="row mb-3">
 <div class="col-lg-12">
 <div class="w-100 bg-white">
-<h2 class="m-0 FontSize22 p-3 bg-light BlackTxtColor border-bottom">
+<h2 class="m-0 FontSize22 p-3 TopBarBgColor text-white border-bottom">
 <i class="fa fa-sliders-h fa-fw"></i> Controls
 </h2>
 <div class="p-2 text-center">
@@ -130,7 +149,7 @@
 <div class="row">
 <div class="col-lg-12">
 <div class="w-100 bg-white">
-<h2 class="m-0 FontSize22 p-3 bg-light BlackTxtColor border-bottom">
+<h2 class="m-0 FontSize22 p-3 TopBarBgColor text-white border-bottom">
 <i class="fa fa-users fa-fw"></i> Contacts
 </h2>
 

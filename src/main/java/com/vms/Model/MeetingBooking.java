@@ -26,6 +26,10 @@ public class MeetingBooking {
 	@NotNull
 	private int empId;
 	
+	@Column (name = "emp_name")
+	@NotNull
+	private String empName;
+	
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "visitorId")
 	private Visitor visitor;
@@ -116,6 +120,15 @@ public class MeetingBooking {
 	public void setVisitor(Visitor visitor) {
 		this.visitor = visitor;
 	}
+
+	public String getEmpName() {
+		return empName;
+	}
+
+	public void setEmpName(String empName) {
+		this.empName = empName;
+	}
+	
 	
 	
 }

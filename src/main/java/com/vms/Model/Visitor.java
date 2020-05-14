@@ -18,6 +18,9 @@ public class Visitor {
 	@GeneratedValue
 	private int visitorId;
 	
+	@Column (name = "visitor_image", length = 20000)
+	private byte[] visitorImage;
+	
 	@Column (name = "visitor_name")
 	@NotNull
 	private String visitorName;
@@ -95,6 +98,14 @@ public class Visitor {
 
 	public void setNumberOfCoVisitor(int numberOfCoVisitor) {
 		this.numberOfCoVisitor = numberOfCoVisitor;
+	}
+
+	public byte[] getVisitorImage() {
+		return visitorImage;
+	}
+
+	public void setVisitorImage(byte[] visitorImage) {
+		this.visitorImage = visitorImage;
 	}
 
 	

@@ -1,16 +1,19 @@
-app.controller('managePlantController', function($scope, $rootScope, $http) {
+app.controller('managePlantController', function($scope, $rootScope, $http, $timeout) {
 		
 	
 	$scope.UserID = window.localStorage.getItem("loginDetails");
 	
 	if($scope.UserID == undefined || $scope.UserID == null ){
-		window.location = "login.html";
+		window.location = "/visitor-Management-System/index.html";
 	}
 	$scope.allPlants = [];
 	$scope.viewAllPlant = function(){
-		$http.post("/VisitorManagementSystem-0.0.1-SNAPSHOT/Plant/viewAllPlant").then(function mySuccess(response){
+		$http.post("/visitor-Management-System/Plant/viewAllPlant").then(function mySuccess(response){
 			console.log(response.data);
 			$scope.allPlants = response.data;
+			$timeout(function() {
+				$('#dataTable').DataTable();
+			   }, 200);
 		}, function myError(data){
 			console.log("some internal error");
 			console.log(data);
@@ -33,7 +36,7 @@ app.controller('managePlantController', function($scope, $rootScope, $http) {
 	$scope.addNewPlant = function(){
 		if($scope.addForm.$valid){
 			$scope.newPlant.regBy = $scope.UserID;
-			$http.post("/VisitorManagementSystem-0.0.1-SNAPSHOT/Plant/addNewPlant", $scope.newPlant).then(function mySuccess(response){
+			$http.post("/visitor-Management-System/Plant/addNewPlant", $scope.newPlant).then(function mySuccess(response){
 				$('#addNewPlantModal').modal('hide');
 				$scope.viewAllPlant();
 			}, function myError(data){
@@ -46,7 +49,7 @@ app.controller('managePlantController', function($scope, $rootScope, $http) {
 	$scope.editPlant = function(){
 		if($scope.editForm.$valid){
 			$scope.edited.regBy = $scope.UserID;
-			$http.post("/VisitorManagementSystem-0.0.1-SNAPSHOT/Plant/editPlant", $scope.edited).then(function mySuccess(response){
+			$http.post("/visitor-Management-System/Plant/editPlant", $scope.edited).then(function mySuccess(response){
 				$('#editPlantModal').modal('hide');
 				$scope.viewAllPlant();
 			}, function myError(data){
@@ -58,7 +61,7 @@ app.controller('managePlantController', function($scope, $rootScope, $http) {
 	
 	$scope.deletePlant = function(){
 		$scope.plantToBeDeleted.regBy = $scope.UserID;
-		$http.post("/VisitorManagementSystem-0.0.1-SNAPSHOT/Plant/deletePlant", $scope.plantToBeDeleted).then(function mySuccess(response){
+		$http.post("/visitor-Management-System/Plant/deletePlant", $scope.plantToBeDeleted).then(function mySuccess(response){
 			$scope.viewAllPlant();
 		}, function myError(data){
 			console.log("some internal error");

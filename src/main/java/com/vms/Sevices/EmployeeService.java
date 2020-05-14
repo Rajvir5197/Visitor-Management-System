@@ -1,6 +1,7 @@
 package com.vms.Sevices;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -9,18 +10,13 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.sql.Date;
-import java.sql.SQLException;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Optional;
 import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;
@@ -28,10 +24,19 @@ import java.util.zip.Inflater;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.AddressException;
-import javax.sql.rowset.serial.SerialBlob;
 
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.CreationHelper;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -69,9 +74,12 @@ public class EmployeeService {
 
 	@Autowired
 	TaskRepository taskRepository;
+	
+	Logger logger = LoggerFactory.getLogger(EmployeeService.class);
 
 	public List<Employee> allEmployee() {
 
+		logger.info("start of allEmployee method");
 		List<Employee> E = repository.findAll();
 		for(Employee emp : E) {
 			if(emp.getImage() != null) {
@@ -80,24 +88,31 @@ public class EmployeeService {
 			}
 		}
 		
+		logger.info("end of allEmployee method");
+		
 		return E;
 	}
 	
 	public JSONObject addNewEmp(Employee employee) {
+		
+		logger.info("start of addNewEmp method");
 		JSONObject jsonObject = new JSONObject();
 		employee.setRegDate(Date.valueOf(LocalDate.now()));
 		employee.setRegTime(Time.valueOf(LocalTime.now()));
 		Employee employeeSaved = repository.save(employee);
 		if (null != employeeSaved) {
 			jsonObject.put("data", "SUCCESS");
+			logger.info("employee added: "+employeeSaved.getEmpCode());
 		} else {
 			jsonObject.put("data", "FAIL");
 		}
+		logger.info("end of addNewEmp method");
 		return jsonObject;
 	}
 
 	public JSONObject addOrEditEmployee(String jsonEmployee, MultipartFile file) {
 
+		logger.info("start of addOrEditEmployee method");
 		ObjectMapper mapper = new ObjectMapper();
 		JSONObject jsonObject = new JSONObject();
 		String fileName = StringUtils.cleanPath(file.getOriginalFilename());
@@ -246,8 +261,8 @@ public class EmployeeService {
 			meeting.setStatus("Booked");
 
 			MeetingStatus meetingSaved = meetingStatusRepository.save(meeting);
-			 //String mailStatus = sendMessage(meeting);
-			if (null != meetingSaved /* && "SUCCESS".equalsIgnoreCase(mailStatus) */) {
+			 String mailStatus = sendMessage(meeting);
+			if (null != meetingSaved  && "SUCCESS".equalsIgnoreCase(mailStatus) ) {
 				jsonObject.put("msg", "SUCCESS");
 				jsonObject.put("meetingData", meetingSaved);
 			} else {
@@ -373,17 +388,21 @@ public class EmployeeService {
 	}
 
 	public int getTodaysVisitCount(int loginId) {
+		logger.info("start of getTodaysVisitCount method");
 		List<MeetingStatus> allVisit = meetingStatusRepository.findByCreatedBy(loginId);
 		int count = 0;
 		Date currentDate = Date.valueOf(LocalDate.now());
+		logger.info("current Date: "+currentDate);
 		for (MeetingStatus ms : allVisit) {
-
+			logger.info("status of meeting "+ms.getMeetingId()+" is "+ms.getStatus());
+			logger.info("visit date of meeeting "+ms.getMeetingId()+" is "+ms.getMeetingBooked().getVisitDate());
+			logger.info("value of date compareTo current date is "+currentDate.compareTo(ms.getMeetingBooked().getVisitDate()));
 			if ((currentDate.compareTo(ms.getMeetingBooked().getVisitDate()) == 0)
 					&& (!"Cancel".equalsIgnoreCase(ms.getStatus()))) {
 				count++;
 			}
 		}
-
+		logger.info("end of getTodaysVisitCount method with count = "+count);
 		return count;
 	}
 
@@ -508,5 +527,99 @@ public class EmployeeService {
 
 	}
 
+	public Employee getLoggedInDetails(int loginId) {
+		
+		Employee empDetails = new Employee();
+		Optional<Employee> l = repository.findById(loginId);
+		if(l.isPresent()) {
+			empDetails = l.get();
+			if(empDetails.getImage() != null) {
+
+				empDetails.setImage(decompressBytes(empDetails.getImage()));
+			}
+			
+		}
+		
+		return empDetails;
+	}
+
+	public List<MeetingStatus> viewAllVisitsReport() {
+		
+		List<String> statusNotIn = new ArrayList<String>();
+		statusNotIn.add("Cancel");
+		List<MeetingStatus> allMeetings = meetingStatusRepository.findByStatusIsNotIn(statusNotIn);
+		
+		return allMeetings;
+	}
+	
+	public List<MeetingStatus> viewAllCancelVisitsReport() {
+
+		List<MeetingStatus> allCancelMeetings = meetingStatusRepository.findByStatus("Cancel");
+		
+		return allCancelMeetings;
+	}
+	
+	public List<MeetingStatus> getVisitsbetweenDates(Date startDate, Date endDate) {
+		// TODO Auto-generated method stub 
+
+		List<String> statusNotIn = new ArrayList<String>();
+		statusNotIn.add("Cancel");
+		List<MeetingStatus> allMeetings = meetingStatusRepository.findByMeetingBookedVisitDateBetweenAndStatusIsNotIn(startDate,endDate,statusNotIn);
+		
+		return allMeetings;
+	
+	}
+
+	
+
+	  public  ByteArrayInputStream customersToExcel(List<MeetingStatus> visits) throws IOException {
+	    String[] COLUMNs = {"Visitor Name", "Visitor Org", "visitor Phone", "Visit Date", "Visit Time"};
+	    try(
+	        Workbook workbook = new XSSFWorkbook();
+	        ByteArrayOutputStream out = new ByteArrayOutputStream();
+	    ){
+	      CreationHelper createHelper = workbook.getCreationHelper();
+	   
+	      Sheet sheet = workbook.createSheet("VisitorDetails");
+	   
+	      Font headerFont = workbook.createFont();
+	      headerFont.setBold(true);
+	      headerFont.setColor(IndexedColors.BLUE.getIndex());
+	   
+	      CellStyle headerCellStyle = workbook.createCellStyle();
+	      headerCellStyle.setFont(headerFont);
+	   
+	      // Row for Header
+	      Row headerRow = sheet.createRow(0);
+	   
+	      // Header
+	      for (int col = 0; col < COLUMNs.length; col++) {
+	        Cell cell = headerRow.createCell(col);
+	        cell.setCellValue(COLUMNs[col]);
+	        cell.setCellStyle(headerCellStyle);
+	      }
+	   
+	      // CellStyle for Age
+	      CellStyle ageCellStyle = workbook.createCellStyle();
+	      ageCellStyle.setDataFormat(createHelper.createDataFormat().getFormat("#"));
+	   
+	      int rowIdx = 1;
+	      for (MeetingStatus visit : visits) {
+	        Row row = sheet.createRow(rowIdx++);
+	   
+	        row.createCell(0).setCellValue(visit.getMeetingBooked().getVisitor().getVisitorName());
+	        row.createCell(1).setCellValue(visit.getMeetingBooked().getVisitor().getOrganisation());
+	        row.createCell(2).setCellValue(visit.getMeetingBooked().getVisitor().getContactNumber());
+	        row.createCell(3).setCellValue(visit.getMeetingBooked().getVisitDate().toString());
+	        row.createCell(4).setCellValue(visit.getMeetingBooked().getVisitTime().toString());
+	  
+	      }
+	   
+	      workbook.write(out);
+	      return new ByteArrayInputStream(out.toByteArray());
+	    }
+	  }
+
+	
 
 }
