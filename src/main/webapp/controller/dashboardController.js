@@ -8,8 +8,89 @@ app.controller('dashboardController', function($scope, $http, $rootScope) {
 		window.location = "/visitor-Management-System/index.html";
 	}
 	
-	//$('#dataTable').DataTable();
-	//$('#dataTable2').DataTable();
+	$( "#datepicker" ).datepicker({
+		format: 'YYYY/MM/DD'
+	});
+	$("#datepicker").on("change", function() {
+
+		if($scope.visit == undefined){
+			$scope.visit = {
+					meetingBooked:{
+							visitDate:$("#datepicker").val()
+					}
+			};
+		}else{
+			$scope.visit.meetingBooked.visitDate = $("#datepicker").val();
+		}
+		
+
+    });
+	
+	
+	$('.clockpicker').clockpicker()
+	.find('input').change(function(){
+		console.log(this.value);
+		if($scope.visit == undefined){
+			$scope.visit = {
+					meetingBooked:{
+						visitTime:this.value + ":00"
+					}
+			};
+		}else{
+			$scope.visit.meetingBooked.visitTime = this.value + ":00";
+		}
+	});
+	var input = $('#single-input').clockpicker({
+		placement: 'bottom',
+		align: 'left',
+		autoclose: true,
+		'default': 'now'
+	});
+
+	$('.clockpicker-with-callbacks').clockpicker({
+		donetext: 'Done',
+		init: function() { 
+			console.log("colorpicker initiated");
+		},
+		beforeShow: function() {
+			console.log("before show");
+		},
+		afterShow: function() {
+			console.log("after show");
+		},
+		beforeHide: function() {
+			console.log("before hide");
+		},
+		afterHide: function() {
+			console.log("after hide");
+		},
+		beforeHourSelect: function() {
+			console.log("before hour selected");
+		},
+		afterHourSelect: function() {
+			console.log("after hour selected");
+		},
+		beforeDone: function() {
+			console.log("before done");
+		},
+		afterDone: function() {
+			console.log("after done");
+		}
+	})
+	.find('input').change(function(){
+		console.log(this.value);
+	});
+
+	// Manually toggle to the minutes view
+	$('#check-minutes').click(function(e){
+		// Have to stop propagation here
+		e.stopPropagation();
+		input.clockpicker('show')
+				.clockpicker('toggleView', 'minutes');
+	});
+	if (/mobile/i.test(navigator.userAgent)) {
+		$('input').prop('readOnly', true);
+	}
 	
 	$scope.allVisits = [];
 	$scope.getCounts = function(){
@@ -188,26 +269,36 @@ app.controller('dashboardController', function($scope, $http, $rootScope) {
 	$scope.addNewVisit = function(){
 		$scope.invalidMobile = false;
 		$scope.invalidDate = false;
+		$scope.invalidTime = false;
 		if($scope.addVisitForm.$valid){
 			if(!isNaN($scope.visit.meetingBooked.visitor.contactNumber) && angular.isNumber(+$scope.visit.meetingBooked.visitor.contactNumber)){
 				var todayDate = new Date();
 				todayDate.setHours(0,0,0,0)
+				$scope.visit.meetingBooked.visitDate = new Date($scope.visit.meetingBooked.visitDate);
 				if($scope.visit.meetingBooked.visitDate < todayDate){
 					$scope.invalidDate = true;
 				}else{
-					$scope.visit.createdBy = $scope.UserID;
-					$scope.visit.lastUpdatedBy = $scope.UserID;
-					$scope.visit.meetingBooked.empId = $scope.UserID;
-					$scope.visit.meetingBooked.empName = $scope.userName;
-					$http.post("/visitor-Management-System/Employee/addNewVisit", $scope.visit).then(function mySuccess(response){
-						if(response.data.msg == "SUCCESS"){
-							$('#VisitScheduleModal').modal('hide');
-							window.location.href  = "#!employeeDashboard";
-						}
-					}, function myError(data){
-						console.log("some internal error");
-						console.log(data);
-					});
+					
+					var visTime = new Date();
+					visTime.setHours($scope.visit.meetingBooked.visitTime.substring(0, 2), $scope.visit.meetingBooked.visitTime.substring(3, 5), 0, 0);
+					var todayTime = new Date();
+					if(visTime < todayTime){
+						$scope.invalidTime = true;
+					}else{
+						$scope.visit.createdBy = $scope.UserID;
+						$scope.visit.lastUpdatedBy = $scope.UserID;
+						$scope.visit.meetingBooked.empId = $scope.UserID;
+						$scope.visit.meetingBooked.empName = $scope.userName;
+						$http.post("/visitor-Management-System/Employee/addNewVisit", $scope.visit).then(function mySuccess(response){
+							if(response.data.msg == "SUCCESS"){
+								$('#VisitScheduleModal').modal('hide');
+								window.location.href  = "#!employeeDashboard";
+							}
+						}, function myError(data){
+							console.log("some internal error");
+							console.log(data);
+						});
+					}
 				}
 			}else{
 				$scope.invalidMobile = true;

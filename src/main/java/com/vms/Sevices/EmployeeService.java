@@ -261,8 +261,8 @@ public class EmployeeService {
 			meeting.setStatus("Booked");
 
 			MeetingStatus meetingSaved = meetingStatusRepository.save(meeting);
-			 String mailStatus = sendMessage(meeting);
-			if (null != meetingSaved  && "SUCCESS".equalsIgnoreCase(mailStatus) ) {
+			 //String mailStatus = sendMessage(meeting);
+			if (null != meetingSaved /* && "SUCCESS".equalsIgnoreCase(mailStatus) */ ) {
 				jsonObject.put("msg", "SUCCESS");
 				jsonObject.put("meetingData", meetingSaved);
 			} else {
@@ -474,7 +474,7 @@ public class EmployeeService {
 			 wr.close();
 			 rd.close();
 
-			//sendmail(visitor.getMeetingBooked().getVisitor().getEmailId());
+			sendmail(visitor.getMeetingBooked().getVisitor().getEmailId());
 
 			// return result;
 			return "SUCCESS";

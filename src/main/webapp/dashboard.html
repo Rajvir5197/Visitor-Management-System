@@ -222,7 +222,7 @@
 </div>
 </div>
 
-<div class="col-lg-6">
+<!-- <div class="col-lg-6">
 <div class="form-group">
 <label>Visit Date<span class="text-danger">*</span></label>
 <div class="FaIcon">
@@ -231,14 +231,36 @@
 <span ng-show="invalidDate" style="color: red;">Please enter valid date</span>
 </div>
 </div>
-</div>
+</div> -->
 
 <div class="col-lg-6">
+<div class="form-group">
+<label>Visit Date<span class="text-danger">*</span></label>
+<div class="FaIcon">
+<i class="fa fa-calendar-alt FloatIcon"></i>
+<input id="datepicker" type="text" class="form-control" placeholder="select date" required>
+<span ng-show="invalidDate" style="color: red;">Please enter valid date</span>
+</div>
+</div>
+</div>
+
+<!-- <div class="col-lg-6">
 <div class="form-group">
 <label>Visit Time</label>
 <div class="FaIcon">
 <i class="fa fa-clock FloatIcon"></i>
 <input ng-model="visit.meetingBooked.visitTime" type="text" class="form-control" required>
+</div>
+</div>
+</div> -->
+
+<div class="col-lg-6">
+<div class="form-group clockpicker" data-placement="left" data-align="top" data-autoclose="true">
+<label>Visit Time<span class="text-danger">*</span></label>
+<div class="FaIcon">
+<i class="fa fa-clock FloatIcon"></i>
+<input type="text" class="form-control" placeholder="select Time" required>
+<span ng-show="invalidTime" style="color: red;">Please enter valid date</span>
 </div>
 </div>
 </div>
