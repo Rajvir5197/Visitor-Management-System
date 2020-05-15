@@ -234,6 +234,13 @@ public class EmployeeService {
 		logger.info("visitDate: "+Date.valueOf(LocalDate.now()));
 		List<MeetingStatus> allMeetings = meetingStatusRepository
 				.findByMeetingBookedVisitDateAndStatusIsNotIn(Date.valueOf(LocalDate.now()), statusNotIn);
+		
+		for(MeetingStatus meetings : allMeetings) {
+			if(meetings.getMeetingBooked().getVisitor().getVisitorImage() != null) {
+
+				meetings.getMeetingBooked().getVisitor().setVisitorImage(decompressBytes(meetings.getMeetingBooked().getVisitor().getVisitorImage()));
+			}
+		}
 
 		logger.info("end of viewAllVisit method with meeting count: "+allMeetings.size());
 		return allMeetings;
@@ -246,9 +253,10 @@ public class EmployeeService {
 		List<MeetingStatus> allMeetings = meetingStatusRepository
 				.findByCreatedByAndMeetingBookedVisitDateAndStatusIsNotInAndEmpCheckout(empCode, Date.valueOf(LocalDate.now()),
 						statusNotIn,false);
-		for(MeetingStatus ms : allMeetings) {
-			ms.getMeetingBooked().setVisitDate(Date.valueOf(LocalDate.now()));
-		}
+		/*
+		 * for(MeetingStatus ms : allMeetings) {
+		 * ms.getMeetingBooked().setVisitDate(Date.valueOf(LocalDate.now())); }
+		 */
 		return allMeetings;
 	}
 
@@ -266,7 +274,7 @@ public class EmployeeService {
 			meeting.setStatus("Booked");
 
 			MeetingStatus meetingSaved = meetingStatusRepository.save(meeting);
-			 //String mailStatus = sendMessage(meeting);
+			String mailStatus = sendMessage(meeting);
 			if (null != meetingSaved /* && "SUCCESS".equalsIgnoreCase(mailStatus) */ ) {
 				jsonObject.put("msg", "SUCCESS");
 				jsonObject.put("meetingData", meetingSaved);
@@ -393,21 +401,25 @@ public class EmployeeService {
 	}
 
 	public int getTodaysVisitCount(int loginId) {
-		/*
-		 * logger.info("start of getTodaysVisitCount method"); List<MeetingStatus>
-		 * allVisit = meetingStatusRepository.findByCreatedBy(loginId); int count = 0;
-		 * Date currentDate = Date.valueOf(LocalDate.now());
-		 * logger.info("current Date: "+currentDate); for (MeetingStatus ms : allVisit)
-		 * { logger.info("status of meeting "+ms.getMeetingId()+" is "+ms.getStatus());
-		 * logger.info("visit date of meeeting "+ms.getMeetingId()+" is "+ms.
-		 * getMeetingBooked().getVisitDate());
-		 * logger.info("value of date compareTo current date is "+currentDate.compareTo(
-		 * ms.getMeetingBooked().getVisitDate())); if
-		 * ((currentDate.compareTo(ms.getMeetingBooked().getVisitDate()) == 0) &&
-		 * (!"Cancel".equalsIgnoreCase(ms.getStatus()))) { count++; } }
-		 * logger.info("end of getTodaysVisitCount method with count = "+count);
-		 */
-		int count = getTotalVisitCount(loginId) - getCancelVisitCount(loginId) -getAttendedVisitCount(loginId);
+		
+		logger.info("start of getTodaysVisitCount method");
+		List<MeetingStatus> allVisit = meetingStatusRepository.findByCreatedBy(loginId);
+		int count = 0;
+		Date currentDate = Date.valueOf(LocalDate.now());
+		logger.info("current Date: " + currentDate);
+		for (MeetingStatus ms : allVisit) {
+			logger.info("status of meeting " + ms.getMeetingId() + " is " + ms.getStatus());
+			logger.info("visit date of meeeting " + ms.getMeetingId() + " is " + ms.getMeetingBooked().getVisitDate());
+			logger.info("value of date compareTo current date is "
+					+ currentDate.compareTo(ms.getMeetingBooked().getVisitDate()));
+			if ((currentDate.compareTo(ms.getMeetingBooked().getVisitDate()) == 0)
+					&& (!"Cancel".equalsIgnoreCase(ms.getStatus()))) {
+				count++;
+			}
+		}
+		logger.info("end of getTodaysVisitCount method with count = " + count);
+		 
+		//int count = getTotalVisitCount(loginId) - getCancelVisitCount(loginId) -getAttendedVisitCount(loginId);
 		return count;
 	}
 
@@ -437,8 +449,49 @@ public class EmployeeService {
 
 		return count;
 	}
-
+	
 	public String sendMessage(@RequestBody MeetingStatus visitor) {
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+		try {
+			// Construct data
+			String apiKey = "apikey=" + "SLNDsGimV1s-MQPRtuGHKqeF6V8MkQY2mYVw2DriO1";
+			String message = "Your Meeting is schedule on "+
+					  sdf.format(visitor.getMeetingBooked().getVisitDate()) +
+					  " "+visitor.getMeetingBooked().getVisitTime()
+					  +" with "+visitor.getMeetingBooked().getEmpName()+" at "+
+					  visitor.getMeetingBooked().getVisitLocation().getPlantName();
+			//String sender = "&sender=" + "IMCPIL";
+			String numbers = "&numbers=" + visitor.getMeetingBooked().getVisitor().getContactNumber();
+			
+			// Send data
+			HttpURLConnection conn = (HttpURLConnection) new URL("https://api.textlocal.in/send/?").openConnection();
+			String data = apiKey + numbers +"&message="+ message; //+ sender;
+			System.out.println("data: "+ data);
+			conn.setDoOutput(true);
+			conn.setRequestMethod("POST");
+			conn.setRequestProperty("Content-Length", Integer.toString(data.length()));
+			conn.getOutputStream().write(data.getBytes("UTF-8"));
+			final BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+			final StringBuffer stringBuffer = new StringBuffer();
+			String line;
+			while ((line = rd.readLine()) != null) {
+				stringBuffer.append(line);
+			}
+			rd.close();
+			
+			sendmail(visitor.getMeetingBooked().getVisitor().getEmailId(),message);
+			
+			return stringBuffer.toString();
+		} catch (Exception e) {
+			System.out.println("Error SMS "+e);
+			return "Error "+e;
+		}
+	}
+
+	public String sendMessage1(@RequestBody MeetingStatus visitor) {
+		HttpURLConnection conn = null;
+		
 		try {
 			// Construct data
 			// APIKey=R8ntvc8nnU26zeAGiN0U0A&senderid=ERUCHA&channel=2&DCS=0&
@@ -446,28 +499,34 @@ public class EmployeeService {
 			 SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 			 String apiKey = "APIKey=" +
 			 URLEncoder.encode("R8ntvc8nnU26zeAGiN0U0A","UTF-8")+"&senderid="+URLEncoder.encode("ERUCHA","UTF-8")+"&channel="+URLEncoder.encode("2","UTF-8")+"&DCS="+URLEncoder.encode("0","UTF-8")+"&flashsms="+URLEncoder.encode("0","UTF-8");
-			 String message = "Your Meeting is schedule on "+
-			 sdf.format(visitor.getMeetingBooked().getVisitDate()) +
-			 " "+visitor.getMeetingBooked().getVisitTime()
-			 +" with "+visitor.getMeetingBooked().getEmpId()+" at"+
-			 visitor.getMeetingBooked().getVisitLocation().getPlantName();
+			
+			/*
+			 * String message = "Your Meeting is schedule on "+
+			 * sdf.format(visitor.getMeetingBooked().getVisitDate()) +
+			 * " "+visitor.getMeetingBooked().getVisitTime()
+			 * +" with "+visitor.getMeetingBooked().getEmpId()+" at"+
+			 * visitor.getMeetingBooked().getVisitLocation().getPlantName()
+			 */;
+			 
+			 String message = "hello";
 			 String numbers = "&number=" +
 			 URLEncoder.encode(""+visitor.getMeetingBooked().getVisitor().getContactNumber(),"UTF-8");
 
 			// Send data
-			 HttpURLConnection conn = (HttpURLConnection) new
-			 URL("http://bulksms.vrudheesolutions.com/api/mt/SendSMS?").openConnection();
-			 conn.setRequestProperty("Content-Type", "application/json");
 			 String data = apiKey + numbers +"&text=" + message
-			 //URLEncoder.encode(message,"UTF-8")
-			 +"&route=1"; //+ sender;
+					 //URLEncoder.encode(message,"UTF-8")
+					 +"&route=1";
+			 conn = (HttpURLConnection) new
+			 URL("http://bulksms.vrudheesolutions.com/api/mt/SendSMS").openConnection();
+			 conn.setRequestProperty("Content-Type", "application/json");
+			 
 			/*
 			 * String data1 ="{APIKey: \"R8ntvc8nnU26zeAGiN0U0A\", senderid: \"ERUCHA\",
 			 * channel: \"2\", DCS: \"0\", flashsms: \"0\", numbers:
 			 * \""+visitor.getMeetingBooked().getVisitor().getContactNumber()+
 			 * "\" , text: \"testMessage\" }";
 			 */
-			 System.out.println("data: "+ data);
+			 System.out.println("data: "+ data + conn.getResponseCode());
 			 conn.setDoOutput(true);
 			 OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
 			 wr.write(data);
@@ -478,7 +537,7 @@ public class EmployeeService {
 			 wr.close();
 			 rd.close();
 
-			sendmail(visitor.getMeetingBooked().getVisitor().getEmailId());
+			sendmail(visitor.getMeetingBooked().getVisitor().getEmailId(),message);
 
 			// return result;
 			return "SUCCESS";
@@ -488,13 +547,13 @@ public class EmployeeService {
 		}
 	}
 
-	public void sendmail(String MailTo) throws AddressException, MessagingException, IOException {
+	public void sendmail(String MailTo, String message) throws AddressException, MessagingException, IOException {
 		SimpleMailMessage msg = new SimpleMailMessage();
 		msg.setFrom("raj.viradiya@syscort.com");
 		msg.setTo(MailTo);
 
-		msg.setSubject("Testing from Spring Boot");
-		msg.setText("Hello World \n Spring Boot Email");
+		msg.setSubject("Meeting Details");
+		msg.setText(message);
 
 		System.out.println("sending msg");
 		javaMailSender.send(msg);

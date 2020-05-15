@@ -6,8 +6,10 @@ import java.sql.Date;
 import java.sql.Time;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
@@ -44,7 +46,6 @@ public class Employee implements Serializable {
 	
 	@ManyToOne
 	@JoinColumn(name = "EMP_DEPT")
-	@NotNull
 	private Department empDept;
 	
 	@Column (name = "emp_mobile", unique = true)

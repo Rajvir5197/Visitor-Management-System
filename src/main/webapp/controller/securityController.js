@@ -12,7 +12,7 @@ app.controller('securityController', function($scope, $rootScope, $http) {
 	
 	
 	
-	
+	Webcam.attach( '#my_camera' );
 	$scope.viewAllCoVisitor = function(){
 		$http.post("/visitor-Management-System/Security/viewAllCoVisitor", $rootScope.visitCheckin).then(function mySuccess(response){
 			console.log(response.data);
@@ -126,5 +126,36 @@ app.controller('securityController', function($scope, $rootScope, $http) {
 		});
 		
 	};
+	
+	 $scope.take_snapshot = function() {
+		 
+		 // take snapshot and get image data
+		 Webcam.snap( function(data_uri) {
+		  // display results in page
+			 $scope.visitorImg = data_uri;
+		  document.getElementById('results').innerHTML = 
+		  '<img src="'+data_uri+'"/>';
+		  } );
+		};
+	
+	$scope.saveVisitorImage = function(){
+		if($scope.visitorImg != null && $scope.visitorImg != undefined){
+			var file = $scope.visitorImg;
+			var fd = new FormData();
+			fd.append('file', file);
+			fd.append('visitorDetails', JSON.stringify($scope.visitCheckin));
+			
+			$http.post("/visitor-Management-System/SecuritySecurity/addVisitorImage", fd, {
+				transformRequest : angular.identity,
+				headers : {'Content-Type' : undefined}
+			}).then(function mySuccess(response){
+				$('#captureImageModal').modal('hide');
+				$scope.viewAllEmp();
+			}, function myError(data){
+				console.log("some internal error");
+				console.log(data);
+			});
+		}
+	}
 	
 });

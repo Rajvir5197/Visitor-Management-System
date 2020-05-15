@@ -9,16 +9,14 @@
  * org.springframework.security.core.authority.SimpleGrantedAuthority; import
  * org.springframework.security.core.userdetails.UserDetails;
  * 
- * 
  * public class MyUserDetails implements UserDetails {
- * 
  * 
  * private int userName; private String pass; private boolean active; private
  * List<GrantedAuthority> authorities;
  * 
  * public MyUserDetails(Employee user) { this.userName = user.getEmpCode();
  * this.pass = user.getEmpPass(); this.active = true; this.authorities =
- * Arrays.stream(user.getEmpRole().split(",")) .map(SimpleGrantedAuthority::new)
+ * Arrays.stream(user.getEmpRole().split(",")).map(SimpleGrantedAuthority::new)
  * .collect(Collectors.toList()); }
  * 
  * @Override public Collection<? extends GrantedAuthority> getAuthorities() { //
@@ -43,5 +41,4 @@
  * return active; }
  * 
  * }
- * 
  */

@@ -1,7 +1,6 @@
 /*
  * package com.vms.Sevices;
  * 
- * 
  * import java.util.Collection; import java.util.Optional;
  * 
  * import org.springframework.beans.factory.annotation.Autowired; import
@@ -14,7 +13,6 @@
  * import com.vms.Model.Employee; import com.vms.Model.MyUserDetails; import
  * com.vms.Repository.EmployeeRepository;
  * 
- * 
  * @Service public class MyUserDetailsService implements UserDetailsService {
  * 
  * @Autowired EmployeeRepository users;
@@ -25,5 +23,4 @@
  * u.map(MyUserDetails::new).get(); }
  * 
  * }
- * 
  */

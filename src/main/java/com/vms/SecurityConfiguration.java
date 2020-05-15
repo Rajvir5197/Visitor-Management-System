@@ -25,9 +25,9 @@
  * @Override protected void configure(AuthenticationManagerBuilder auth) throws
  * Exception { auth.userDetailsService(userDetailsService); }
  * 
- * 
  * @Override protected void configure(HttpSecurity http) throws Exception { http
- * .requiresChannel() .anyRequest() .requiresSecure(); }
+ * .requiresChannel().anyRequest().requiresSecure() .and() .formLogin()
+ * .loginPage("/index.html"); }
  * 
  * @Bean public PasswordEncoder getpasswordencoder() { return
  * NoOpPasswordEncoder.getInstance(); }

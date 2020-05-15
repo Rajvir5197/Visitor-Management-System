@@ -6,8 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.vms.Model.Asset;
 import com.vms.Model.CoVisitor;
@@ -66,6 +68,14 @@ public class SecurityController {
 
 		return service.securityCheckout(meeting);
 
+	}
+	
+	@RequestMapping(value = "/addVisitorImage", method = RequestMethod.POST)
+	@ResponseBody
+	public JSONObject addVisitorImage(@RequestParam("file") MultipartFile file,
+			@RequestParam("visitorDetails") String jsonEmployee) {
+		
+		return service.addVisitorImage(jsonEmployee, file);
 	}
 
 }

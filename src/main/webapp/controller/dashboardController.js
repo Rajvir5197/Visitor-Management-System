@@ -20,10 +20,15 @@ app.controller('dashboardController', function($scope, $http, $rootScope) {
 					}
 			};
 		}else{
-			$scope.visit.meetingBooked.visitDate = $("#datepicker").val();
+			if($scope.visit.meetingBooked == undefined){
+                $scope.visit.meetingBooked = {
+                	visitDate:$("#datepicker").val()
+                }
+			}else{
+				$scope.visit.meetingBooked.visitDate = $("#datepicker").val();
+			}
 		}
 		
-
     });
 	
 	
@@ -37,7 +42,13 @@ app.controller('dashboardController', function($scope, $http, $rootScope) {
 					}
 			};
 		}else{
-			$scope.visit.meetingBooked.visitTime = this.value + ":00";
+			if($scope.visit.meetingBooked == undefined){
+                $scope.visit.meetingBooked = {
+                		visitTime:this.value + ":00"
+                }
+			}else{
+				$scope.visit.meetingBooked.visitTime = this.value + ":00";
+			}
 		}
 	});
 	var input = $('#single-input').clockpicker({

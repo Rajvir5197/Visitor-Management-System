@@ -10,7 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.vms.Model.Department;
+import com.vms.Model.Employee;
 import com.vms.Repository.DepartmentRepository;
+import com.vms.Repository.EmployeeRepository;
 
 import net.minidev.json.JSONObject;
 
@@ -19,6 +21,9 @@ public class DepartmentService {
 
 	@Autowired
 	DepartmentRepository repository;
+
+	@Autowired
+	EmployeeRepository empRepository;
 
 	public List<Department> allDepartment() {
 
@@ -41,10 +46,16 @@ public class DepartmentService {
 
 		return jsonObject;
 	}
-	
+
 	public JSONObject deleteDepartment(Department department) {
 
 		JSONObject jsonObject = new JSONObject();
+
+		List<Employee> employees = empRepository.findByEmpDept(department);
+		for (Employee employee : employees) {
+			employee.setEmpDept(null);
+			empRepository.save(employee);
+		}
 
 		repository.deleteById(department.getDeptCode());
 
