@@ -72,10 +72,9 @@ public class SecurityController {
 	
 	@RequestMapping(value = "/addVisitorImage", method = RequestMethod.POST)
 	@ResponseBody
-	public JSONObject addVisitorImage(@RequestParam("file") MultipartFile file,
-			@RequestParam("visitorDetails") String jsonEmployee) {
+	public JSONObject addVisitorImage(@RequestBody MeetingStatus meeting) {
 		
-		return service.addVisitorImage(jsonEmployee, file);
+		return service.addVisitorImage(meeting);
 	}
 
 }

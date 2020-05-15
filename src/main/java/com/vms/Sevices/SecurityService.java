@@ -151,25 +151,18 @@ public class SecurityService {
 
 	}
 
-	public JSONObject addVisitorImage(String jsonEmployee, MultipartFile file) {
+	public JSONObject addVisitorImage(MeetingStatus visitor) {
 
 		//logger.info("start of addOrEditEmployee method");
-		ObjectMapper mapper = new ObjectMapper();
 		JSONObject jsonObject = new JSONObject();
-		//String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-		try {
-			MeetingStatus visitor = mapper.readValue(jsonEmployee, MeetingStatus.class);
-			//employee.setProfileAttachment(new SerialBlob(file.getBytes()));
-			visitor.getMeetingBooked().getVisitor().setVisitorImage(compressBytes(file.getBytes()));
-			
-			MeetingStatus visitorSaved = meetingStatusRepository.save(visitor);
-			if (null != visitorSaved) {
-				jsonObject.put("data", "SUCCESS");
-			} else {
-				jsonObject.put("data", "FAIL");
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
+		//employee.setProfileAttachment(new SerialBlob(file.getBytes()));
+		visitor.getMeetingBooked().getVisitor().setVisitorImage(compressBytes(visitor.getMeetingBooked().getVisitor().getVisitorImage()));
+		
+		MeetingStatus visitorSaved = meetingStatusRepository.save(visitor);
+		if (null != visitorSaved) {
+			jsonObject.put("data", "SUCCESS");
+		} else {
+			jsonObject.put("data", "FAIL");
 		}
 		return jsonObject;
 	}
