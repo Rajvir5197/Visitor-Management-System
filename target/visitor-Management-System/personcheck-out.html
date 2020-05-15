@@ -78,8 +78,9 @@
 
 <div class="row">
 <div class="col-lg-3 mb-3">
-<img src="images/profile-pic.jpg" class="img-fluid border p-2" />
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#captureImageModal"></button>
+<img ng-show="visitCheckin.meetingBooked.visitor.visitorImage != null" src="data:image/jpeg;base64,{{visitCheckin.meetingBooked.visitor.visitorImage}}" class="img-fluid border p-2" />
+<img ng-hide="visitCheckin.meetingBooked.visitor.visitorImage != null" src="images/profile-pic.jpg" height="50px" />
+<button type="button" style="margin-top: 3%;margin-left: 23%;"style="margin-top: 3%;margin-left: 23%;" class="btn btn-primary" data-toggle="modal" data-target="#captureImageModal">Capture Image</button>
 </div>
 
 <div class="col-lg-9 mb-3">
@@ -255,7 +256,7 @@
 <div class="modal-dialog" role="document">
 <div class="modal-content">
 <div class="modal-header">
-<h5 class="modal-title BlackTxtColor" id="exampleModalLabel">Check Out</h5>
+<h5 class="modal-title BlackTxtColor" id="exampleModalLabel">Capture Image</h5>
 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
 <span aria-hidden="true">&times;</span>
 </button>
@@ -267,10 +268,10 @@
 
 
 <div id="my_camera" style="margin-left: 15%;"></div>
-<input type=button style="margin-left: 37%; margin-top: 2%;margin-bottom: 2%;" value="Take Snapshot" onClick="take_snapshot()">
+<input class="btn btn-primary" type=button style="margin-left: 37%; margin-top: 2%;margin-bottom: 2%;" value="Take Snapshot" ng-click="take_snapshot()">
  
 <div id="results" style="margin-left: 15%;"></div>
-<button type="button" style="margin-left: 37%; margin-top: 2%;margin-bottom: 2%;" class="btn btn-primary" ng-click="saveVisitorImage()">Save</button>
+<button ng-hide="visitorImg == null || visitorImg == undefined" type="button" style="margin-left: 42%; margin-top: 2%;margin-bottom: 2%;" class="btn btn-primary" ng-click="saveVisitorImage()">Save</button>
 
 </div>
 </div>
