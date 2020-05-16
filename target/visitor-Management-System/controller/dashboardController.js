@@ -8,6 +8,8 @@ app.controller('dashboardController', function($scope, $http, $rootScope) {
 		window.location = "/visitor-Management-System/index.html";
 	}
 	
+	//$( "#Loader" ).modal('show');
+	
 	$( "#datepicker" ).datepicker({
 		format: 'YYYY/MM/DD'
 	});
@@ -205,12 +207,26 @@ app.controller('dashboardController', function($scope, $http, $rootScope) {
 		});
 	};
 	
+	$scope.viewEmpPlant = function(){
+		$scope.param = {
+				empCode: $scope.UserID,
+				empRole: $scope.role
+		};
+		$http.post("/visitor-Management-System/Employee/getEmpPlant",$scope.param).then(function mySuccess(response){
+			$scope.EmpPlants = response.data.empPlantCode;
+		}, function myError(data){
+			console.log("some internal error");
+			console.log(data);
+		});
+	};
+	
 	if($scope.role == "Security"){
 		$scope.viewAllVisits();
+		$scope.invalidSecCode = false;
 	}else{
 		$scope.viewAllContacts();
 		$scope.viewAllVisits();
-		$scope.getAllPlants();
+		$scope.viewEmpPlant();
 		$scope.getTasks();
 	}
 	
@@ -219,15 +235,22 @@ app.controller('dashboardController', function($scope, $http, $rootScope) {
 		if($rootScope.visitCheckin.secCheckin){
 			window.location = "#!securityCheckOut";
 		}else{
-			$rootScope.visitCheckin.secCheckinBy = $scope.userName;
-			$http.post("/visitor-Management-System/Security/securityCheckin", $rootScope.visitCheckin).then(function mySuccess(response){
-				if(response.data.msg == 'SUCCESS'){
-					window.location = "#!securityCheckOut";
-				}
-			}, function myError(data){
-				console.log("some internal error");
-				console.log(data);
-			});
+			/*$scope.securityCode = 0;
+			$scope.securityCode = $("#securityCode").val();*/
+			if(visit.securityCode1 == $rootScope.visitCheckin.securityCode){
+				$scope.invalidSecCode = false;
+				$rootScope.visitCheckin.secCheckinBy = $scope.userName;
+				$http.post("/visitor-Management-System/Security/securityCheckin", $rootScope.visitCheckin).then(function mySuccess(response){
+					if(response.data.msg == 'SUCCESS'){
+						window.location = "#!securityCheckOut";
+					}
+				}, function myError(data){
+					console.log("some internal error");
+					console.log(data);
+				});
+			}else{
+				$scope.invalidSecCode = true;
+			}
 		}
 	};
 	
@@ -288,8 +311,22 @@ app.controller('dashboardController', function($scope, $http, $rootScope) {
 				$scope.visit.meetingBooked.visitDate = new Date($scope.visit.meetingBooked.visitDate);
 				if($scope.visit.meetingBooked.visitDate < todayDate){
 					$scope.invalidDate = true;
-				}else{
+				}else if($scope.visit.meetingBooked.visitDate > todayDate){
 					
+					$scope.visit.createdBy = $scope.UserID;
+					$scope.visit.lastUpdatedBy = $scope.UserID;
+					$scope.visit.meetingBooked.empId = $scope.UserID;
+					$scope.visit.meetingBooked.empName = $scope.userName;
+					$http.post("/visitor-Management-System/Employee/addNewVisit", $scope.visit).then(function mySuccess(response){
+						if(response.data.msg == "SUCCESS"){
+							$('#VisitScheduleModal').modal('hide');
+							window.location.href  = "#!employeeDashboard";
+						}
+					}, function myError(data){
+						console.log("some internal error");
+						console.log(data);
+					});
+				}else{
 					var visTime = new Date();
 					visTime.setHours($scope.visit.meetingBooked.visitTime.substring(0, 2), $scope.visit.meetingBooked.visitTime.substring(3, 5), 0, 0);
 					var todayTime = new Date();

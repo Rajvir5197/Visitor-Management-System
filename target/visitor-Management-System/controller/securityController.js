@@ -151,6 +151,15 @@ app.controller('securityController', function($scope, $rootScope, $http) {
 				console.log(data);
 			});
 		}
+	};
+	
+	$scope.sendMail = function(){
+		$http.post("/visitor-Management-System/Security/sendEmail", $rootScope.visitCheckin).then(function mySuccess(response){
+			$('#emailModal').modal('show');
+		}, function myError(data){
+			console.log("some internal error");
+			console.log(data);
+		});
 	}
 	
 });
