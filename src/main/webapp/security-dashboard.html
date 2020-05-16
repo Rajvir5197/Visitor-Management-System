@@ -21,6 +21,7 @@
 <div class="Circle80 bg-white m-auto"><i class="fa fa-user fa-2x"></i></div>
 </div>
 <div class="card-body">
+<span ng-show="invalidSecCode">Please enter valid Code</span>
 <div class="row">
 <div class="col-sm-4 mb-3">Name</div>
 <div class="col-sm-8 mb-3 BlackTxtColor">: {{visit.meetingBooked.visitor.visitorName}}</div>
@@ -44,6 +45,12 @@
 <div class="row">
 <div class="col-sm-4 mb-3">Contact Person</div>
 <div class="col-sm-8 mb-3 BlackTxtColor">: {{visit.meetingBooked.empId}}</div>
+</div>
+
+<div ng-hide="visit.secCheckin" class="row">
+<div class="col-sm-12 mb-6">
+<input type="number" ng-model="visit.securityCode1" class="form-control" style="margin-bottom: 4%;">
+</div>
 </div>
 
 <a href="" ng-click="securityCheckin(visit)" class="btn btn-primary mr-2">Check In <i class="fa fa-check-circle"></i></a>

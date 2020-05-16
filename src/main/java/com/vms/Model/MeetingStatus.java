@@ -92,6 +92,9 @@ public class MeetingStatus {
 	
 	@Column (name = "created_time")
 	private Time createdTime;
+	
+	@Column (name = "security_code")
+	private int securityCode;
 
 	
 	public int getMeetingId() {
@@ -277,6 +280,15 @@ public class MeetingStatus {
 	public void setSecCheckoutBy(String secCheckoutBy) {
 		this.secCheckoutBy = secCheckoutBy;
 	}
+
+	public int getSecurityCode() {
+		return securityCode;
+	}
+
+	public void setSecurityCode(int securityCode) {
+		this.securityCode = securityCode;
+	}
+	
 	
 	
 }

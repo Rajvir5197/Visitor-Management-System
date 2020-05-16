@@ -268,7 +268,7 @@
 <div class="col-lg-6">
 <div class="form-group">
 <label>Location<span class="text-danger">*</span></label>
-<select id="plantCode" ng-model="visit.meetingBooked.visitLocation" ng-options="plant.plantName for plant in allPlants track by plant.plantCode" class="form-control" name="plantCode" required>
+<select id="plantCode" ng-model="visit.meetingBooked.visitLocation" ng-options="plant.plantName for plant in EmpPlants track by plant.plantCode" class="form-control" name="plantCode" required>
 </select>
 </div>
 </div>
@@ -333,6 +333,12 @@
 </form>
 </div>
 </div>
+</div>
+
+
+<div class="modal fade" id="Loader" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" 
+data-backdrop="static" style="margin-top: 22%;margin-left: 48%;" aria-hidden="true">
+<img src="images/Spinner.gif" height="22%"/>
 </div>
 
 </div>

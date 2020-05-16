@@ -76,5 +76,12 @@ public class SecurityController {
 		
 		return service.addVisitorImage(meeting);
 	}
+	
+	@RequestMapping(value = "/sendEmail", method = RequestMethod.POST)
+	@ResponseBody
+	public JSONObject sendEmail(@RequestBody MeetingStatus meeting) {
+		
+		return service.sendEmail(meeting);
+	}
 
 }

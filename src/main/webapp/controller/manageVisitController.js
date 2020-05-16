@@ -138,6 +138,20 @@ app.controller('manageVisitController', function($scope, $rootScope, $http) {
 				$scope.newVisit.meetingBooked.visitDate = new Date($scope.newVisit.meetingBooked.visitDate);
 				if($scope.newVisit.meetingBooked.visitDate < todayDate){
 					$scope.invalidDate = true;
+				
+				}else if($scope.newVisit.meetingBooked.visitDate > todayDate){
+					$scope.newVisit.createdBy = $scope.UserID;
+					$scope.newVisit.lastUpdatedBy = $scope.UserID;
+					$scope.newVisit.meetingBooked.empId = $scope.UserID;
+					$scope.newVisit.meetingBooked.empName = $scope.userName;
+					$http.post("/visitor-Management-System/Employee/addNewVisit", $scope.newVisit).then(function mySuccess(response){
+						if(response.data.msg == "SUCCESS"){
+							window.location.href  = "#!viewAllVisit";
+						}
+					}, function myError(data){
+						console.log("some internal error");
+						console.log(data);
+					});
 				}else{
 					
 					var visTime = new Date();

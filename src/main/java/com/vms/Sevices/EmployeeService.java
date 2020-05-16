@@ -18,6 +18,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;
 import java.util.zip.Inflater;
@@ -264,9 +265,13 @@ public class EmployeeService {
 
 		JSONObject jsonObject = new JSONObject();
 		try {
-			Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			//Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+			//SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			/// java.util.Date d = sdf.parse(sdf.format(timestamp));
+			Random rnd = new Random();
+			//int  number = Integer.valueOf(String.format("%06d", rnd.nextInt(999999)));
+			int number = rnd.nextInt(900000) + 100000;
+			meeting.setSecurityCode(number);
 			meeting.setCreatedDate(Date.valueOf(LocalDate.now()));
 			meeting.setCreatedTime(Time.valueOf(LocalTime.now()));
 			meeting.setLastUpdatedDate(Date.valueOf(LocalDate.now()));
@@ -460,25 +465,30 @@ public class EmployeeService {
 					  sdf.format(visitor.getMeetingBooked().getVisitDate()) +
 					  " "+visitor.getMeetingBooked().getVisitTime()
 					  +" with "+visitor.getMeetingBooked().getEmpName()+" at "+
-					  visitor.getMeetingBooked().getVisitLocation().getPlantName();
-			//String sender = "&sender=" + "IMCPIL";
-			String numbers = "&numbers=" + visitor.getMeetingBooked().getVisitor().getContactNumber();
-			
-			// Send data
-			HttpURLConnection conn = (HttpURLConnection) new URL("https://api.textlocal.in/send/?").openConnection();
-			String data = apiKey + numbers +"&message="+ message; //+ sender;
-			System.out.println("data: "+ data);
-			conn.setDoOutput(true);
-			conn.setRequestMethod("POST");
-			conn.setRequestProperty("Content-Length", Integer.toString(data.length()));
-			conn.getOutputStream().write(data.getBytes("UTF-8"));
-			final BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+					  visitor.getMeetingBooked().getVisitLocation().getPlantName()
+					  +" and your checkin code is: "+visitor.getSecurityCode();
+
+
+			/*
+			 * String numbers = "&numbers=" +
+			 * visitor.getMeetingBooked().getVisitor().getContactNumber();
+			 * 
+			 * // Send data HttpURLConnection conn = (HttpURLConnection) new
+			 * URL("https://api.textlocal.in/send/?").openConnection(); String data = apiKey
+			 * + numbers +"&message="+ message; //+ sender; System.out.println("data: "+
+			 * data); conn.setDoOutput(true); conn.setRequestMethod("POST");
+			 * conn.setRequestProperty("Content-Length", Integer.toString(data.length()));
+			 * conn.getOutputStream().write(data.getBytes("UTF-8"));
+			 */
+			/*
+			 * final BufferedReader rd = new BufferedReader(new
+			 * InputStreamReader(conn.getInputStream()));
+			 */
 			final StringBuffer stringBuffer = new StringBuffer();
-			String line;
-			while ((line = rd.readLine()) != null) {
-				stringBuffer.append(line);
-			}
-			rd.close();
+			/*
+			 * String line; while ((line = rd.readLine()) != null) {
+			 * stringBuffer.append(line); } rd.close();
+			 */
 			
 			sendmail(visitor.getMeetingBooked().getVisitor().getEmailId(),message);
 			

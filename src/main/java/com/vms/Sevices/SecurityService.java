@@ -1,7 +1,11 @@
 package com.vms.Sevices;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.sql.Date;
 import java.sql.Time;
 import java.sql.Timestamp;
@@ -9,11 +13,19 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;
 import java.util.zip.Inflater;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.AddressException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -46,26 +58,46 @@ public class SecurityService {
 	
 	@Autowired
 	VisitorRepository visitorRepository;
+	
+	@Autowired
+	private JavaMailSender javaMailSender;
+	
+	Logger logger = LoggerFactory.getLogger(SecurityService.class);
 
 	public JSONObject addCoVisitor(CoVisitor coVisitor) {
+		
+		logger.info("start of addCoVisitor method with no. of covisitor: "+coVisitor.getVisitor().getNumberOfCoVisitor());
 
 		JSONObject jsonObject = new JSONObject();
 		coVisitor.setCreatedDate(Date.valueOf(LocalDate.now()));
 		coVisitor.setCreatedTime(Time.valueOf(LocalTime.now()));
 
+		//System.out.println(coVisitor.getVisitor().get);
+		int v = coVisitor.getVisitor().getVisitorId();
+		Optional<Visitor> vis = visitorRepository.findById(v); 
+		logger.info("no. of covisitor: "+vis.get().getNumberOfCoVisitor());
 		CoVisitor coVisitorSaved = coVisitorRepository.save(coVisitor);
+		vis.get().setNumberOfCoVisitor(vis.get().getNumberOfCoVisitor() + 1);
+		Visitor visSaved = visitorRepository.save(vis.get());
+		logger.info("after saving no. of covisitor: "+visSaved.getNumberOfCoVisitor());
 		if (null != coVisitorSaved) {
-			int numberOfCovisitor = coVisitorSaved.getVisitor().getNumberOfCoVisitor();
-			coVisitorSaved.getVisitor().setNumberOfCoVisitor(numberOfCovisitor+1);
-			Visitor visitorSaved = visitorRepository.save(coVisitorSaved.getVisitor());
-			if (null != visitorSaved) {
-				jsonObject.put("msg", "SUCCESS");
-			} else {
-				jsonObject.put("msg", "FAIL");
-			}
+			jsonObject.put("msg", "SUCCESS");
 		} else {
 			jsonObject.put("msg", "FAIL");
 		}
+		
+		/*
+		 * if (null != coVisitorSaved) { int numberOfCovisitor =
+		 * coVisitorSaved.getVisitor().getNumberOfCoVisitor();
+		 * coVisitorSaved.getVisitor().setNumberOfCoVisitor(numberOfCovisitor+1);
+		 * logger.info("no. of covisitor: "+coVisitorSaved.getVisitor().
+		 * getNumberOfCoVisitor()); //CoVisitor coVisitorSaved1 =
+		 * coVisitorRepository.save(coVisitorSaved); Visitor visitorSaved =
+		 * visitorRepository.save(coVisitorSaved.getVisitor());
+		 * logger.info("no. of covisitor: "+visitorSaved.getNumberOfCoVisitor()); if
+		 * (null != visitorSaved) { jsonObject.put("msg", "SUCCESS"); } else {
+		 * jsonObject.put("msg", "FAIL"); } } else { jsonObject.put("msg", "FAIL"); }
+		 */
 		return jsonObject;
 
 	}
@@ -155,10 +187,10 @@ public class SecurityService {
 
 		//logger.info("start of addOrEditEmployee method");
 		JSONObject jsonObject = new JSONObject();
-		//employee.setProfileAttachment(new SerialBlob(file.getBytes()));
-		visitor.getMeetingBooked().getVisitor().setVisitorImage(compressBytes(visitor.getMeetingBooked().getVisitor().getVisitorImage()));
+		Optional<MeetingStatus> meet = meetingStatusRepository.findById(visitor.getMeetingId());
+		meet.get().getMeetingBooked().getVisitor().setVisitorImage(compressBytes(visitor.getMeetingBooked().getVisitor().getVisitorImage()));
 		
-		MeetingStatus visitorSaved = meetingStatusRepository.save(visitor);
+		MeetingStatus visitorSaved = meetingStatusRepository.save(meet.get());
 		if (null != visitorSaved) {
 			jsonObject.put("data", "SUCCESS");
 		} else {
@@ -205,5 +237,78 @@ public class SecurityService {
             }
             return outputStream.toByteArray();
         }
+
+		public JSONObject sendEmail(MeetingStatus meeting) {
+			
+			JSONObject jsonObject = new JSONObject();
+			sendMessage(meeting);
+			jsonObject.put("msg", "SUCCESS");
+			return jsonObject;
+		}
+		
+		public String sendMessage(@RequestBody MeetingStatus meeting) {
+			
+			SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+			try {
+				// Construct data
+			
+				List<CoVisitor> CoVisitorList = coVisitorRepository.findByVisitor(meeting.getMeetingBooked().getVisitor());
+				int count = CoVisitorList.size();
+				String AssetDetails = "";
+				for (CoVisitor CV : CoVisitorList) {
+					List<Asset> assetDetails = assetRepository.findByVisitor(CV);
+					for( Asset as : assetDetails) {
+						AssetDetails = AssetDetails + CV.getCoVisitorName() + ":" +as.getAssetName() + ":" + as.getAssetCount() + "\n";
+					}
+					
+				}
+				String message = "Hello Visitor: \n"+
+								 "Please find checkin Details below: \n" +
+								 "Number of Co-visitor: " + count + "\n" +
+								 "Asset details: \n" +
+								 AssetDetails +
+								 "Thanks/Regard";
+				String apiKey = "apikey=" + "SLNDsGimV1s-MQPRtuGHKqeF6V8MkQY2mYVw2DriO1";
+
+
+			/*
+			 * String numbers = "&numbers=" +
+			 * visitor.getMeetingBooked().getVisitor().getContactNumber();
+			 * 
+			 * // Send data HttpURLConnection conn = (HttpURLConnection) new
+			 * URL("https://api.textlocal.in/send/?").openConnection(); String data = apiKey
+			 * + numbers +"&message="+ message; //+ sender; System.out.println("data: "+
+			 * data); conn.setDoOutput(true); conn.setRequestMethod("POST");
+			 * conn.setRequestProperty("Content-Length", Integer.toString(data.length()));
+			 * conn.getOutputStream().write(data.getBytes("UTF-8")); final BufferedReader rd
+			 * = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+			 */
+				final StringBuffer stringBuffer = new StringBuffer();
+			/*
+			 * String line; while ((line = rd.readLine()) != null) {
+			 * stringBuffer.append(line); } rd.close();
+			 */
+				
+				sendmail(meeting.getMeetingBooked().getVisitor().getEmailId(),message);
+				
+				return stringBuffer.toString();
+			} catch (Exception e) {
+				System.out.println("Error SMS "+e);
+				return "Error "+e;
+			}
+		}
+		
+		public void sendmail(String MailTo, String message) throws AddressException, MessagingException, IOException {
+			SimpleMailMessage msg = new SimpleMailMessage();
+			msg.setFrom("raj.viradiya@syscort.com");
+			msg.setTo(MailTo);
+
+			msg.setSubject("Meeting Details");
+			msg.setText(message);
+
+			System.out.println("sending msg");
+			javaMailSender.send(msg);
+			System.out.println("sent msg");
+		}
 
 }

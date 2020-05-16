@@ -43,6 +43,8 @@ app.config(function($routeProvider){
         }).when('/empReportCancelReport',{
             templateUrl: '/visitor-Management-System/employee-report-for-cancelled-visitor.html',
             controller: 'reportController'
+        }).when('/empCheckinCheckout',{
+            templateUrl: '/visitor-Management-System/inputs.html'
         });
 });
 app.directive('fileModel', ['$parse', function ($parse) {

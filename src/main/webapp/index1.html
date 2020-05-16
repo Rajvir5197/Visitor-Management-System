@@ -111,8 +111,8 @@
 		<div id="masterMVisit" class="collapse" aria-labelledby="masterMVisit" data-parent="#accordionSidebar">
 		<div class="collapse-inner" style="background-color:#3482ae;">
 		<a class="collapse-item" href="#!viewAllVisit">Todays Visits Listing</a>
-		<a class="collapse-item" href="personcheck-out.php">Person Checkout</a>
-		<a class="collapse-item" href="#">Manage Check In</a>
+		<a class="collapse-item" href="#!empCheckinCheckout" ng-hide="role == 'Super Admin'">Person Checkout</a>
+		<a class="collapse-item" href="#!empCheckinCheckout" ng-hide="role == 'Super Admin'">Manage Check In</a>
 		</div>
 		</div>
 		</li>
