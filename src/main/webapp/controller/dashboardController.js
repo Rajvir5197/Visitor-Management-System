@@ -138,17 +138,30 @@ app.controller('dashboardController', function($scope, $http, $rootScope) {
 		visitor.enableVisitorCheckOut = true;
 		$http.post("/visitor-Management-System/Security/viewAllCoVisitor", visitor).then(function mySuccess(response){
 			$scope.allCoVisitor = response.data;
-			if($scope.allCoVisitor.length > 0){
-				angular.forEach($scope.allCoVisitor,function(coVisitor){
-					if(!coVisitor.seccheckout){
+			$http.post("/visitor-Management-System/Security/getVisitAllAsset", visitor.meetingBooked.visitor).then(function mySuccess(response){
+				$scope.allVisitorAsset = response.data;
+				if($scope.allVisitorAsset.length > 0){
+					angular.forEach($scope.allVisitorAsset,function(asset){
+						if(!asset.deliveredFlag){
+							visitor.enableVisitorCheckOut = false;
+						}
+					});
+				}
+				if($scope.allCoVisitor.length > 0){
+					angular.forEach($scope.allCoVisitor,function(coVisitor){
+						if(!coVisitor.seccheckout){
+							visitor.enableVisitorCheckOut = false;
+						}
+					});
+				}else{
+					if(!visitor.empCheckout){
 						visitor.enableVisitorCheckOut = false;
 					}
-				});
-			}else{
-				if(!visitor.empCheckout){
-					visitor.enableVisitorCheckOut = false;
 				}
-			}
+			}, function myError(data){
+				console.log("some internal error");
+				console.log(data);
+			});
 		}, function myError(data){
 			console.log("some internal error");
 			console.log(data);

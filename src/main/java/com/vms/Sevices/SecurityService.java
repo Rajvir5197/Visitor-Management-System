@@ -118,7 +118,12 @@ public class SecurityService {
 	public JSONObject addCoVisitorAsset(@RequestBody Asset asset) {
 
 		JSONObject jsonObject = new JSONObject();
-
+		if(asset.getMainVisitor() != null) {
+			int v = asset.getMainVisitor().getVisitorId();
+			Optional<Visitor> vis = visitorRepository.findById(v);
+			asset.setMainVisitor(vis.get());
+		}
+		
 		Asset assetSaved = assetRepository.save(asset);
 		if (null != assetSaved) {
 			jsonObject.put("msg", "SUCCESS");
@@ -250,47 +255,50 @@ public class SecurityService {
 			
 			SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 			try {
-				// Construct data
-			
-				List<CoVisitor> CoVisitorList = coVisitorRepository.findByVisitor(meeting.getMeetingBooked().getVisitor());
-				int count = CoVisitorList.size();
-				String AssetDetails = "";
-				for (CoVisitor CV : CoVisitorList) {
-					List<Asset> assetDetails = assetRepository.findByVisitor(CV);
-					for( Asset as : assetDetails) {
-						AssetDetails = AssetDetails + CV.getCoVisitorName() + ":" +as.getAssetName() + ":" + as.getAssetCount() + "\n";
-					}
-					
+			// Construct data
+			List<Asset> assetDetailsMAin = assetRepository.findByMainVisitor(meeting.getMeetingBooked().getVisitor());
+			String AssetDetailsM = "";
+			for (Asset as : assetDetailsMAin) {
+				AssetDetailsM = AssetDetailsM + as.getAssetName() + ":" + as.getAssetCount() + "\n";
+			}
+			List<CoVisitor> CoVisitorList = coVisitorRepository.findByVisitor(meeting.getMeetingBooked().getVisitor());
+			int count = CoVisitorList.size();
+			String AssetDetails = "";
+			for (CoVisitor CV : CoVisitorList) {
+				List<Asset> assetDetails = assetRepository.findByVisitor(CV);
+				for (Asset as : assetDetails) {
+					AssetDetails = AssetDetails + CV.getCoVisitorName() + ":" + as.getAssetName() + ":"
+							+ as.getAssetCount() + "\n";
 				}
-				String message = "Hello Visitor: \n"+
-								 "Please find checkin Details below: \n" +
-								 "Number of Co-visitor: " + count + "\n" +
-								 "Asset details: \n" +
-								 AssetDetails +
-								 "Thanks/Regard";
-				String apiKey = "apikey=" + "SLNDsGimV1s-MQPRtuGHKqeF6V8MkQY2mYVw2DriO1";
 
+			}
+			String message = "Hello Visitor: \n" + "Please find checkin Details below: \n" + "Main Asset : \n"
+					+ AssetDetailsM + "\n" + "Number of Co-visitor: " + count + "\n" + "Asset details: \n"
+					+ AssetDetails + "Thanks/Regard";
+			String apiKey = "apikey=" + "SLNDsGimV1s-MQPRtuGHKqeF6V8MkQY2mYVw2DriO1";
 
-			/*
-			 * String numbers = "&numbers=" +
-			 * visitor.getMeetingBooked().getVisitor().getContactNumber();
-			 * 
-			 * // Send data HttpURLConnection conn = (HttpURLConnection) new
-			 * URL("https://api.textlocal.in/send/?").openConnection(); String data = apiKey
-			 * + numbers +"&message="+ message; //+ sender; System.out.println("data: "+
-			 * data); conn.setDoOutput(true); conn.setRequestMethod("POST");
-			 * conn.setRequestProperty("Content-Length", Integer.toString(data.length()));
-			 * conn.getOutputStream().write(data.getBytes("UTF-8")); final BufferedReader rd
-			 * = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-			 */
-				final StringBuffer stringBuffer = new StringBuffer();
-			/*
-			 * String line; while ((line = rd.readLine()) != null) {
-			 * stringBuffer.append(line); } rd.close();
-			 */
-				
-				sendmail(meeting.getMeetingBooked().getVisitor().getEmailId(),message);
-				
+			String numbers = "&numbers=" + meeting.getMeetingBooked().getVisitor().getContactNumber();
+
+			// Send data
+			HttpURLConnection conn = (HttpURLConnection) new URL("https://api.textlocal.in/send/?").openConnection();
+			String data = apiKey + numbers + "&message=" + message;
+			System.out.println("data: " + data);
+			conn.setDoOutput(true);
+			conn.setRequestMethod("POST");
+			conn.setRequestProperty("Content-Length", Integer.toString(data.length()));
+			conn.getOutputStream().write(data.getBytes("UTF-8"));
+			final BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+
+			final StringBuffer stringBuffer = new StringBuffer();
+
+			String line;
+			while ((line = rd.readLine()) != null) {
+				stringBuffer.append(line);
+			}
+			rd.close();
+
+			sendmail(meeting.getMeetingBooked().getVisitor().getEmailId(), message);
+
 				return stringBuffer.toString();
 			} catch (Exception e) {
 				System.out.println("Error SMS "+e);
@@ -309,6 +317,13 @@ public class SecurityService {
 			System.out.println("sending msg");
 			javaMailSender.send(msg);
 			System.out.println("sent msg");
+		}
+
+		public List<Asset> getVisitAllAsset(Visitor visitor) {
+			
+			List<Asset> Visitor = assetRepository.findByMainVisitor(visitor);
+
+			return Visitor;
 		}
 
 }

@@ -75,27 +75,27 @@ public class EmployeeService {
 
 	@Autowired
 	TaskRepository taskRepository;
-	
+
 	Logger logger = LoggerFactory.getLogger(EmployeeService.class);
 
 	public List<Employee> allEmployee() {
 
 		logger.info("start of allEmployee method");
 		List<Employee> E = repository.findAll();
-		for(Employee emp : E) {
-			if(emp.getImage() != null) {
+		for (Employee emp : E) {
+			if (emp.getImage() != null) {
 
 				emp.setImage(decompressBytes(emp.getImage()));
 			}
 		}
-		
+
 		logger.info("end of allEmployee method");
-		
+
 		return E;
 	}
-	
+
 	public JSONObject addNewEmp(Employee employee) {
-		
+
 		logger.info("start of addNewEmp method");
 		JSONObject jsonObject = new JSONObject();
 		employee.setRegDate(Date.valueOf(LocalDate.now()));
@@ -103,7 +103,7 @@ public class EmployeeService {
 		Employee employeeSaved = repository.save(employee);
 		if (null != employeeSaved) {
 			jsonObject.put("data", "SUCCESS");
-			logger.info("employee added: "+employeeSaved.getEmpCode());
+			logger.info("employee added: " + employeeSaved.getEmpCode());
 		} else {
 			jsonObject.put("data", "FAIL");
 		}
@@ -119,7 +119,7 @@ public class EmployeeService {
 		String fileName = StringUtils.cleanPath(file.getOriginalFilename());
 		try {
 			Employee employee = mapper.readValue(jsonEmployee, Employee.class);
-			//employee.setProfileAttachment(new SerialBlob(file.getBytes()));
+			// employee.setProfileAttachment(new SerialBlob(file.getBytes()));
 			employee.setImage(compressBytes(file.getBytes()));
 			employee.setRegDate(Date.valueOf(LocalDate.now()));
 			employee.setRegTime(Time.valueOf(LocalTime.now()));
@@ -136,50 +136,50 @@ public class EmployeeService {
 			 * 
 			 * }
 			 */
-			  catch (IOException e) {
+		catch (IOException e) {
 			e.printStackTrace();
 		}
 		return jsonObject;
 	}
-	
+
 	// compress the image bytes before storing it in the database
-    public static byte[] compressBytes(byte[] data) {
-        Deflater deflater = new Deflater();
-        deflater.setInput(data);
-        deflater.finish();
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream(data.length);
-        byte[] buffer = new byte[1024];
-        while (!deflater.finished()) {
-            int count = deflater.deflate(buffer);
-            outputStream.write(buffer, 0, count);
-        }
-        try {
-            outputStream.close();
-        } catch (IOException e) {
-        }
-        System.out.println("before compressed" + data.length);
-        System.out.println("Compressed Image Byte Size - " + outputStream.toByteArray().length);
-        return outputStream.toByteArray();
-    }
-   
- // uncompress the image bytes before returning it to the angular application
-        public static byte[] decompressBytes(byte[] data) {
-            Inflater inflater = new Inflater();
-            inflater.setInput(data);
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream(data.length);
-            byte[] buffer = new byte[1024];
-            try {
-                while (!inflater.finished()) {
-                    int count = inflater.inflate(buffer);
-                    outputStream.write(buffer, 0, count);
-                }
-                outputStream.close();
-            } catch (IOException ioe) {
-            } catch (DataFormatException e) {
-            	
-            }
-            return outputStream.toByteArray();
-        }
+	public static byte[] compressBytes(byte[] data) {
+		Deflater deflater = new Deflater();
+		deflater.setInput(data);
+		deflater.finish();
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream(data.length);
+		byte[] buffer = new byte[1024];
+		while (!deflater.finished()) {
+			int count = deflater.deflate(buffer);
+			outputStream.write(buffer, 0, count);
+		}
+		try {
+			outputStream.close();
+		} catch (IOException e) {
+		}
+		System.out.println("before compressed" + data.length);
+		System.out.println("Compressed Image Byte Size - " + outputStream.toByteArray().length);
+		return outputStream.toByteArray();
+	}
+
+	// uncompress the image bytes before returning it to the angular application
+	public static byte[] decompressBytes(byte[] data) {
+		Inflater inflater = new Inflater();
+		inflater.setInput(data);
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream(data.length);
+		byte[] buffer = new byte[1024];
+		try {
+			while (!inflater.finished()) {
+				int count = inflater.inflate(buffer);
+				outputStream.write(buffer, 0, count);
+			}
+			outputStream.close();
+		} catch (IOException ioe) {
+		} catch (DataFormatException e) {
+
+		}
+		return outputStream.toByteArray();
+	}
 
 	public JSONObject deleteEmployee(Employee employee) {
 
@@ -232,18 +232,19 @@ public class EmployeeService {
 		List<String> statusNotIn = new ArrayList<String>();
 		statusNotIn.add("Cancel");
 		statusNotIn.add("Sec Checked Out");
-		logger.info("visitDate: "+Date.valueOf(LocalDate.now()));
+		logger.info("visitDate: " + Date.valueOf(LocalDate.now()));
 		List<MeetingStatus> allMeetings = meetingStatusRepository
 				.findByMeetingBookedVisitDateAndStatusIsNotIn(Date.valueOf(LocalDate.now()), statusNotIn);
-		
-		for(MeetingStatus meetings : allMeetings) {
-			if(meetings.getMeetingBooked().getVisitor().getVisitorImage() != null) {
 
-				meetings.getMeetingBooked().getVisitor().setVisitorImage(decompressBytes(meetings.getMeetingBooked().getVisitor().getVisitorImage()));
+		for (MeetingStatus meetings : allMeetings) {
+			if (meetings.getMeetingBooked().getVisitor().getVisitorImage() != null) {
+
+				meetings.getMeetingBooked().getVisitor()
+						.setVisitorImage(decompressBytes(meetings.getMeetingBooked().getVisitor().getVisitorImage()));
 			}
 		}
 
-		logger.info("end of viewAllVisit method with meeting count: "+allMeetings.size());
+		logger.info("end of viewAllVisit method with meeting count: " + allMeetings.size());
 		return allMeetings;
 	}
 
@@ -252,8 +253,8 @@ public class EmployeeService {
 		List<String> statusNotIn = new ArrayList<String>();
 		statusNotIn.add("Cancel");
 		List<MeetingStatus> allMeetings = meetingStatusRepository
-				.findByCreatedByAndMeetingBookedVisitDateAndStatusIsNotInAndEmpCheckout(empCode, Date.valueOf(LocalDate.now()),
-						statusNotIn,false);
+				.findByCreatedByAndMeetingBookedVisitDateAndStatusIsNotInAndEmpCheckout(empCode,
+						Date.valueOf(LocalDate.now()), statusNotIn, false);
 		/*
 		 * for(MeetingStatus ms : allMeetings) {
 		 * ms.getMeetingBooked().setVisitDate(Date.valueOf(LocalDate.now())); }
@@ -265,11 +266,11 @@ public class EmployeeService {
 
 		JSONObject jsonObject = new JSONObject();
 		try {
-			//Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-			//SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			// Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+			// SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			/// java.util.Date d = sdf.parse(sdf.format(timestamp));
 			Random rnd = new Random();
-			//int  number = Integer.valueOf(String.format("%06d", rnd.nextInt(999999)));
+			// int number = Integer.valueOf(String.format("%06d", rnd.nextInt(999999)));
 			int number = rnd.nextInt(900000) + 100000;
 			meeting.setSecurityCode(number);
 			meeting.setCreatedDate(Date.valueOf(LocalDate.now()));
@@ -406,7 +407,7 @@ public class EmployeeService {
 	}
 
 	public int getTodaysVisitCount(int loginId) {
-		
+
 		logger.info("start of getTodaysVisitCount method");
 		List<MeetingStatus> allVisit = meetingStatusRepository.findByCreatedBy(loginId);
 		int count = 0;
@@ -423,8 +424,9 @@ public class EmployeeService {
 			}
 		}
 		logger.info("end of getTodaysVisitCount method with count = " + count);
-		 
-		//int count = getTotalVisitCount(loginId) - getCancelVisitCount(loginId) -getAttendedVisitCount(loginId);
+
+		// int count = getTotalVisitCount(loginId) - getCancelVisitCount(loginId)
+		// -getAttendedVisitCount(loginId);
 		return count;
 	}
 
@@ -454,41 +456,40 @@ public class EmployeeService {
 
 		return count;
 	}
-	
+
 	public String sendMessage(@RequestBody MeetingStatus visitor) {
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 		try {
 			// Construct data
 			String apiKey = "apikey=" + "SLNDsGimV1s-MQPRtuGHKqeF6V8MkQY2mYVw2DriO1";
-			String message = "Your Meeting is schedule on "+
-					  sdf.format(visitor.getMeetingBooked().getVisitDate()) +
-					  " "+visitor.getMeetingBooked().getVisitTime()
-					  +" with "+visitor.getMeetingBooked().getEmpName()+" at "+
-					  visitor.getMeetingBooked().getVisitLocation().getPlantName()
-					  +" and your checkin code is: "+visitor.getSecurityCode();
+			String message = "Your Meeting is schedule on " + sdf.format(visitor.getMeetingBooked().getVisitDate())
+					+ " " + visitor.getMeetingBooked().getVisitTime() + " with "
+					+ visitor.getMeetingBooked().getEmpName() + " at "
+					+ visitor.getMeetingBooked().getVisitLocation().getPlantName() + " and your checkin code is: "
+					+ visitor.getSecurityCode();
 
+			String numbers = "&numbers=" + visitor.getMeetingBooked().getVisitor().getContactNumber();
 
-			/*
-			 * String numbers = "&numbers=" +
-			 * visitor.getMeetingBooked().getVisitor().getContactNumber();
-			 * 
-			 * // Send data HttpURLConnection conn = (HttpURLConnection) new
-			 * URL("https://api.textlocal.in/send/?").openConnection(); String data = apiKey
-			 * + numbers +"&message="+ message; //+ sender; System.out.println("data: "+
-			 * data); conn.setDoOutput(true); conn.setRequestMethod("POST");
-			 * conn.setRequestProperty("Content-Length", Integer.toString(data.length()));
-			 * conn.getOutputStream().write(data.getBytes("UTF-8"));
-			 */
-			/*
-			 * final BufferedReader rd = new BufferedReader(new
-			 * InputStreamReader(conn.getInputStream()));
-			 */
+			// Send data
+			HttpURLConnection conn = (HttpURLConnection) new URL("https://api.textlocal.in/send/?").openConnection();
+			String data = apiKey + numbers + "&message=" + message;
+			System.out.println("data: " + data);
+			conn.setDoOutput(true);
+			conn.setRequestMethod("POST");
+			conn.setRequestProperty("Content-Length", Integer.toString(data.length()));
+			conn.getOutputStream().write(data.getBytes("UTF-8"));
+
+			final BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+
 			final StringBuffer stringBuffer = new StringBuffer();
-			/*
-			 * String line; while ((line = rd.readLine()) != null) {
-			 * stringBuffer.append(line); } rd.close();
-			 */
+
+			String line;
+			while ((line = rd.readLine()) != null) {
+				stringBuffer.append(line);
+			}
+			rd.close();
+			 
 			
 			sendmail(visitor.getMeetingBooked().getVisitor().getEmailId(),message);
 			
@@ -501,15 +502,16 @@ public class EmployeeService {
 
 	public String sendMessage1(@RequestBody MeetingStatus visitor) {
 		HttpURLConnection conn = null;
-		
+
 		try {
 			// Construct data
 			// APIKey=R8ntvc8nnU26zeAGiN0U0A&senderid=ERUCHA&channel=2&DCS=0&
 			// flashsms=0&number=919028xxxxxx&text=test%20message&route=1
-			 SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-			 String apiKey = "APIKey=" +
-			 URLEncoder.encode("R8ntvc8nnU26zeAGiN0U0A","UTF-8")+"&senderid="+URLEncoder.encode("ERUCHA","UTF-8")+"&channel="+URLEncoder.encode("2","UTF-8")+"&DCS="+URLEncoder.encode("0","UTF-8")+"&flashsms="+URLEncoder.encode("0","UTF-8");
-			
+			SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+			String apiKey = "APIKey=" + URLEncoder.encode("R8ntvc8nnU26zeAGiN0U0A", "UTF-8") + "&senderid="
+					+ URLEncoder.encode("ERUCHA", "UTF-8") + "&channel=" + URLEncoder.encode("2", "UTF-8") + "&DCS="
+					+ URLEncoder.encode("0", "UTF-8") + "&flashsms=" + URLEncoder.encode("0", "UTF-8");
+
 			/*
 			 * String message = "Your Meeting is schedule on "+
 			 * sdf.format(visitor.getMeetingBooked().getVisitDate()) +
@@ -517,37 +519,35 @@ public class EmployeeService {
 			 * +" with "+visitor.getMeetingBooked().getEmpId()+" at"+
 			 * visitor.getMeetingBooked().getVisitLocation().getPlantName()
 			 */;
-			 
-			 String message = "hello";
-			 String numbers = "&number=" +
-			 URLEncoder.encode(""+visitor.getMeetingBooked().getVisitor().getContactNumber(),"UTF-8");
+
+			String message = "hello";
+			String numbers = "&number="
+					+ URLEncoder.encode("" + visitor.getMeetingBooked().getVisitor().getContactNumber(), "UTF-8");
 
 			// Send data
-			 String data = apiKey + numbers +"&text=" + message
-					 //URLEncoder.encode(message,"UTF-8")
-					 +"&route=1";
-			 conn = (HttpURLConnection) new
-			 URL("http://bulksms.vrudheesolutions.com/api/mt/SendSMS").openConnection();
-			 conn.setRequestProperty("Content-Type", "application/json");
-			 
+			String data = apiKey + numbers + "&text=" + message
+			// URLEncoder.encode(message,"UTF-8")
+					+ "&route=1";
+			conn = (HttpURLConnection) new URL("http://bulksms.vrudheesolutions.com/api/mt/SendSMS").openConnection();
+			conn.setRequestProperty("Content-Type", "application/json");
+
 			/*
 			 * String data1 ="{APIKey: \"R8ntvc8nnU26zeAGiN0U0A\", senderid: \"ERUCHA\",
 			 * channel: \"2\", DCS: \"0\", flashsms: \"0\", numbers:
 			 * \""+visitor.getMeetingBooked().getVisitor().getContactNumber()+
 			 * "\" , text: \"testMessage\" }";
 			 */
-			 System.out.println("data: "+ data + conn.getResponseCode());
-			 conn.setDoOutput(true);
-			 OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
-			 wr.write(data);
-			 wr.flush();
-			 BufferedReader rd = new BufferedReader(new
-			 InputStreamReader(conn.getInputStream()));
-			 String result = rd.readLine();
-			 wr.close();
-			 rd.close();
+			System.out.println("data: " + data + conn.getResponseCode());
+			conn.setDoOutput(true);
+			OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
+			wr.write(data);
+			wr.flush();
+			BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+			String result = rd.readLine();
+			wr.close();
+			rd.close();
 
-			sendmail(visitor.getMeetingBooked().getVisitor().getEmailId(),message);
+			sendmail(visitor.getMeetingBooked().getVisitor().getEmailId(), message);
 
 			// return result;
 			return "SUCCESS";
@@ -601,98 +601,92 @@ public class EmployeeService {
 	}
 
 	public Employee getLoggedInDetails(int loginId) {
-		
+
 		Employee empDetails = new Employee();
 		Optional<Employee> l = repository.findById(loginId);
-		if(l.isPresent()) {
+		if (l.isPresent()) {
 			empDetails = l.get();
-			if(empDetails.getImage() != null) {
+			if (empDetails.getImage() != null) {
 
 				empDetails.setImage(decompressBytes(empDetails.getImage()));
 			}
-			
+
 		}
-		
+
 		return empDetails;
 	}
 
 	public List<MeetingStatus> viewAllVisitsReport() {
-		
+
 		List<String> statusNotIn = new ArrayList<String>();
 		statusNotIn.add("Cancel");
 		List<MeetingStatus> allMeetings = meetingStatusRepository.findByStatusIsNotIn(statusNotIn);
-		
+
 		return allMeetings;
 	}
-	
+
 	public List<MeetingStatus> viewAllCancelVisitsReport() {
 
 		List<MeetingStatus> allCancelMeetings = meetingStatusRepository.findByStatus("Cancel");
-		
+
 		return allCancelMeetings;
 	}
-	
+
 	public List<MeetingStatus> getVisitsbetweenDates(Date startDate, Date endDate) {
-		// TODO Auto-generated method stub 
+		// TODO Auto-generated method stub
 
 		List<String> statusNotIn = new ArrayList<String>();
 		statusNotIn.add("Cancel");
-		List<MeetingStatus> allMeetings = meetingStatusRepository.findByMeetingBookedVisitDateBetweenAndStatusIsNotIn(startDate,endDate,statusNotIn);
-		
+		List<MeetingStatus> allMeetings = meetingStatusRepository
+				.findByMeetingBookedVisitDateBetweenAndStatusIsNotIn(startDate, endDate, statusNotIn);
+
 		return allMeetings;
-	
+
 	}
 
-	
+	public ByteArrayInputStream customersToExcel(List<MeetingStatus> visits) throws IOException {
 
-	  public  ByteArrayInputStream customersToExcel(List<MeetingStatus> visits) throws IOException {
-	    
-		  logger.info("start of customersToExcel method");
-		  String[] COLUMNs = {"Visitor Name", "Visitor Org", "visitor Phone", "Visit Date", "Visit Time"};
-	    try(
-	        Workbook workbook = new XSSFWorkbook();
-	        ByteArrayOutputStream out = new ByteArrayOutputStream();
-	    ){
-	      CreationHelper createHelper = workbook.getCreationHelper();
-	   
-	      Sheet sheet = workbook.createSheet("VisitorDetails");
-	   
-	      Font headerFont = workbook.createFont();
-	      headerFont.setBold(true);
-	      headerFont.setColor(IndexedColors.BLUE.getIndex());
-	   
-	      CellStyle headerCellStyle = workbook.createCellStyle();
-	      headerCellStyle.setFont(headerFont);
-	   
-	      // Row for Header
-	      Row headerRow = sheet.createRow(0);
-	   
-	      // Header
-	      for (int col = 0; col < COLUMNs.length; col++) {
-	        Cell cell = headerRow.createCell(col);
-	        cell.setCellValue(COLUMNs[col]);
-	        cell.setCellStyle(headerCellStyle);
-	      }
-	   
-	      int rowIdx = 1;
-	      logger.info("size of data:"+visits.size());
-	      for (MeetingStatus visit : visits) {
-	        Row row = sheet.createRow(rowIdx++);
-	   
-	        row.createCell(0).setCellValue(visit.getMeetingBooked().getVisitor().getVisitorName());
-	        row.createCell(1).setCellValue(visit.getMeetingBooked().getVisitor().getOrganisation());
-	        row.createCell(2).setCellValue(visit.getMeetingBooked().getVisitor().getContactNumber());
-	        row.createCell(3).setCellValue(visit.getMeetingBooked().getVisitDate().toString());
-	        row.createCell(4).setCellValue(visit.getMeetingBooked().getVisitTime().toString());
-	  
-	      }
-	   
-	      workbook.write(out);
-	      logger.info("end of customersToExcel method");
-	      return new ByteArrayInputStream(out.toByteArray());
-	    }
-	  }
+		logger.info("start of customersToExcel method");
+		String[] COLUMNs = { "Visitor Name", "Visitor Org", "visitor Phone", "Visit Date", "Visit Time" };
+		try (Workbook workbook = new XSSFWorkbook(); ByteArrayOutputStream out = new ByteArrayOutputStream();) {
+			CreationHelper createHelper = workbook.getCreationHelper();
 
-	
+			Sheet sheet = workbook.createSheet("VisitorDetails");
+
+			Font headerFont = workbook.createFont();
+			headerFont.setBold(true);
+			headerFont.setColor(IndexedColors.BLUE.getIndex());
+
+			CellStyle headerCellStyle = workbook.createCellStyle();
+			headerCellStyle.setFont(headerFont);
+
+			// Row for Header
+			Row headerRow = sheet.createRow(0);
+
+			// Header
+			for (int col = 0; col < COLUMNs.length; col++) {
+				Cell cell = headerRow.createCell(col);
+				cell.setCellValue(COLUMNs[col]);
+				cell.setCellStyle(headerCellStyle);
+			}
+
+			int rowIdx = 1;
+			logger.info("size of data:" + visits.size());
+			for (MeetingStatus visit : visits) {
+				Row row = sheet.createRow(rowIdx++);
+
+				row.createCell(0).setCellValue(visit.getMeetingBooked().getVisitor().getVisitorName());
+				row.createCell(1).setCellValue(visit.getMeetingBooked().getVisitor().getOrganisation());
+				row.createCell(2).setCellValue(visit.getMeetingBooked().getVisitor().getContactNumber());
+				row.createCell(3).setCellValue(visit.getMeetingBooked().getVisitDate().toString());
+				row.createCell(4).setCellValue(visit.getMeetingBooked().getVisitTime().toString());
+
+			}
+
+			workbook.write(out);
+			logger.info("end of customersToExcel method");
+			return new ByteArrayInputStream(out.toByteArray());
+		}
+	}
 
 }

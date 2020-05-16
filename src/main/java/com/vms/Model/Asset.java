@@ -38,6 +38,10 @@ public class Asset implements Serializable {
 	@JoinColumn(name = "co_visitor_id")
 	private CoVisitor visitor;
 	
+	@ManyToOne
+	@JoinColumn(name = "visitor_id")
+	private Visitor mainVisitor;
+	
 	
 	public int getAssetId() {
 		return assetId;
@@ -87,6 +91,16 @@ public class Asset implements Serializable {
 	public void setVisitor(CoVisitor visitor) {
 		this.visitor = visitor;
 	}
+
+	public Visitor getMainVisitor() {
+		return mainVisitor;
+	}
+
+	public void setMainVisitor(Visitor mainVisitor) {
+		this.mainVisitor = mainVisitor;
+	}
+	
+	
 	
 	
 	

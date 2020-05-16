@@ -8,9 +8,12 @@ import org.springframework.stereotype.Repository;
 
 import com.vms.Model.Asset;
 import com.vms.Model.CoVisitor;
+import com.vms.Model.Visitor;
 
 @Repository
 public interface AssetRepository extends JpaRepository<Asset, Integer> {
 
 	public List<Asset> findByVisitor(@Param("visitor") CoVisitor visitor);
+	
+	public List<Asset> findByMainVisitor(@Param("mainVisitor") Visitor visitor);
 }

@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.vms.Model.Asset;
 import com.vms.Model.CoVisitor;
 import com.vms.Model.MeetingStatus;
+import com.vms.Model.Visitor;
 import com.vms.Sevices.SecurityService;
 
 import net.minidev.json.JSONObject;
@@ -82,6 +83,13 @@ public class SecurityController {
 	public JSONObject sendEmail(@RequestBody MeetingStatus meeting) {
 		
 		return service.sendEmail(meeting);
+	}
+	
+	@RequestMapping(value = "/getVisitAllAsset", method = RequestMethod.POST)
+	@ResponseBody
+	public List<Asset> getVisitAllAsset(@RequestBody Visitor Visitor) {
+
+		return service.getVisitAllAsset(Visitor);
 	}
 
 }
