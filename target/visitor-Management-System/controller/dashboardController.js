@@ -109,29 +109,40 @@ app.controller('dashboardController', function($scope, $http, $rootScope) {
 	$scope.getCounts = function(){
 		$http.post("/visitor-Management-System/Employee/CancelVisitCount",$scope.UserID).then(function mySuccess(response){
 			$scope.cancelVisitCount = response.data;
+			$http.post("/visitor-Management-System/Employee/TotalVisitCount",$scope.UserID).then(function mySuccess(response){
+				$scope.totalVisitCount = response.data;
+				$http.post("/visitor-Management-System/Employee/TodaysVisitCount",$scope.UserID).then(function mySuccess(response){
+					$scope.todaysVisitCount = response.data;
+					$http.post("/visitor-Management-System/Employee/AttendedVisitCount",$scope.UserID).then(function mySuccess(response){
+						$scope.attendedVisitCount = response.data;
+						/*$( "#Loader" ).modal('hide');
+						$(".modal-backdrop").remove();*/
+						//$('.modal.in').modal('hide');
+					}, function myError(data){
+						/*$( "#Loader" ).hide();
+						$(".modal-backdrop").remove();*/
+						console.log("some internal error");
+						console.log(data);
+					});
+				}, function myError(data){
+					/*$( "#Loader" ).hide();
+					$(".modal-backdrop").remove();*/
+					console.log("some internal error");
+					console.log(data);
+				});
+			}, function myError(data){
+				/*$( "#Loader" ).hide();
+				$(".modal-backdrop").remove();*/
+				console.log("some internal error");
+				console.log(data);
+			});
 		}, function myError(data){
-			console.log("some internal error");
-			console.log(data);
-		});
-		$http.post("/visitor-Management-System/Employee/TotalVisitCount",$scope.UserID).then(function mySuccess(response){
-			$scope.totalVisitCount = response.data;
-		}, function myError(data){
-			console.log("some internal error");
-			console.log(data);
-		});
-		$http.post("/visitor-Management-System/Employee/TodaysVisitCount",$scope.UserID).then(function mySuccess(response){
-			$scope.todaysVisitCount = response.data;
-		}, function myError(data){
+			/*$( "#Loader" ).hide();
+			$(".modal-backdrop").remove();*/
 			console.log("some internal error");
 			console.log(data);
 		});
 		
-		$http.post("/visitor-Management-System/Employee/AttendedVisitCount",$scope.UserID).then(function mySuccess(response){
-			$scope.attendedVisitCount = response.data;
-		}, function myError(data){
-			console.log("some internal error");
-			console.log(data);
-		});
 	};
 	
 	$scope.viewAllCoVisitor = function(visitor){
@@ -185,6 +196,7 @@ app.controller('dashboardController', function($scope, $http, $rootScope) {
 				});
 			}
 		}, function myError(data){
+			//$( "#Loader" ).modal('hide');
 			console.log("some internal error");
 			console.log(data);
 		});
@@ -238,9 +250,9 @@ app.controller('dashboardController', function($scope, $http, $rootScope) {
 		$scope.invalidSecCode = false;
 	}else{
 		$scope.viewAllContacts();
-		$scope.viewAllVisits();
 		$scope.viewEmpPlant();
 		$scope.getTasks();
+		$scope.viewAllVisits();
 	}
 	
 	$scope.securityCheckin = function(visit){
@@ -314,6 +326,7 @@ app.controller('dashboardController', function($scope, $http, $rootScope) {
 	};
 	
 	$scope.addNewVisit = function(){
+		//$( "#Loader" ).modal('show');
 		$scope.invalidMobile = false;
 		$scope.invalidDate = false;
 		$scope.invalidTime = false;
@@ -324,6 +337,8 @@ app.controller('dashboardController', function($scope, $http, $rootScope) {
 				$scope.visit.meetingBooked.visitDate = new Date($scope.visit.meetingBooked.visitDate);
 				if($scope.visit.meetingBooked.visitDate < todayDate){
 					$scope.invalidDate = true;
+					/*$( "#Loader" ).hide();
+					$(".modal-backdrop").remove();*/
 				}else if($scope.visit.meetingBooked.visitDate > todayDate){
 					
 					$scope.visit.createdBy = $scope.UserID;
@@ -334,8 +349,13 @@ app.controller('dashboardController', function($scope, $http, $rootScope) {
 						if(response.data.msg == "SUCCESS"){
 							$('#VisitScheduleModal').modal('hide');
 							window.location.href  = "#!employeeDashboard";
+						}else{
+							/*$( "#Loader" ).hide();
+							$(".modal-backdrop").remove();*/
 						}
 					}, function myError(data){
+						/*$( "#Loader" ).hide();
+						$(".modal-backdrop").remove();*/
 						console.log("some internal error");
 						console.log(data);
 					});
@@ -345,6 +365,8 @@ app.controller('dashboardController', function($scope, $http, $rootScope) {
 					var todayTime = new Date();
 					if(visTime < todayTime){
 						$scope.invalidTime = true;
+						/*$( "#Loader" ).hide();
+						$(".modal-backdrop").remove();*/
 					}else{
 						$scope.visit.createdBy = $scope.UserID;
 						$scope.visit.lastUpdatedBy = $scope.UserID;
@@ -354,8 +376,13 @@ app.controller('dashboardController', function($scope, $http, $rootScope) {
 							if(response.data.msg == "SUCCESS"){
 								$('#VisitScheduleModal').modal('hide');
 								window.location.href  = "#!employeeDashboard";
+							}else{
+								/*$( "#Loader" ).hide();
+								$(".modal-backdrop").remove();*/
 							}
 						}, function myError(data){
+							/*$( "#Loader" ).hide();
+							$(".modal-backdrop").remove();*/
 							console.log("some internal error");
 							console.log(data);
 						});
@@ -363,7 +390,12 @@ app.controller('dashboardController', function($scope, $http, $rootScope) {
 				}
 			}else{
 				$scope.invalidMobile = true;
+				/*$( "#Loader" ).hide();
+				$(".modal-backdrop").remove();*/
 			}
+		}else{
+			/*$( "#Loader" ).hide();
+			$(".modal-backdrop").remove();*/
 		}
 	};
 	
