@@ -87,7 +87,7 @@
 <div class="col-lg-9 mb-3">
 <h2 class="m-0 FontSize22 p-3 bg-light BlackTxtColor border border-bottom-0">Co-Visitor Information
 <button type="button" style="margin-left: 33%;" ng-disabled="visitCheckin.empCheckin" class="btn btn-primary" data-toggle="modal" data-target="#addCoVisitorModal" ng-click="newVisitor = {};">Add Co-Visitor</button>
-<button type="button" class="btn btn-primary" ng-click="sendMail()">send Email</button>
+<button type="button" class="btn btn-primary" ng-disabled="visitCheckin.empCheckin" ng-click="sendMail()">send Email</button>
 </h2>
 
 <div class="table-responsive">

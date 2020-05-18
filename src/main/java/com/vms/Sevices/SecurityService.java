@@ -175,6 +175,7 @@ public class SecurityService {
 			meeting.setSecCheckoutTime(Time.valueOf(LocalTime.now()));
 
 			MeetingStatus meetingSaved = meetingStatusRepository.save(meeting);
+			sendMessage(meetingSaved);
 			if (null != meetingSaved) {
 				jsonObject.put("msg", "SUCCESS");
 			} else {
@@ -272,14 +273,22 @@ public class SecurityService {
 				}
 
 			}
-			String message = "Hello Visitor: \n" + "Please find checkin Details below: \n" + "Main Asset : \n"
-					+ AssetDetailsM + "\n" + "Number of Co-visitor: " + count + "\n" + "Asset details: \n"
-					+ AssetDetails + "Thanks/Regard";
+			String message = "";
+			if(meeting.isSecCheckout()) {
+				message = "Thank you for your visit \n" + "Please find Asset details at the time of check-out: \n" + "Main Asset : \n"
+						+ AssetDetailsM + "\n" + "Number of Co-visitor: " + count + "\n" + "Asset details: \n"
+						+ AssetDetails + "Thanks/Regard";
+			}else {
+				message = "Hello Visitor: \n" + "Please find checkin Details below: \n" + "Main Asset : \n"
+						+ AssetDetailsM + "\n" + "Number of Co-visitor: " + count + "\n" + "Asset details: \n"
+						+ AssetDetails + "Thanks/Regard";
+			}
 			String apiKey = "apikey=" + "SLNDsGimV1s-MQPRtuGHKqeF6V8MkQY2mYVw2DriO1";
 
 			String numbers = "&numbers=" + meeting.getMeetingBooked().getVisitor().getContactNumber();
 
 			// Send data
+			
 			HttpURLConnection conn = (HttpURLConnection) new URL("https://api.textlocal.in/send/?").openConnection();
 			String data = apiKey + numbers + "&message=" + message;
 			System.out.println("data: " + data);
@@ -296,6 +305,7 @@ public class SecurityService {
 				stringBuffer.append(line);
 			}
 			rd.close();
+			 
 
 			sendmail(meeting.getMeetingBooked().getVisitor().getEmailId(), message);
 
