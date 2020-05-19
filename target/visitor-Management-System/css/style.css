@@ -1,0 +1,106 @@
+
+
+
+@font-face {
+    font-family: 'exobold';
+    src: url('../webfonts/exo-bold-webfont.woff2') format('woff2'),
+         url('../webfonts/exo-bold-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+
+@font-face {
+    font-family: 'exoregular';
+    src: url('../webfonts/exo-regular-webfont.woff2') format('woff2'),
+         url('../webfonts/exo-regular-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+
+
+
+
+/*@font-face {
+    font-family: 'exo_2bold_condensed';
+    src: url('../webfonts/exo2-boldcondensed-webfont.woff2') format('woff2'),
+         url('../webfonts/exo2-boldcondensed-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+
+@font-face {
+    font-family: 'exo_2regular_condensed';
+    src: url('../webfonts/exo2-regularcondensed-webfont.woff2') format('woff2'),
+         url('../webfonts/exo2-regularcondensed-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+
+}*/
+
+
+
+/*	_Tag
+_______________________________________*/
+ul{ margin:0px !important;}
+
+.listNew {padding-left:0; list-style:none; }
+.listNew li{ padding:8px 0px; font-size:14px; border-bottom:1px solid #ddd; }
+.listNew li:last-child{ border-bottom:none;}
+.listNew li a{ color:#858796;}
+.listNew li a:hover{ color:#858796; text-decoration:underline;}
+
+
+/*	_Font Size
+_______________________________________*/
+
+.FontSize14{ font-size:14px;}
+.FontSize16{ font-size:16px;}
+.FontSize18{ font-size:18px;}
+.FontSize20{ font-size:20px;}
+.FontSize22{ font-size:22px;}
+.FontSize24{ font-size:24px;}
+.FontSize26{ font-size:26px;}
+.FontSize28{ font-size:28px;}
+.FontSize30{ font-size:30px;}
+.FontSize32{ font-size:32px;}
+.FontSize34{ font-size:34px;}
+.FontSize36{ font-size:36px;}
+.FontSize38{ font-size:38px;}
+.FontSize40{ font-size:40px;}
+
+
+/*	_Text Color
+_______________________________________*/
+
+.BlackTxtColor{ color:#353535; }
+.GreyTxtColor{ color:#686868; }
+
+/*	_BG Color
+_______________________________________*/
+.BlueBgColor{ background-color:#3482ae;}
+
+
+/*	_body
+_______________________________________*/
+
+.FaIcon{ position:relative; }
+.FaIcon .FloatIcon{ color:#959798; z-index:101; position:absolute; right:10px; top:50%; transform: translateY(-50%);}
+.Pointer{ cursor:pointer; }
+
+.Circle80{ width:80px; height:80px; border-radius:100%; display:block; text-align:center; cursor:pointer;}
+.Circle80 i{ line-height:80px;}
+
+.Rel{ position:relative; }
+.ContFloatingBtn{ z-index:1; position:absolute; right:0; top:3px;}
+
+
+
+/*	_Floating Label
+_______________________________________*/
+

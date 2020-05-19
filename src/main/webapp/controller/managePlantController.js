@@ -1,11 +1,19 @@
-app.controller('managePlantController', function($scope, $rootScope, $http, $window,$anchorScroll) {
+app.controller('managePlantController', function($scope, $rootScope, $http, $timeout) {
 		
+	
+	$scope.UserID = window.localStorage.getItem("loginDetails");
+	
+	if($scope.UserID == undefined || $scope.UserID == null ){
+		window.location = "/visitor-Management-System/index.html";
+	}
 	$scope.allPlants = [];
-	$scope.whenError = false;
 	$scope.viewAllPlant = function(){
-		$http.post("/viewAllPlant").then(function mySuccess(response){
+		$http.post("/visitor-Management-System/Plant/viewAllPlant").then(function mySuccess(response){
 			console.log(response.data);
 			$scope.allPlants = response.data;
+			$timeout(function() {
+				$('#dataTable').DataTable();
+			   }, 200);
 		}, function myError(data){
 			console.log("some internal error");
 			console.log(data);
@@ -26,32 +34,34 @@ app.controller('managePlantController', function($scope, $rootScope, $http, $win
 	};
 	
 	$scope.addNewPlant = function(){
-		
-		console.log("newPlant",$scope.newPlant);
-		if($scope.newPlant.plantCode != undefined && $scope.newPlant.plantCode != null){
-			$http.post("/addNewPlant", $scope.newPlant).then(function mySuccess(response){
+		if($scope.addForm.$valid){
+			$scope.newPlant.regBy = $scope.UserID;
+			$http.post("/visitor-Management-System/Plant/addNewPlant", $scope.newPlant).then(function mySuccess(response){
+				$('#addNewPlantModal').modal('hide');
 				$scope.viewAllPlant();
 			}, function myError(data){
 				console.log("some internal error");
 				console.log(data);
 			});
-		}else{
-			$scope.whenError = true;
 		}
-		
 	};
 	
 	$scope.editPlant = function(){
-		$http.post("/editPlant", $scope.edited).then(function mySuccess(response){
-			$scope.viewAllPlant();
-		}, function myError(data){
-			console.log("some internal error");
-			console.log(data);
-		});
+		if($scope.editForm.$valid){
+			$scope.edited.regBy = $scope.UserID;
+			$http.post("/visitor-Management-System/Plant/editPlant", $scope.edited).then(function mySuccess(response){
+				$('#editPlantModal').modal('hide');
+				$scope.viewAllPlant();
+			}, function myError(data){
+				console.log("some internal error");
+				console.log(data);
+			});
+		}
 	}; 
 	
 	$scope.deletePlant = function(){
-		$http.post("/deletePlant", $scope.plantToBeDeleted).then(function mySuccess(response){
+		$scope.plantToBeDeleted.regBy = $scope.UserID;
+		$http.post("/visitor-Management-System/Plant/deletePlant", $scope.plantToBeDeleted).then(function mySuccess(response){
 			$scope.viewAllPlant();
 		}, function myError(data){
 			console.log("some internal error");
@@ -64,6 +74,5 @@ app.controller('managePlantController', function($scope, $rootScope, $http, $win
 		$scope.newPlant.plantState = 'Maharashtra';
 		$scope.newPlant.plantCountry = 'India';
 		$scope.newPlant.plantCity = 'Aurangabad';
-		$scope.whenError = false;
 	};
 });
