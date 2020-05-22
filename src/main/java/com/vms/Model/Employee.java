@@ -73,7 +73,6 @@ public class Employee implements Serializable {
 	
 	@ManyToMany
 	@JoinColumn(name = "EMP_PLANT")
-	@NotNull
 	private Set<Plant> empPlantCode;
 
 	public int getEmpCode() {

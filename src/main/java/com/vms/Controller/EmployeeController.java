@@ -192,6 +192,13 @@ public class EmployeeController {
 	public Employee getLoggedInDetails(@RequestBody int loginId) {
 		return service.getLoggedInDetails(loginId);
 	}
+	
+	@RequestMapping(value = "/sendEmail", method = RequestMethod.POST)
+	@ResponseBody
+	public JSONObject sendEmail(@RequestBody MeetingStatus meeting) {
+		
+		return service.sendEmail(meeting);
+	}
 
 
 }

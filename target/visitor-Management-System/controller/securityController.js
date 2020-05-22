@@ -7,13 +7,19 @@ app.controller('securityController', function($scope, $rootScope, $http) {
 	};
 	
 	if($rootScope.visitCheckin == undefined || $rootScope.visitCheckin == null){
-		window.location = "#!dashboard";
+		window.location = "#!secDashboard";
 	};
 	
 	
-	
+	$scope.addAssetArrayList = [];
+	$scope.addCoVisitorAssetArrayList = [];
+	$scope.showAddAsset = false;
+	$scope.showAddCovisitorAsset = false;
 	Webcam.attach( '#my_camera' );
 	$scope.viewAllCoVisitor = function(){
+		$scope.showAddAsset = false;
+		$scope.showAddCovisitorAsset = false;
+		$rootScope.visitCheckin.enableVisitorCheckOut = true;
 		$http.post("/visitor-Management-System/Security/viewAllCoVisitor", $rootScope.visitCheckin).then(function mySuccess(response){
 			console.log(response.data);
 			$scope.allCoVisitor = response.data;
@@ -24,6 +30,7 @@ app.controller('securityController', function($scope, $rootScope, $http) {
 						angular.forEach(response.data,function(asset){
 							if(!asset.deliveredFlag){
 								coVisitor.allowCheckOut = false;
+								$rootScope.visitCheckin.enableVisitorCheckOut = false;
 							};
 						});
 					}, function myError(data){
@@ -36,6 +43,19 @@ app.controller('securityController', function($scope, $rootScope, $http) {
 			console.log("some internal error");
 			console.log(data);
 		});
+		if($rootScope.visitCheckin.enableVisitorCheckOut){
+			$http.post("/visitor-Management-System/Security/getVisitAllAsset", $scope.visitCheckin.meetingBooked.visitor).then(function mySuccess(response){
+				var allAsset = response.data;
+				angular.forEach(allAsset,function(value){
+					if(!value.deliveredFlag){
+						$rootScope.visitCheckin.enableVisitorCheckOut = false;
+					};
+				});
+			}, function myError(data){
+				console.log("some internal error");
+				console.log(data);
+			});
+		}
 	
 	};
 	$scope.viewAllCoVisitor();
@@ -91,13 +111,19 @@ app.controller('securityController', function($scope, $rootScope, $http) {
 		});
 	}
 	
-	$scope.addAsset = function(){
-		$scope.newAsset.assetStatus = "Not Delivered";
-		$scope.newAsset.deliveredFlag = false;
-		$scope.newAsset.visitor = $scope.selectedCoVisitor;
-		$http.post("/visitor-Management-System/Security/addCoVisitorAsset", $scope.newAsset).then(function mySuccess(response){
+	$scope.addAsset = function(asset){
+		asset.assetStatus = "Not Delivered";
+		asset.deliveredFlag = false;
+		asset.visitor = $scope.selectedCoVisitor;
+		$http.post("/visitor-Management-System/Security/addCoVisitorAsset", asset).then(function mySuccess(response){
 			if(response.data.msg == "SUCCESS"){
 				$scope.getCovisitorAsset($scope.selectedCoVisitor);
+				$scope.showAddCovisitorAsset = false;
+				for(var i = 0; i < $scope.addCoVisitorAssetArrayList.length; i++){
+					if($scope.addCoVisitorAssetArrayList[i].assetName == asset.assetName){
+						$scope.addCoVisitorAssetArrayList.splice(i, 1);
+					}
+				};
 			}
 		}, function myError(data){
 			console.log("some internal error");
@@ -105,18 +131,43 @@ app.controller('securityController', function($scope, $rootScope, $http) {
 		});
 	};
 	
-	$scope.addVisitorAsset = function(){
-		$scope.newVisitorAsset.assetStatus = "Not Delivered";
-		$scope.newVisitorAsset.deliveredFlag = false;
-		$scope.newVisitorAsset.mainVisitor = $scope.visitCheckin.meetingBooked.visitor;
-		$http.post("/visitor-Management-System/Security/addCoVisitorAsset", $scope.newVisitorAsset).then(function mySuccess(response){
+	$scope.addVisitorAsset = function(asset){
+		asset.assetStatus = "Not Delivered";
+		asset.deliveredFlag = false;
+		asset.mainVisitor = $scope.visitCheckin.meetingBooked.visitor;
+		$http.post("/visitor-Management-System/Security/addCoVisitorAsset", asset).then(function mySuccess(response){
 			if(response.data.msg == "SUCCESS"){
+				$scope.showAddAsset = false;
 				$scope.getVisitorAsset($scope.visitCheckin);
+				for(var i = 0; i < $scope.addAssetArrayList.length; i++){
+					if($scope.addAssetArrayList[i].assetName == asset.assetName){
+						$scope.addAssetArrayList.splice(i, 1);
+					}
+				};
 			}
 		}, function myError(data){
 			console.log("some internal error");
 			console.log(data);
 		});
+	};
+	
+	
+	$scope.addAssetArray = function(){
+		if(($scope.newVisitorAsset.assetName != undefined && $scope.newVisitorAsset.assetCount != undefined) && 
+				($scope.newVisitorAsset.assetName != "" && $scope.newVisitorAsset.assetCount != "")){
+			$scope.addAssetArrayList.push($scope.newVisitorAsset);
+		};
+		$scope.newVisitorAsset={};
+		$scope.showAddAsset = true;
+	};
+	
+	$scope.addCovisitorAssetArray = function(){
+		if(($scope.newAsset.assetName != undefined && $scope.newAsset.assetCount != undefined) && 
+				($scope.newAsset.assetName != "" && $scope.newAsset.assetCount != "")){
+			$scope.addCoVisitorAssetArrayList.push($scope.newAsset);
+		};
+		$scope.newAsset={};
+		$scope.showAddCovisitorAsset = true;
 	};
 	
 	$scope.deliverAsset = function(asset){
@@ -194,8 +245,32 @@ app.controller('securityController', function($scope, $rootScope, $http) {
 	};
 	
 	$scope.sendMail = function(){
-		$http.post("/visitor-Management-System/Security/sendEmail", $rootScope.visitCheckin).then(function mySuccess(response){
+		$http.post("/visitor-Management-System/Employee/sendEmail", $rootScope.visitCheckin).then(function mySuccess(response){
 			$('#emailModal').modal('show');
+		}, function myError(data){
+			console.log("some internal error");
+			console.log(data);
+		});
+	};
+	
+	$scope.securityCheckout = function(){
+		$rootScope.visitCheckin.secCheckoutBy = $scope.userName;
+		$http.post("/visitor-Management-System/Security/securityCheckout", $rootScope.visitCheckin).then(function mySuccess(response){
+			if(response.data.msg == 'SUCCESS'){
+				window.location = "#!secDashboard";
+			}
+		}, function myError(data){
+			console.log("some internal error");
+			console.log(data);
+		});
+	};
+	
+	$scope.securityCheckin = function(){
+		$rootScope.visitCheckin.secCheckinBy = $scope.userName;
+		$http.post("/visitor-Management-System/Security/securityCheckin", $rootScope.visitCheckin).then(function mySuccess(response){
+			if(response.data.msg == 'SUCCESS'){
+				window.location = "#!secDashboard";
+			}
 		}, function myError(data){
 			console.log("some internal error");
 			console.log(data);

@@ -1,6 +1,6 @@
 
 <!-- Begin Page Content -->
-<div ng-controller="dashboardController" class="container-fluid mt-3">
+<div class="container-fluid mt-3">
 
 <!-- Page Heading -->
 <div class="row mb-2">
@@ -21,7 +21,7 @@
 <div class="Circle80 bg-white m-auto"><i class="fa fa-user fa-2x"></i></div>
 </div>
 <div class="card-body">
-<span ng-show="invalidSecCode">Please enter valid Code</span>
+<span ng-show="visit.invalidSecCode" style="color: red;">Please enter valid Code</span>
 <div class="row">
 <div class="col-sm-4 mb-3">Name</div>
 <div class="col-sm-8 mb-3 BlackTxtColor">: {{visit.meetingBooked.visitor.visitorName}}</div>
@@ -49,12 +49,15 @@
 
 <div ng-hide="visit.secCheckin" class="row">
 <div class="col-sm-12 mb-6">
-<input type="number" ng-model="visit.securityCode1" class="form-control" style="margin-bottom: 4%;">
+<input type="text" maxlength="6" ng-model="visit.securityCode1" class="form-control" style="margin-bottom: 4%;">
 </div>
 </div>
 
-<a href="" ng-click="securityCheckin(visit)" class="btn btn-primary mr-2">Check In <i class="fa fa-check-circle"></i></a>
-<button ng-disabled="!visit.secCheckin || !visit.enableVisitorCheckOut" ng-click="securityCheckout(visit)" class="btn btn-danger">Check Out<i class="fa fa-times-circle"></i></button>
+<a href="" ng-hide="visit.secCheckin" ng-click="securityCheckin(visit)" class="btn btn-primary mr-2">Verify & Check In<i class="fa fa-check-circle"></i></a> <!-- ng-click="securityCheckin(visit)" -->
+<button ng-disabled="true" ng-show="visit.secCheckin" class="btn btn-success mr-2">Gate Checked In <i class="fa fa-check-circle"></i></button>
+<button ng-disabled="true" ng-hide="visit.empCheckout  || visit.status == 'Cancel'" class="btn btn-danger mr-2"> Check Out <i class="fa fa-times-circle"></i></button>
+<a href="" ng-show="visit.empCheckout || visit.status == 'Cancel'" ng-click="securityCheckout(visit)"  class="btn btn-danger mr-2"> Check Out <i class="fa fa-times-circle"></i></a>
+<!-- <button ng-disabled="!visit.secCheckin || !visit.enableVisitorCheckOut" ng-click="securityCheckout(visit)" class="btn btn-danger">Check Out<i class="fa fa-times-circle"></i></button> -->
 </div>
 </div>
 </div>

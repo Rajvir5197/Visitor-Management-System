@@ -37,6 +37,9 @@ app.config(function($routeProvider){
         }).when('/securityCheckOut',{
             templateUrl: '/visitor-Management-System/personcheck-out.html',
             controller: 'securityController'
+        }).when('/securityCheckIn',{
+            templateUrl: '/visitor-Management-System/personcheck-in.html',
+            controller: 'securityController'
         }).when('/empReportVisitedReport',{
             templateUrl: '/visitor-Management-System/employee-report-for-visited-visitor.html',
             controller: 'reportController'

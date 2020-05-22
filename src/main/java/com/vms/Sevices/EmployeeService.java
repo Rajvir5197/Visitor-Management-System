@@ -46,11 +46,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-
+import com.vms.Model.Asset;
+import com.vms.Model.CoVisitor;
 import com.vms.Model.ContactManager;
 import com.vms.Model.Employee;
 import com.vms.Model.MeetingStatus;
 import com.vms.Model.Task;
+import com.vms.Repository.AssetRepository;
+import com.vms.Repository.CoVisitorRepository;
 import com.vms.Repository.ContactRepository;
 import com.vms.Repository.EmployeeRepository;
 import com.vms.Repository.MeetingStatusRepository;
@@ -75,6 +78,12 @@ public class EmployeeService {
 
 	@Autowired
 	TaskRepository taskRepository;
+	
+	@Autowired
+	CoVisitorRepository coVisitorRepository;
+
+	@Autowired
+	AssetRepository assetRepository;
 
 	Logger logger = LoggerFactory.getLogger(EmployeeService.class);
 
@@ -184,6 +193,8 @@ public class EmployeeService {
 	public JSONObject deleteEmployee(Employee employee) {
 
 		JSONObject jsonObject = new JSONObject();
+		employee.setEmpPlantCode(null);
+		repository.save(employee);
 
 		repository.delete(employee);
 
@@ -230,13 +241,20 @@ public class EmployeeService {
 
 		logger.info("start of viewAllVisit method");
 		List<String> statusNotIn = new ArrayList<String>();
-		statusNotIn.add("Cancel");
+		//statusNotIn.add("Cancel");
 		statusNotIn.add("Sec Checked Out");
 		logger.info("visitDate: " + Date.valueOf(LocalDate.now()));
 		List<MeetingStatus> allMeetings = meetingStatusRepository
 				.findByMeetingBookedVisitDateAndStatusIsNotIn(Date.valueOf(LocalDate.now()), statusNotIn);
 
 		for (MeetingStatus meetings : allMeetings) {
+			if("cancel".equalsIgnoreCase(meetings.getStatus())) {
+				if(!meetings.isSecCheckin()) {
+					allMeetings.remove(meetings);
+					continue;
+				}
+			}
+			
 			if (meetings.getMeetingBooked().getVisitor().getVisitorImage() != null) {
 
 				meetings.getMeetingBooked().getVisitor()
@@ -457,7 +475,7 @@ public class EmployeeService {
 		return count;
 	}
 
-	public String sendMessage(@RequestBody MeetingStatus visitor) {
+	public String sendMessage1(@RequestBody MeetingStatus visitor) {
 		
 		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 		try {
@@ -500,66 +518,55 @@ public class EmployeeService {
 		}
 	}
 
-	public String sendMessage1(@RequestBody MeetingStatus visitor) {
-		HttpURLConnection conn = null;
-
-		try {
-			// Construct data
-			// APIKey=R8ntvc8nnU26zeAGiN0U0A&senderid=ERUCHA&channel=2&DCS=0&
-			// flashsms=0&number=919028xxxxxx&text=test%20message&route=1
-			SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-			String apiKey = "APIKey=" + URLEncoder.encode("R8ntvc8nnU26zeAGiN0U0A", "UTF-8") + "&senderid="
-					+ URLEncoder.encode("ERUCHA", "UTF-8") + "&channel=" + URLEncoder.encode("2", "UTF-8") + "&DCS="
-					+ URLEncoder.encode("0", "UTF-8") + "&flashsms=" + URLEncoder.encode("0", "UTF-8");
-
-			/*
-			 * String message = "Your Meeting is schedule on "+
-			 * sdf.format(visitor.getMeetingBooked().getVisitDate()) +
-			 * " "+visitor.getMeetingBooked().getVisitTime()
-			 * +" with "+visitor.getMeetingBooked().getEmpId()+" at"+
-			 * visitor.getMeetingBooked().getVisitLocation().getPlantName()
-			 */;
-
-			String message = "hello";
-			String numbers = "&number="
-					+ URLEncoder.encode("" + visitor.getMeetingBooked().getVisitor().getContactNumber(), "UTF-8");
-
-			// Send data
-			String data = apiKey + numbers + "&text=" + message
-			// URLEncoder.encode(message,"UTF-8")
-					+ "&route=1";
-			conn = (HttpURLConnection) new URL("http://bulksms.vrudheesolutions.com/api/mt/SendSMS").openConnection();
-			conn.setRequestProperty("Content-Type", "application/json");
-
-			/*
-			 * String data1 ="{APIKey: \"R8ntvc8nnU26zeAGiN0U0A\", senderid: \"ERUCHA\",
-			 * channel: \"2\", DCS: \"0\", flashsms: \"0\", numbers:
-			 * \""+visitor.getMeetingBooked().getVisitor().getContactNumber()+
-			 * "\" , text: \"testMessage\" }";
-			 */
-			System.out.println("data: " + data + conn.getResponseCode());
-			conn.setDoOutput(true);
-			OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
-			wr.write(data);
-			wr.flush();
-			BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-			String result = rd.readLine();
-			wr.close();
-			rd.close();
-
-			sendmail(visitor.getMeetingBooked().getVisitor().getEmailId(), message);
-
-			// return result;
-			return "SUCCESS";
-		} catch (Exception e) {
-			System.out.println("Error SMS " + e);
-			return "Error " + e;
-		}
+	public String sendMessage(@RequestBody MeetingStatus visitor) {
+		URL url = null;
+	    BufferedReader reader = null;
+	    StringBuilder stringBuilder = new StringBuilder();
+	    SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+		
+		String message1 = "Your Meeting is schedule on " + sdf.format(visitor.getMeetingBooked().getVisitDate()) + " "
+				+ visitor.getMeetingBooked().getVisitTime() + " with " + visitor.getMeetingBooked().getEmpName()
+				+ " at " + visitor.getMeetingBooked().getVisitLocation().getPlantName() + " and your checkin code is: "
+				+ visitor.getSecurityCode();
+		
+		String message = message1.replaceAll(" ", "%20");
+	    //String message = "hello";
+		 try
+		    {
+		      // create the HttpURLConnection
+			 String urlStr = "http://bulksms.vrudheesolutions.com/api/mt/SendSMS?APIKey=R8ntvc8nnU26zeAGiN0U0A&senderid=ERUCHA&channel=2&DCS=0&flashsms=0&number="+visitor.getMeetingBooked().getVisitor().getContactNumber()+"&text="+message+"&route=1";
+			 logger.info(urlStr);
+		      url = new URL(urlStr);
+		      HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+		      connection.addRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:25.0) Gecko/20100101 Firefox/25.0");
+		      
+		      // give it 15 seconds to respond
+		      connection.setReadTimeout(15*1000);
+		      connection.connect();
+		
+		      // read the output from the server
+		      reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+		      
+		
+		      String line = null;
+		      while ((line = reader.readLine()) != null)
+		      {
+		        stringBuilder.append(line + "\n");
+		      }
+		      sendmail(visitor.getMeetingBooked().getVisitor().getEmailId(),message1);
+		     
+		    }
+		    catch (Exception e)
+		    {
+		      e.printStackTrace();
+		    }
+		 return (stringBuilder.toString());
 	}
 
 	public void sendmail(String MailTo, String message) throws AddressException, MessagingException, IOException {
 		SimpleMailMessage msg = new SimpleMailMessage();
-		msg.setFrom("raj.viradiya@syscort.com");
+		//msg.setFrom("raj.viradiya@syscort.com");no-reply@rucha.co.in
+		msg.setFrom("no-reply@rucha.co.in");
 		msg.setTo(MailTo);
 
 		msg.setSubject("Meeting Details");
@@ -687,6 +694,59 @@ public class EmployeeService {
 			logger.info("end of customersToExcel method");
 			return new ByteArrayInputStream(out.toByteArray());
 		}
+	}
+	
+	public JSONObject sendEmail(MeetingStatus meeting) {
+		
+		JSONObject jsonObject = new JSONObject();
+		try {
+			// Construct data
+			String Greet = "Dear " + meeting.getMeetingBooked().getVisitor().getVisitorName() + "\n\n\n";
+			
+			String CoVisitorList = "";
+			List<CoVisitor> CoVisitorListdetails = coVisitorRepository.findByVisitor(meeting.getMeetingBooked().getVisitor());
+			int CoVisitorCount = 1;
+			int AssetCount = 1 ;
+			for (CoVisitor CV : CoVisitorListdetails) {
+				CoVisitorList = CoVisitorList + "Co-Visitor " + CoVisitorCount + ": " + CV.getCoVisitorName() + "\n";
+				CoVisitorCount++;
+			}
+			String AssetMain;
+			if(meeting.isEmpCheckout() || "cancel".equalsIgnoreCase(meeting.getStatus())) {
+				AssetMain = "Below is the list of Asset details at the time of check-out: \n";
+			}else {
+				AssetMain = "Below is the list of Asset details stored in Locker: \n";
+			}
+			 
+			String AssetDetailsM = "";
+			List<Asset> assetDetailsMAin = assetRepository.findByMainVisitor(meeting.getMeetingBooked().getVisitor());
+			for (Asset as : assetDetailsMAin) {
+				AssetDetailsM = AssetDetailsM + "Asset " + AssetCount  + ": " + as.getAssetName() + as.getAssetCount() + "\n";
+				if(meeting.isEmpCheckout() || "cancel".equalsIgnoreCase(meeting.getStatus())) {
+					AssetDetailsM = AssetDetailsM + as.getAssetStatus() + "\n";
+				}
+				AssetCount++;
+			}
+			for (CoVisitor CV : CoVisitorListdetails) {
+				List<Asset> assetDetails = assetRepository.findByVisitor(CV);
+				for (Asset as : assetDetails) {
+					AssetDetailsM = AssetDetailsM + "Asset " + AssetCount + ": " + as.getAssetName() + as.getAssetCount() + "\n";
+					if(meeting.isEmpCheckout() || "cancel".equalsIgnoreCase(meeting.getStatus())) {
+						AssetDetailsM = AssetDetailsM + as.getAssetStatus() + "\n";
+					}
+					AssetCount++;
+				}
+			}
+			
+			String message = Greet + CoVisitorList + AssetMain + AssetDetailsM + "\n\n" +meeting.getSecCheckinBy() + "\n" + meeting.getMeetingBooked().getVisitLocation().getPlantAddress() +"\n";
+			sendmail(meeting.getMeetingBooked().getVisitor().getEmailId(),message);
+		     
+	    } catch (Exception e) {
+			System.out.println("Error SMS "+e);
+			logger.info("Error "+e);
+		}
+		jsonObject.put("msg", "SUCCESS");
+		return jsonObject;
 	}
 
 }

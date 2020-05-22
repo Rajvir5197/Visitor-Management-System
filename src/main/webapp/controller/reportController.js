@@ -8,10 +8,12 @@ app.controller('reportController', function($scope, $rootScope, $http, $timeout)
 	}
 	
 	$scope.allVisits=[];
+	$scope.errorInDate = false;
 	$scope.viewAllVisits = function(){
 		$http.post("/visitor-Management-System/Admin/viewAllVisitsReport").then(function mySuccess(response){
 			console.log(response.data);
 			$scope.allVisits = response.data;
+			$scope.copyOfAllVisits = angular.copy($scope.allVisits);
 			$timeout(function() {
 				$('#dataTable').DataTable();
 			   }, 200);
@@ -115,25 +117,35 @@ app.controller('reportController', function($scope, $rootScope, $http, $timeout)
 	
 	$scope.filterData = function(reportType){
 		console.log($scope.selectedFromDateEmp);
-		if(reportType == 'emp'){
-			/*$("#visitData tr").filter(function(value){
-				$(this).toggle($scope.allVisits[value].meetingBooked.visitDate > document.getElementById( "selectedFromDateEmp"))
-			});*/
-			/*$scope.allVisits = $scope.allVisits.filter(function(value){
-				return value.meetingBooked.visitDate >= document.getElementById( "selectedFromDateEmp");
-			});*/
-			$('#dataTable thead tr').clone(true).appendTo( '#dataTable thead' );
-			$('#dataTable thead tr:eq(1) th').each( function (i) {
-				var title = $(this).text();
-				if(i == 4){
-					if ( table.column(i).search() !== document.getElementById( "selectedFromDateEmp").value ) {
-		                table
-		                    .column(i)
-		                    .search( document.getElementById( "selectedFromDateEmp").value )
-		                    .draw();
-		            }
+		$scope.errorInDate = false;
+		if(reportType == 'emp' || reportType == 'cancelEmp'){
+			if(document.getElementById("selectedFromDateEmp").value > document.getElementById("selectedToDate").value ){
+				$scope.errorInDate = true;
+			}else{
+				$scope.allVisits = $scope.copyOfAllVisits;
+				if(document.getElementById("selectedFromDateEmp").value != "" && document.getElementById("selectedToDate").value != ""){
+					$('#dataTable').DataTable().clear().destroy();
+					$scope.allVisits = $scope.allVisits.filter(function(value){
+						return (value.meetingBooked.visitDate >= document.getElementById("selectedFromDateEmp").value && value.meetingBooked.visitDate <= document.getElementById("selectedToDate").value);
+					});
+				}else if(document.getElementById("selectedFromDateEmp").value != "" && document.getElementById("selectedToDate").value == ""){
+					$('#dataTable').DataTable().clear().destroy();
+					$scope.allVisits = $scope.allVisits.filter(function(value){
+						return (value.meetingBooked.visitDate >= document.getElementById("selectedFromDateEmp").value);
+					});
+				}else if(document.getElementById("selectedFromDateEmp").value == "" && document.getElementById("selectedToDate").value != ""){
+					$('#dataTable').DataTable().clear().destroy();
+					$scope.allVisits = $scope.allVisits.filter(function(value){
+						return (value.meetingBooked.visitDate <= document.getElementById("selectedToDate").value);
+					});
+				}else{
+					$('#dataTable').DataTable().clear().destroy();
 				}
-		    } );
+				
+				$timeout(function() {
+					$('#dataTable').DataTable();
+				   }, 200);
+			};
 		};
 	};
 });
