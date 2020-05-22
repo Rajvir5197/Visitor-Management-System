@@ -248,17 +248,16 @@ public class EmployeeService {
 				.findByMeetingBookedVisitDateAndStatusIsNotIn(Date.valueOf(LocalDate.now()), statusNotIn);
 
 		for (MeetingStatus meetings : allMeetings) {
+			if (meetings.getMeetingBooked().getVisitor().getVisitorImage() != null) {
+
+				meetings.getMeetingBooked().getVisitor()
+						.setVisitorImage(decompressBytes(meetings.getMeetingBooked().getVisitor().getVisitorImage()));
+			}
 			if("cancel".equalsIgnoreCase(meetings.getStatus())) {
 				if(!meetings.isSecCheckin()) {
 					allMeetings.remove(meetings);
 					continue;
 				}
-			}
-			
-			if (meetings.getMeetingBooked().getVisitor().getVisitorImage() != null) {
-
-				meetings.getMeetingBooked().getVisitor()
-						.setVisitorImage(decompressBytes(meetings.getMeetingBooked().getVisitor().getVisitorImage()));
 			}
 		}
 
@@ -270,6 +269,7 @@ public class EmployeeService {
 
 		List<String> statusNotIn = new ArrayList<String>();
 		statusNotIn.add("Cancel");
+		statusNotIn.add("Sec Checked Out");
 		List<MeetingStatus> allMeetings = meetingStatusRepository
 				.findByCreatedByAndMeetingBookedVisitDateAndStatusIsNotInAndEmpCheckout(empCode,
 						Date.valueOf(LocalDate.now()), statusNotIn, false);
@@ -721,7 +721,7 @@ public class EmployeeService {
 			String AssetDetailsM = "";
 			List<Asset> assetDetailsMAin = assetRepository.findByMainVisitor(meeting.getMeetingBooked().getVisitor());
 			for (Asset as : assetDetailsMAin) {
-				AssetDetailsM = AssetDetailsM + "Asset " + AssetCount  + ": " + as.getAssetName() + as.getAssetCount() + "\n";
+				AssetDetailsM = AssetDetailsM + "Asset " + AssetCount  + ": " + as.getAssetName() +" "+ as.getAssetCount() + " Nos.\n";
 				if(meeting.isEmpCheckout() || "cancel".equalsIgnoreCase(meeting.getStatus())) {
 					AssetDetailsM = AssetDetailsM + as.getAssetStatus() + "\n";
 				}
@@ -730,7 +730,7 @@ public class EmployeeService {
 			for (CoVisitor CV : CoVisitorListdetails) {
 				List<Asset> assetDetails = assetRepository.findByVisitor(CV);
 				for (Asset as : assetDetails) {
-					AssetDetailsM = AssetDetailsM + "Asset " + AssetCount + ": " + as.getAssetName() + as.getAssetCount() + "\n";
+					AssetDetailsM = AssetDetailsM + "Asset " + AssetCount + ": " + as.getAssetName() +" "+ as.getAssetCount() + " Nos.\n";
 					if(meeting.isEmpCheckout() || "cancel".equalsIgnoreCase(meeting.getStatus())) {
 						AssetDetailsM = AssetDetailsM + as.getAssetStatus() + "\n";
 					}

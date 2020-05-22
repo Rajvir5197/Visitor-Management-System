@@ -1,6 +1,7 @@
-app.controller('securityController', function($scope, $rootScope, $http) {
+app.controller('securityController', function($scope, $rootScope, $http,$timeout) {
 	
 	$scope.UserID = window.localStorage.getItem("loginDetails");
+	$scope.UserName = window.localStorage.getItem("userName");
 	
 	if($scope.UserID == undefined || $scope.UserID == null ){
 		window.location = "/visitor-Management-System/index.html";
@@ -10,7 +11,7 @@ app.controller('securityController', function($scope, $rootScope, $http) {
 		window.location = "#!secDashboard";
 	};
 	
-	
+	$( "#Loader" ).modal("show");
 	$scope.addAssetArrayList = [];
 	$scope.addCoVisitorAssetArrayList = [];
 	$scope.showAddAsset = false;
@@ -33,11 +34,18 @@ app.controller('securityController', function($scope, $rootScope, $http) {
 								$rootScope.visitCheckin.enableVisitorCheckOut = false;
 							};
 						});
+						$timeout(function() {
+							$("#Loader").modal("hide");
+						   }, 500);
 					}, function myError(data){
 						console.log("some internal error");
 						console.log(data);
 					});
 				});
+			}else{
+				$timeout(function() {
+					$("#Loader").modal("hide");
+				   }, 500);
 			}
 		}, function myError(data){
 			console.log("some internal error");
@@ -245,6 +253,7 @@ app.controller('securityController', function($scope, $rootScope, $http) {
 	};
 	
 	$scope.sendMail = function(){
+		$rootScope.visitCheckin.secCheckinBy = $scope.UserName;
 		$http.post("/visitor-Management-System/Employee/sendEmail", $rootScope.visitCheckin).then(function mySuccess(response){
 			$('#emailModal').modal('show');
 		}, function myError(data){
@@ -254,24 +263,42 @@ app.controller('securityController', function($scope, $rootScope, $http) {
 	};
 	
 	$scope.securityCheckout = function(){
+		$( "#Loader" ).modal("show");
 		$rootScope.visitCheckin.secCheckoutBy = $scope.userName;
 		$http.post("/visitor-Management-System/Security/securityCheckout", $rootScope.visitCheckin).then(function mySuccess(response){
 			if(response.data.msg == 'SUCCESS'){
+				$( "#Loader" ).modal("hide");
 				window.location = "#!secDashboard";
+			}else{
+				$timeout(function() {
+					$("#Loader").modal("hide");
+				   }, 500);
 			}
 		}, function myError(data){
+			$timeout(function() {
+				$("#Loader").modal("hide");
+			   }, 500);
 			console.log("some internal error");
 			console.log(data);
 		});
 	};
 	
 	$scope.securityCheckin = function(){
+		$( "#Loader" ).modal("show");
 		$rootScope.visitCheckin.secCheckinBy = $scope.userName;
 		$http.post("/visitor-Management-System/Security/securityCheckin", $rootScope.visitCheckin).then(function mySuccess(response){
 			if(response.data.msg == 'SUCCESS'){
+				$( "#Loader" ).modal("hide");
 				window.location = "#!secDashboard";
+			}else{
+				$timeout(function() {
+					$("#Loader").modal("hide");
+				   }, 500);
 			}
 		}, function myError(data){
+			$timeout(function() {
+				$("#Loader").modal("hide");
+			   }, 500);
 			console.log("some internal error");
 			console.log(data);
 		});

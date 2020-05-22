@@ -48,6 +48,8 @@ app.config(function($routeProvider){
             controller: 'reportController'
         }).when('/empCheckinCheckout',{
             templateUrl: '/visitor-Management-System/inputs.html'
+        }).when('/profile',{
+            templateUrl: '/visitor-Management-System/profile.html'
         });
 });
 app.directive('fileModel', ['$parse', function ($parse) {

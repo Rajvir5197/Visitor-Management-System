@@ -52,40 +52,41 @@ public class SecurityService {
 
 	@Autowired
 	AssetRepository assetRepository;
-	
+
 	@Autowired
 	MeetingStatusRepository meetingStatusRepository;
-	
+
 	@Autowired
 	VisitorRepository visitorRepository;
-	
+
 	@Autowired
 	private JavaMailSender javaMailSender;
-	
+
 	Logger logger = LoggerFactory.getLogger(SecurityService.class);
 
 	public JSONObject addCoVisitor(CoVisitor coVisitor) {
-		
-		logger.info("start of addCoVisitor method with no. of covisitor: "+coVisitor.getVisitor().getNumberOfCoVisitor());
+
+		logger.info(
+				"start of addCoVisitor method with no. of covisitor: " + coVisitor.getVisitor().getNumberOfCoVisitor());
 
 		JSONObject jsonObject = new JSONObject();
 		coVisitor.setCreatedDate(Date.valueOf(LocalDate.now()));
 		coVisitor.setCreatedTime(Time.valueOf(LocalTime.now()));
 
-		//System.out.println(coVisitor.getVisitor().get);
+		// System.out.println(coVisitor.getVisitor().get);
 		int v = coVisitor.getVisitor().getVisitorId();
-		Optional<Visitor> vis = visitorRepository.findById(v); 
-		logger.info("no. of covisitor: "+vis.get().getNumberOfCoVisitor());
+		Optional<Visitor> vis = visitorRepository.findById(v);
+		logger.info("no. of covisitor: " + vis.get().getNumberOfCoVisitor());
 		CoVisitor coVisitorSaved = coVisitorRepository.save(coVisitor);
 		vis.get().setNumberOfCoVisitor(vis.get().getNumberOfCoVisitor() + 1);
 		Visitor visSaved = visitorRepository.save(vis.get());
-		logger.info("after saving no. of covisitor: "+visSaved.getNumberOfCoVisitor());
+		logger.info("after saving no. of covisitor: " + visSaved.getNumberOfCoVisitor());
 		if (null != coVisitorSaved) {
 			jsonObject.put("msg", "SUCCESS");
 		} else {
 			jsonObject.put("msg", "FAIL");
 		}
-		
+
 		/*
 		 * if (null != coVisitorSaved) { int numberOfCovisitor =
 		 * coVisitorSaved.getVisitor().getNumberOfCoVisitor();
@@ -118,12 +119,12 @@ public class SecurityService {
 	public JSONObject addCoVisitorAsset(@RequestBody Asset asset) {
 
 		JSONObject jsonObject = new JSONObject();
-		if(asset.getMainVisitor() != null) {
+		if (asset.getMainVisitor() != null) {
 			int v = asset.getMainVisitor().getVisitorId();
 			Optional<Visitor> vis = visitorRepository.findById(v);
 			asset.setMainVisitor(vis.get());
 		}
-		
+
 		Asset assetSaved = assetRepository.save(asset);
 		if (null != assetSaved) {
 			jsonObject.put("msg", "SUCCESS");
@@ -177,7 +178,7 @@ public class SecurityService {
 			udatedMeeting.get().setSecCheckoutTime(Time.valueOf(LocalTime.now()));
 
 			MeetingStatus meetingSaved = meetingStatusRepository.save(udatedMeeting.get());
-			sendMessage(meetingSaved);
+			//sendMessage(meetingSaved);
 			if (null != meetingSaved) {
 				jsonObject.put("msg", "SUCCESS");
 			} else {
@@ -193,11 +194,12 @@ public class SecurityService {
 
 	public JSONObject addVisitorImage(MeetingStatus visitor) {
 
-		//logger.info("start of addOrEditEmployee method");
+		// logger.info("start of addOrEditEmployee method");
 		JSONObject jsonObject = new JSONObject();
 		Optional<MeetingStatus> meet = meetingStatusRepository.findById(visitor.getMeetingId());
-		meet.get().getMeetingBooked().getVisitor().setVisitorImage(compressBytes(visitor.getMeetingBooked().getVisitor().getVisitorImage()));
-		
+		meet.get().getMeetingBooked().getVisitor()
+				.setVisitorImage(compressBytes(visitor.getMeetingBooked().getVisitor().getVisitorImage()));
+
 		MeetingStatus visitorSaved = meetingStatusRepository.save(meet.get());
 		if (null != visitorSaved) {
 			jsonObject.put("data", "SUCCESS");
@@ -206,170 +208,144 @@ public class SecurityService {
 		}
 		return jsonObject;
 	}
-	
+
 	// compress the image bytes before storing it in the database
-    public static byte[] compressBytes(byte[] data) {
-        Deflater deflater = new Deflater();
-        deflater.setInput(data);
-        deflater.finish();
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream(data.length);
-        byte[] buffer = new byte[1024];
-        while (!deflater.finished()) {
-            int count = deflater.deflate(buffer);
-            outputStream.write(buffer, 0, count);
-        }
-        try {
-            outputStream.close();
-        } catch (IOException e) {
-        }
-        System.out.println("before compressed" + data.length);
-        System.out.println("Compressed Image Byte Size - " + outputStream.toByteArray().length);
-        return outputStream.toByteArray();
-    }
-   
- // uncompress the image bytes before returning it to the angular application
-        public static byte[] decompressBytes(byte[] data) {
-            Inflater inflater = new Inflater();
-            inflater.setInput(data);
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream(data.length);
-            byte[] buffer = new byte[1024];
-            try {
-                while (!inflater.finished()) {
-                    int count = inflater.inflate(buffer);
-                    outputStream.write(buffer, 0, count);
-                }
-                outputStream.close();
-            } catch (IOException ioe) {
-            } catch (DataFormatException e) {
-            	
-            }
-            return outputStream.toByteArray();
-        }
-
-		public JSONObject sendEmail(MeetingStatus meeting) {
-			
-			JSONObject jsonObject = new JSONObject();
-			try {
-				// Construct data
-				List<Asset> assetDetailsMAin = assetRepository.findByMainVisitor(meeting.getMeetingBooked().getVisitor());
-				String AssetDetailsM = "";
-				for (Asset as : assetDetailsMAin) {
-					AssetDetailsM = AssetDetailsM + as.getAssetName() + ":" + as.getAssetCount() + "\n";
-				}
-				List<CoVisitor> CoVisitorList = coVisitorRepository.findByVisitor(meeting.getMeetingBooked().getVisitor());
-				int count = CoVisitorList.size();
-				String AssetDetails = "";
-				for (CoVisitor CV : CoVisitorList) {
-					List<Asset> assetDetails = assetRepository.findByVisitor(CV);
-					for (Asset as : assetDetails) {
-						AssetDetails = AssetDetails + CV.getCoVisitorName() + ":" + as.getAssetName() + ":"
-								+ as.getAssetCount() + "\n";
-					}
-
-				}
-				String message1 = "";
-				if(meeting.isSecCheckout()) {
-					message1 = "Thank you for your visit \n" + "Please find Asset details at the time of check-out: \n" + "Main Asset : \n"
-							+ AssetDetailsM + "\n" + "Number of Co-visitor: " + count + "\n" + "Asset details: \n"
-							+ AssetDetails + "Thanks/Regard";
-				}else {
-					message1 = "Hello Visitor: \n" + "Please find checkin Details below: \n" + "Main Asset : \n"
-							+ AssetDetailsM + "\n" + "Number of Co-visitor: " + count + "\n" + "Asset details: \n"
-							+ AssetDetails + "Thanks/Regard";
-				}
-				sendmail(meeting.getMeetingBooked().getVisitor().getEmailId(),message1);
-			     
-		    } catch (Exception e) {
-				System.out.println("Error SMS "+e);
-			}
-			jsonObject.put("msg", "SUCCESS");
-			return jsonObject;
+	public static byte[] compressBytes(byte[] data) {
+		Deflater deflater = new Deflater();
+		deflater.setInput(data);
+		deflater.finish();
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream(data.length);
+		byte[] buffer = new byte[1024];
+		while (!deflater.finished()) {
+			int count = deflater.deflate(buffer);
+			outputStream.write(buffer, 0, count);
 		}
-		
-		public String sendMessage(@RequestBody MeetingStatus meeting) {
-			
-		/*
-		 * URL url = null; BufferedReader reader = null; StringBuilder stringBuilder =
-		 * new StringBuilder(); SimpleDateFormat sdf = new
-		 * SimpleDateFormat("dd-MM-yyyy"); try {
-		 */
 		try {
-			// Construct data
-			List<Asset> assetDetailsMAin = assetRepository.findByMainVisitor(meeting.getMeetingBooked().getVisitor());
-			String AssetDetailsM = "";
-			for (Asset as : assetDetailsMAin) {
-				AssetDetailsM = AssetDetailsM + as.getAssetName() + ":" + as.getAssetCount() + "\n";
-			}
-			List<CoVisitor> CoVisitorList = coVisitorRepository.findByVisitor(meeting.getMeetingBooked().getVisitor());
-			int count = CoVisitorList.size();
-			String AssetDetails = "";
-			for (CoVisitor CV : CoVisitorList) {
-				List<Asset> assetDetails = assetRepository.findByVisitor(CV);
-				for (Asset as : assetDetails) {
-					AssetDetails = AssetDetails + CV.getCoVisitorName() + ":" + as.getAssetName() + ":"
-							+ as.getAssetCount() + "\n";
-				}
-
-			}
-			String message1 = "";
-			if(meeting.isSecCheckout()) {
-				message1 = "Thank you for your visit \n" + "Please find Asset details at the time of check-out: \n" + "Main Asset : \n"
-						+ AssetDetailsM + "\n" + "Number of Co-visitor: " + count + "\n" + "Asset details: \n"
-						+ AssetDetails + "Thanks/Regard";
-			}else {
-				message1 = "Hello Visitor: \n" + "Please find checkin Details below: \n" + "Main Asset : \n"
-						+ AssetDetailsM + "\n" + "Number of Co-visitor: " + count + "\n" + "Asset details: \n"
-						+ AssetDetails + "Thanks/Regard";
-			}
-			//String message = message1.replaceAll(" ", "%20");
-		      // create the HttpURLConnection
-		/*
-		 * String urlStr =
-		 * "http://bulksms.vrudheesolutions.com/api/mt/SendSMS?APIKey=R8ntvc8nnU26zeAGiN0U0A&senderid=ERUCHA&channel=2&DCS=0&flashsms=0&number="
-		 * +meeting.getMeetingBooked().getVisitor().getContactNumber()+"&text="+message+
-		 * "&route=1"; logger.info(urlStr); url = new URL(urlStr); HttpURLConnection
-		 * connection = (HttpURLConnection) url.openConnection();
-		 * connection.addRequestProperty("User-Agent",
-		 * "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:25.0) Gecko/20100101 Firefox/25.0");
-		 * 
-		 * // give it 15 seconds to respond connection.setReadTimeout(15*1000);
-		 * connection.connect();
-		 * 
-		 * // read the output from the server reader = new BufferedReader(new
-		 * InputStreamReader(connection.getInputStream()));
-		 * 
-		 * 
-		 * String line = null; while ((line = reader.readLine()) != null) {
-		 * stringBuilder.append(line + "\n"); }
-		 */
-		      sendmail(meeting.getMeetingBooked().getVisitor().getEmailId(),message1);
-		     
-		    } catch (Exception e) {
-				System.out.println("Error SMS "+e);
-				return "Error "+e;
-			}
-			return ("SUCCESS");
+			outputStream.close();
+		} catch (IOException e) {
 		}
-		
-		public void sendmail(String MailTo, String message) throws AddressException, MessagingException, IOException {
-			SimpleMailMessage msg = new SimpleMailMessage();
-			//msg.setFrom("raj.viradiya@syscort.com");no-reply@rucha.co.in
-			msg.setFrom("no-reply@rucha.co.in");
-			msg.setTo(MailTo);
+		System.out.println("before compressed" + data.length);
+		System.out.println("Compressed Image Byte Size - " + outputStream.toByteArray().length);
+		return outputStream.toByteArray();
+	}
 
-			msg.setSubject("Meeting Details");
-			msg.setText("hello");
+	// uncompress the image bytes before returning it to the angular application
+	public static byte[] decompressBytes(byte[] data) {
+		Inflater inflater = new Inflater();
+		inflater.setInput(data);
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream(data.length);
+		byte[] buffer = new byte[1024];
+		try {
+			while (!inflater.finished()) {
+				int count = inflater.inflate(buffer);
+				outputStream.write(buffer, 0, count);
+			}
+			outputStream.close();
+		} catch (IOException ioe) {
+		} catch (DataFormatException e) {
 
-			System.out.println("sending msg");
-			javaMailSender.send(msg);
-			System.out.println("sent msg");
 		}
+		return outputStream.toByteArray();
+	}
 
-		public List<Asset> getVisitAllAsset(Visitor visitor) {
-			
-			List<Asset> Visitor = assetRepository.findByMainVisitor(visitor);
+	/*
+	 * public JSONObject sendEmail(MeetingStatus meeting) {
+	 * 
+	 * JSONObject jsonObject = new JSONObject(); try { // Construct data List<Asset>
+	 * assetDetailsMAin =
+	 * assetRepository.findByMainVisitor(meeting.getMeetingBooked().getVisitor());
+	 * String AssetDetailsM = ""; for (Asset as : assetDetailsMAin) { AssetDetailsM
+	 * = AssetDetailsM + as.getAssetName() + ":" + as.getAssetCount() + "\n"; }
+	 * List<CoVisitor> CoVisitorList =
+	 * coVisitorRepository.findByVisitor(meeting.getMeetingBooked().getVisitor());
+	 * int count = CoVisitorList.size(); String AssetDetails = ""; for (CoVisitor CV
+	 * : CoVisitorList) { List<Asset> assetDetails =
+	 * assetRepository.findByVisitor(CV); for (Asset as : assetDetails) {
+	 * AssetDetails = AssetDetails + CV.getCoVisitorName() + ":" + as.getAssetName()
+	 * + ":" + as.getAssetCount() + "\n"; }
+	 * 
+	 * } String message1 = ""; if(meeting.isSecCheckout()) { message1 =
+	 * "Thank you for your visit \n" +
+	 * "Please find Asset details at the time of check-out: \n" + "Main Asset : \n"
+	 * + AssetDetailsM + "\n" + "Number of Co-visitor: " + count + "\n" +
+	 * "Asset details: \n" + AssetDetails + "Thanks/Regard"; }else { message1 =
+	 * "Hello Visitor: \n" + "Please find checkin Details below: \n" +
+	 * "Main Asset : \n" + AssetDetailsM + "\n" + "Number of Co-visitor: " + count +
+	 * "\n" + "Asset details: \n" + AssetDetails + "Thanks/Regard"; }
+	 * sendmail(meeting.getMeetingBooked().getVisitor().getEmailId(),message1);
+	 * 
+	 * } catch (Exception e) { System.out.println("Error SMS "+e); }
+	 * jsonObject.put("msg", "SUCCESS"); return jsonObject; }
+	 * 
+	 * public String sendMessage(@RequestBody MeetingStatus meeting) {
+	 * 
+	 * 
+	 * URL url = null; BufferedReader reader = null; StringBuilder stringBuilder =
+	 * new StringBuilder(); SimpleDateFormat sdf = new
+	 * SimpleDateFormat("dd-MM-yyyy"); try {
+	 * 
+	 * try { // Construct data List<Asset> assetDetailsMAin =
+	 * assetRepository.findByMainVisitor(meeting.getMeetingBooked().getVisitor());
+	 * String AssetDetailsM = ""; for (Asset as : assetDetailsMAin) { AssetDetailsM
+	 * = AssetDetailsM + as.getAssetName() + ":" + as.getAssetCount() + "\n"; }
+	 * List<CoVisitor> CoVisitorList =
+	 * coVisitorRepository.findByVisitor(meeting.getMeetingBooked().getVisitor());
+	 * int count = CoVisitorList.size(); String AssetDetails = ""; for (CoVisitor CV
+	 * : CoVisitorList) { List<Asset> assetDetails =
+	 * assetRepository.findByVisitor(CV); for (Asset as : assetDetails) {
+	 * AssetDetails = AssetDetails + CV.getCoVisitorName() + ":" + as.getAssetName()
+	 * + ":" + as.getAssetCount() + "\n"; }
+	 * 
+	 * } String message1 = ""; if(meeting.isSecCheckout()) { message1 =
+	 * "Thank you for your visit \n" +
+	 * "Please find Asset details at the time of check-out: \n" + "Main Asset : \n"
+	 * + AssetDetailsM + "\n" + "Number of Co-visitor: " + count + "\n" +
+	 * "Asset details: \n" + AssetDetails + "Thanks/Regard"; }else { message1 =
+	 * "Hello Visitor: \n" + "Please find checkin Details below: \n" +
+	 * "Main Asset : \n" + AssetDetailsM + "\n" + "Number of Co-visitor: " + count +
+	 * "\n" + "Asset details: \n" + AssetDetails + "Thanks/Regard"; } //String
+	 * message = message1.replaceAll(" ", "%20"); // create the HttpURLConnection
+	 * 
+	 * String urlStr =
+	 * "http://bulksms.vrudheesolutions.com/api/mt/SendSMS?APIKey=R8ntvc8nnU26zeAGiN0U0A&senderid=ERUCHA&channel=2&DCS=0&flashsms=0&number="
+	 * +meeting.getMeetingBooked().getVisitor().getContactNumber()+"&text="+message+
+	 * "&route=1"; logger.info(urlStr); url = new URL(urlStr); HttpURLConnection
+	 * connection = (HttpURLConnection) url.openConnection();
+	 * connection.addRequestProperty("User-Agent",
+	 * "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:25.0) Gecko/20100101 Firefox/25.0");
+	 * 
+	 * // give it 15 seconds to respond connection.setReadTimeout(15*1000);
+	 * connection.connect();
+	 * 
+	 * // read the output from the server reader = new BufferedReader(new
+	 * InputStreamReader(connection.getInputStream()));
+	 * 
+	 * 
+	 * String line = null; while ((line = reader.readLine()) != null) {
+	 * stringBuilder.append(line + "\n"); }
+	 * 
+	 * sendmail(meeting.getMeetingBooked().getVisitor().getEmailId(),message1);
+	 * 
+	 * } catch (Exception e) { System.out.println("Error SMS "+e); return
+	 * "Error "+e; } return ("SUCCESS"); }
+	 * 
+	 * public void sendmail(String MailTo, String message) throws AddressException,
+	 * MessagingException, IOException { SimpleMailMessage msg = new
+	 * SimpleMailMessage();
+	 * //msg.setFrom("raj.viradiya@syscort.com");no-reply@rucha.co.in
+	 * msg.setFrom("no-reply@rucha.co.in"); msg.setTo(MailTo);
+	 * 
+	 * msg.setSubject("Meeting Details"); msg.setText(message);
+	 * 
+	 * System.out.println("sending msg"); javaMailSender.send(msg);
+	 * System.out.println("sent msg"); }
+	 */
 
-			return Visitor;
-		}
+	public List<Asset> getVisitAllAsset(Visitor visitor) {
+
+		List<Asset> Visitor = assetRepository.findByMainVisitor(visitor);
+
+		return Visitor;
+	}
 
 }

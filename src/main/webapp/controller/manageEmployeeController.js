@@ -5,6 +5,8 @@ app.controller('manageEmployeeController', function($scope, $rootScope, $http, $
 	if($scope.UserID == undefined || $scope.UserID == null ){
 		window.location = "/visitor-Management-System/index.html";
 	}
+	
+	$( "#Loader" ).modal("show");
 	$scope.allEmp = [];
 	$scope.invalidEditedMobile = false;
 	$scope.invalidMobile = false;
@@ -52,6 +54,9 @@ app.controller('manageEmployeeController', function($scope, $rootScope, $http, $
 		$timeout(function() {
 			$('#dataTable').DataTable();
 		   }, 200);
+		$timeout(function() {
+			$("#Loader").modal("hide");
+		   }, 500);
 		console.log("plantcode: ",emp.plantCode);
 	};
 	
@@ -109,6 +114,7 @@ app.controller('manageEmployeeController', function($scope, $rootScope, $http, $
 						headers : {'Content-Type' : undefined}
 					}).then(function mySuccess(response){
 						$('#addNewEmpModal').modal('hide');
+						$( "#Loader" ).modal("show");
 						$scope.viewAllEmp();
 					}, function myError(data){
 						console.log("some internal error");
@@ -117,7 +123,7 @@ app.controller('manageEmployeeController', function($scope, $rootScope, $http, $
 				}else{
 					$http.post("/visitor-Management-System/Employee/addNewEmp", $scope.newEmp).then(function mySuccess(response){
 						$('#addNewEmpModal').modal('hide');
-						$scope.viewAllEmp();
+						$('#notificationModal').modal('show');
 					}, function myError(data){
 						console.log("some internal error");
 						console.log(data);
@@ -132,6 +138,11 @@ app.controller('manageEmployeeController', function($scope, $rootScope, $http, $
 				$scope.invalidMobile = true;
 			}
 		}
+	};
+	
+	$scope.notiClose = function(){
+		$( "#Loader" ).modal("show");
+		$scope.viewAllEmp();
 	};
 	
 	$scope.editEmp1 = function(){
@@ -174,6 +185,7 @@ app.controller('manageEmployeeController', function($scope, $rootScope, $http, $
 						headers : {'Content-Type' : undefined}
 					}).then(function mySuccess(response){
 						$('#editEmpModal').modal('hide');
+						$( "#Loader" ).modal("show");
 						$scope.viewAllEmp();
 					}, function myError(data){
 						console.log("some internal error");
@@ -182,6 +194,7 @@ app.controller('manageEmployeeController', function($scope, $rootScope, $http, $
 				}else{
 					$http.post("/visitor-Management-System/Employee/editEmp", $scope.editedEmp).then(function mySuccess(response){
 						$('#editEmpModal').modal('hide');
+						$( "#Loader" ).modal("show");
 						$scope.viewAllEmp();
 					}, function myError(data){
 						console.log("some internal error");
@@ -203,6 +216,7 @@ app.controller('manageEmployeeController', function($scope, $rootScope, $http, $
 	$scope.deleteEmp = function(){
 		$scope.EmpToBeDeleted.regBy = $scope.UserID;
 		$http.post("/visitor-Management-System/Employee/deleteEmp", $scope.EmpToBeDeleted).then(function mySuccess(response){
+			$( "#Loader" ).modal("show");
 			$scope.viewAllEmp();
 		}, function myError(data){
 			console.log("some internal error");

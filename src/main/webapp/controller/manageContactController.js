@@ -8,6 +8,7 @@ app.controller('manageContactController', function($scope, $rootScope, $http, $t
 		window.location = "/visitor-Management-System/index.html";
 	}
 
+	$( "#Loader" ).modal("show");
 	$scope.invalidMobile = false;
 	$scope.viewAllContacts = function(){
 		$http.post("/visitor-Management-System/Employee/viewAllContacts",$scope.UserID).then(function mySuccess(response){
@@ -16,6 +17,9 @@ app.controller('manageContactController', function($scope, $rootScope, $http, $t
 			$timeout(function() {
 				$('#dataTable').DataTable();
 			   }, 200);
+			$timeout(function() {
+				$("#Loader").modal("hide");
+			   }, 500);
 		}, function myError(data){
 			console.log("some internal error");
 			console.log(data);
