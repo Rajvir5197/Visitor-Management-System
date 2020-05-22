@@ -1,4 +1,4 @@
-app.controller('manageVisitController', function($scope, $rootScope, $http) {
+app.controller('manageVisitController', function($scope, $rootScope, $http, $timeout) {
 	
 	$scope.UserID = window.localStorage.getItem("loginDetails");
 	$scope.role = window.localStorage.getItem("loginRole");
@@ -7,6 +7,8 @@ app.controller('manageVisitController', function($scope, $rootScope, $http) {
 	if($scope.UserID == undefined || $scope.UserID == null ){
 		window.location = "/visitor-Management-System/index.html";
 	}
+	
+	$( "#Loader" ).modal("show");
 	
 	$( "#datepicker" ).datepicker({
 		format: 'YYYY/MM/DD'
@@ -105,6 +107,9 @@ app.controller('manageVisitController', function($scope, $rootScope, $http) {
 		$http.post("/visitor-Management-System/Employee/viewAllVisits",$scope.param).then(function mySuccess(response){
 			console.log(response.data);
 			$scope.allVisits = response.data;
+			$timeout(function() {
+				$("#Loader").modal("hide");
+			   }, 500);
 		}, function myError(data){
 			console.log("some internal error");
 			console.log(data);
@@ -128,6 +133,7 @@ app.controller('manageVisitController', function($scope, $rootScope, $http) {
 	$scope.viewEmpPlant();
 	
 	$scope.addNewVisit = function(){
+		$( "#Loader" ).modal("show");
 		$scope.invalidMobile = false;
 		$scope.invalidDate = false;
 		$scope.invalidTime = false;
@@ -138,6 +144,9 @@ app.controller('manageVisitController', function($scope, $rootScope, $http) {
 				$scope.newVisit.meetingBooked.visitDate = new Date($scope.newVisit.meetingBooked.visitDate);
 				if($scope.newVisit.meetingBooked.visitDate < todayDate){
 					$scope.invalidDate = true;
+					$timeout(function() {
+						$("#Loader").modal("hide");
+					   }, 500);
 				
 				}else if($scope.newVisit.meetingBooked.visitDate > todayDate){
 					$scope.newVisit.createdBy = $scope.UserID;
@@ -146,9 +155,17 @@ app.controller('manageVisitController', function($scope, $rootScope, $http) {
 					$scope.newVisit.meetingBooked.empName = $scope.userName;
 					$http.post("/visitor-Management-System/Employee/addNewVisit", $scope.newVisit).then(function mySuccess(response){
 						if(response.data.msg == "SUCCESS"){
+							$("#Loader").modal("hide");
 							window.location.href  = "#!viewAllVisit";
+						}else{
+							$timeout(function() {
+								$("#Loader").modal("hide");
+							   }, 500);
 						}
 					}, function myError(data){
+						$timeout(function() {
+							$("#Loader").modal("hide");
+						   }, 500);
 						console.log("some internal error");
 						console.log(data);
 					});
@@ -159,6 +176,9 @@ app.controller('manageVisitController', function($scope, $rootScope, $http) {
 					var todayTime = new Date();
 					if(visTime < todayTime){
 						$scope.invalidTime = true;
+						$timeout(function() {
+							$("#Loader").modal("hide");
+						   }, 500);
 					}else{
 						$scope.newVisit.createdBy = $scope.UserID;
 						$scope.newVisit.lastUpdatedBy = $scope.UserID;
@@ -166,9 +186,17 @@ app.controller('manageVisitController', function($scope, $rootScope, $http) {
 						$scope.newVisit.meetingBooked.empName = $scope.userName;
 						$http.post("/visitor-Management-System/Employee/addNewVisit", $scope.newVisit).then(function mySuccess(response){
 							if(response.data.msg == "SUCCESS"){
+								$("#Loader").modal("hide");
 								window.location.href  = "#!viewAllVisit";
+							}else{
+								$timeout(function() {
+									$("#Loader").modal("hide");
+								   }, 500);
 							}
 						}, function myError(data){
+							$timeout(function() {
+								$("#Loader").modal("hide");
+							   }, 500);
 							console.log("some internal error");
 							console.log(data);
 						});
@@ -176,11 +204,19 @@ app.controller('manageVisitController', function($scope, $rootScope, $http) {
 				}
 			}else{
 				$scope.invalidMobile = true;
+				$timeout(function() {
+					$("#Loader").modal("hide");
+				   }, 500);
 			}
+		}else{
+			$timeout(function() {
+				$("#Loader").modal("hide");
+			   }, 500);
 		}
 	};
 	
 	$scope.empCheckIn = function(visits){
+		$( "#Loader" ).modal("show");
 		visits.lastUpdatedBy = $scope.UserID;
 		$http.post("/visitor-Management-System/Employee/empCheckIn", visits).then(function mySuccess(response){
 			if(response.data.msg == "SUCCESS"){
@@ -200,6 +236,7 @@ app.controller('manageVisitController', function($scope, $rootScope, $http) {
 	};
 	
 	$scope.empCheckOut = function(){
+		$( "#Loader" ).modal("show");
 		$scope.selectedVisit.lastUpdatedBy = $scope.UserID;
 		$http.post("/visitor-Management-System/Employee/empCheckOut", $scope.selectedVisit).then(function mySuccess(response){
 			if(response.data.msg == "SUCCESS"){
@@ -217,6 +254,7 @@ app.controller('manageVisitController', function($scope, $rootScope, $http) {
 	};
 	
 	$scope.cancelVisit = function(){
+		$( "#Loader" ).modal("show");
 		$http.post("/visitor-Management-System/Employee/cancelVisit", $scope.selectedCancelVisit).then(function mySuccess(data){
 			console.log("data deleted");
 			$scope.viewAllVisits();

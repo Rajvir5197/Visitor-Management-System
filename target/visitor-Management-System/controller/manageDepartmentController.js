@@ -7,6 +7,7 @@ app.controller('manageDeptController', function($scope, $rootScope, $http, $time
 		window.location = "/visitor-Management-System/index.html";
 	}
 	
+	$( "#Loader" ).modal("show");
 	$scope.getPlantCode = function(dept){
 		$scope.plantCodeArray = [];
 		angular.forEach(dept.deptPlantCode,function(value){
@@ -16,6 +17,9 @@ app.controller('manageDeptController', function($scope, $rootScope, $http, $time
 		$timeout(function() {
 			$('#dataTable').DataTable();
 		   }, 200);
+		$timeout(function() {
+			$("#Loader").modal("hide");
+		   }, 500);
 	};
 
 	$scope.viewAllDept = function(){
@@ -61,7 +65,7 @@ app.controller('manageDeptController', function($scope, $rootScope, $http, $time
 			$scope.newDept.regBy = $scope.UserID;
 			$http.post("/visitor-Management-System/Department/addNewOrEditDept", $scope.newDept).then(function mySuccess(response){
 				$('#addNewDeptModal').modal('hide');
-				$scope.viewAllDept();
+				$('#notificationModal').modal('show');
 			}, function myError(data){
 				console.log("some internal error");
 				console.log(data);
@@ -69,11 +73,17 @@ app.controller('manageDeptController', function($scope, $rootScope, $http, $time
 		}
 	};
 	
+	$scope.notiClose = function(){
+		$( "#Loader" ).modal("show");
+		$scope.viewAllDept();
+	};
+	
 	$scope.editDept = function(){
 		if($scope.editForm.$valid){
 			$scope.editedDept.regBy = $scope.UserID;
 			$http.post("/visitor-Management-System/Department/addNewOrEditDept", $scope.editedDept).then(function mySuccess(response){
 				$('#editDeptModal').modal('hide');
+				$( "#Loader" ).modal("show");
 				$scope.viewAllDept();
 			}, function myError(data){
 				console.log("some internal error");
@@ -85,6 +95,7 @@ app.controller('manageDeptController', function($scope, $rootScope, $http, $time
 	$scope.deleteDept = function(){
 		$scope.deptToBeDeleted.regBy = $scope.UserID;
 		$http.post("/visitor-Management-System/Department/deleteDept", $scope.deptToBeDeleted).then(function mySuccess(response){
+			$( "#Loader" ).modal("show");
 			$scope.viewAllDept();
 		}, function myError(data){
 			console.log("some internal error");

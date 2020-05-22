@@ -6,6 +6,9 @@ app.controller('managePlantController', function($scope, $rootScope, $http, $tim
 	if($scope.UserID == undefined || $scope.UserID == null ){
 		window.location = "/visitor-Management-System/index.html";
 	}
+	
+	$( "#Loader" ).modal("show");
+	
 	$scope.allPlants = [];
 	$scope.viewAllPlant = function(){
 		$http.post("/visitor-Management-System/Plant/viewAllPlant").then(function mySuccess(response){
@@ -14,6 +17,9 @@ app.controller('managePlantController', function($scope, $rootScope, $http, $tim
 			$timeout(function() {
 				$('#dataTable').DataTable();
 			   }, 200);
+			$timeout(function() {
+				$("#Loader").modal("hide");
+			   }, 500);
 		}, function myError(data){
 			console.log("some internal error");
 			console.log(data);
@@ -38,7 +44,7 @@ app.controller('managePlantController', function($scope, $rootScope, $http, $tim
 			$scope.newPlant.regBy = $scope.UserID;
 			$http.post("/visitor-Management-System/Plant/addNewPlant", $scope.newPlant).then(function mySuccess(response){
 				$('#addNewPlantModal').modal('hide');
-				$scope.viewAllPlant();
+				$('#notificationModal').modal('show');
 			}, function myError(data){
 				console.log("some internal error");
 				console.log(data);
@@ -46,11 +52,17 @@ app.controller('managePlantController', function($scope, $rootScope, $http, $tim
 		}
 	};
 	
+	$scope.notiClose = function(){
+		$( "#Loader" ).modal("show");
+		$scope.viewAllPlant();
+	};
+	
 	$scope.editPlant = function(){
 		if($scope.editForm.$valid){
 			$scope.edited.regBy = $scope.UserID;
 			$http.post("/visitor-Management-System/Plant/editPlant", $scope.edited).then(function mySuccess(response){
 				$('#editPlantModal').modal('hide');
+				$( "#Loader" ).modal("show");
 				$scope.viewAllPlant();
 			}, function myError(data){
 				console.log("some internal error");
@@ -62,6 +74,7 @@ app.controller('managePlantController', function($scope, $rootScope, $http, $tim
 	$scope.deletePlant = function(){
 		$scope.plantToBeDeleted.regBy = $scope.UserID;
 		$http.post("/visitor-Management-System/Plant/deletePlant", $scope.plantToBeDeleted).then(function mySuccess(response){
+			$( "#Loader" ).modal("show");
 			$scope.viewAllPlant();
 		}, function myError(data){
 			console.log("some internal error");

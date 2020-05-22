@@ -117,32 +117,32 @@ app.controller('dashboardController', function($scope, $http, $rootScope,$timeou
 						$scope.attendedVisitCount = response.data;
 						$timeout(function() {
 							$("#Loader").modal("hide");
-						   }, 200);
+						   }, 500);
 					}, function myError(data){
 						$timeout(function() {
 							$("#Loader").modal("hide");
-						   }, 200);
+						   }, 500);
 						console.log("some internal error");
 						console.log(data);
 					});
 				}, function myError(data){
 					$timeout(function() {
 						$("#Loader").modal("hide");
-					   }, 200);
+					   }, 500);
 					console.log("some internal error");
 					console.log(data);
 				});
 			}, function myError(data){
 				$timeout(function() {
 					$("#Loader").modal("hide");
-				   }, 200);
+				   }, 500);
 				console.log("some internal error");
 				console.log(data);
 			});
 		}, function myError(data){
 			$timeout(function() {
 				$("#Loader").modal("hide");
-			   }, 200);
+			   }, 500);
 			console.log("some internal error");
 			console.log(data);
 		});
@@ -195,14 +195,17 @@ app.controller('dashboardController', function($scope, $http, $rootScope,$timeou
 			if($scope.role != "Security"){
 				$scope.getCounts();
 			}else{
-				angular.forEach($scope.allVisits,function(visit){
+				$timeout(function() {
+					$("#Loader").modal("hide");
+				   }, 500);
+				/*angular.forEach($scope.allVisits,function(visit){
 					$scope.viewAllCoVisitor(visit);
-				});
+				});*/
 			}
 		}, function myError(data){
 			$timeout(function() {
 				$("#Loader").modal("hide");
-			   }, 200);
+			   }, 500);
 			console.log("some internal error");
 			console.log(data);
 		});
@@ -262,6 +265,8 @@ app.controller('dashboardController', function($scope, $http, $rootScope,$timeou
 	}
 	
 	$scope.securityCheckin = function(visit){
+		
+		//$( "#Loader" ).modal('show');
 		$rootScope.visitCheckin = visit;
 		if($rootScope.visitCheckin.secCheckin){
 			window.location = "#!securityCheckIn";
@@ -282,6 +287,9 @@ app.controller('dashboardController', function($scope, $http, $rootScope,$timeou
 				});*/
 			}else{
 				visit.invalidSecCode = true;
+				$timeout(function() {
+					$("#Loader").modal("hide");
+				   }, 500);
 			}
 		}
 	};
@@ -326,7 +334,6 @@ app.controller('dashboardController', function($scope, $http, $rootScope,$timeou
 	};
 	
 	$scope.addNewVisit = function(){
-		//$( "#Loader" ).modal('show');
 		$scope.invalidMobile = false;
 		$scope.invalidDate = false;
 		$scope.invalidTime = false;
@@ -337,29 +344,26 @@ app.controller('dashboardController', function($scope, $http, $rootScope,$timeou
 				$scope.visit.meetingBooked.visitDate = new Date($scope.visit.meetingBooked.visitDate);
 				if($scope.visit.meetingBooked.visitDate < todayDate){
 					$scope.invalidDate = true;
-					/*$timeout(function() {
-						$("#Loader").modal("hide");
-					   }, 200);*/
 				}else if($scope.visit.meetingBooked.visitDate > todayDate){
 					
 					$scope.visit.createdBy = $scope.UserID;
 					$scope.visit.lastUpdatedBy = $scope.UserID;
 					$scope.visit.meetingBooked.empId = $scope.UserID;
 					$scope.visit.meetingBooked.empName = $scope.userName;
+					$('#VisitScheduleModal').modal('hide');
+					$( "#Loader" ).modal('show');
 					$http.post("/visitor-Management-System/Employee/addNewVisit", $scope.visit).then(function mySuccess(response){
 						if(response.data.msg == "SUCCESS"){
-							$('#VisitScheduleModal').modal('hide');
+							$("#Loader").modal("hide");
 							window.location.href  = "#!employeeDashboard";
 						}else{
+							$("#Loader").modal("hide");
 							window.location.href  = "#!employeeDashboard";
-							/*$timeout(function() {
-								$("#Loader").modal("hide");
-							   }, 200);*/
 						}
 					}, function myError(data){
-						/*$timeout(function() {
+						$timeout(function() {
 							$("#Loader").modal("hide");
-						   }, 200);*/
+						   }, 500);
 						console.log("some internal error");
 						console.log(data);
 					});
@@ -369,28 +373,25 @@ app.controller('dashboardController', function($scope, $http, $rootScope,$timeou
 					var todayTime = new Date();
 					if(visTime < todayTime){
 						$scope.invalidTime = true;
-						/*$timeout(function() {
-							$("#Loader").modal("hide");
-						   }, 200);*/
 					}else{
 						$scope.visit.createdBy = $scope.UserID;
 						$scope.visit.lastUpdatedBy = $scope.UserID;
 						$scope.visit.meetingBooked.empId = $scope.UserID;
 						$scope.visit.meetingBooked.empName = $scope.userName;
+						$('#VisitScheduleModal').modal('hide');
+						$( "#Loader" ).modal('show');
 						$http.post("/visitor-Management-System/Employee/addNewVisit", $scope.visit).then(function mySuccess(response){
 							if(response.data.msg == "SUCCESS"){
-								$('#VisitScheduleModal').modal('hide');
+								$("#Loader").modal("hide");
 								window.location.href  = "#!employeeDashboard";
 							}else{
+								$("#Loader").modal("hide");
 								window.location.href  = "#!employeeDashboard";
-								/*$timeout(function() {
-									$("#Loader").modal("hide");
-								   }, 200);*/
 							}
 						}, function myError(data){
-							/*$timeout(function() {
+							$timeout(function() {
 								$("#Loader").modal("hide");
-							   }, 200);*/
+							   }, 500);
 							console.log("some internal error");
 							console.log(data);
 						});
@@ -398,14 +399,7 @@ app.controller('dashboardController', function($scope, $http, $rootScope,$timeou
 				}
 			}else{
 				$scope.invalidMobile = true;
-				/*$timeout(function() {
-					$("#Loader").modal("hide");
-				   }, 200);*/
 			}
-		}else{
-			/*$timeout(function() {
-				$("#Loader").modal("hide");
-			   }, 200);*/
 		}
 	};
 	
