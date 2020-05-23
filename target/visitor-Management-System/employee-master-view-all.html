@@ -102,6 +102,7 @@
 <div class="custom-file">
 <input type="file" name="myFile" file-model="myFile" class="custom-file-input" id="customFile">
 <label class="custom-file-label" for="customFile"><span ng-show="myFile != null">{{myFile.name}}</span><span ng-hide="myFile != null">Choose file</span></label>
+<span ng-if="myFile.size > 72925" style="color: red;">image maximum size allowed is 72Kb</span>
 </div>
 </div>
 </div>
@@ -220,6 +221,7 @@
 <div class="custom-file">
 <input type="file" name="myFile" file-model="myFile" class="custom-file-input" id="customFile1">
 <label class="custom-file-label" for="customFile"><span ng-show="myFile != null">{{myFile.name}}</span><span ng-hide="myFile != null">Choose file</span></label>
+<span ng-if="myFile.size > 72925" style="color: red;">image maximum size allowed is 72Kb</span>
 </div>
 </div>
 </div>
