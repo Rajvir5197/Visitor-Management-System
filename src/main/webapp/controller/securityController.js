@@ -263,44 +263,27 @@ app.controller('securityController', function($scope, $rootScope, $http,$timeout
 	};
 	
 	$scope.securityCheckout = function(){
-		$( "#Loader" ).modal("show");
+		//$( "#Loader" ).modal("show");
 		$rootScope.visitCheckin.secCheckoutBy = $scope.userName;
 		$http.post("/visitor-Management-System/Security/securityCheckout", $rootScope.visitCheckin).then(function mySuccess(response){
 			if(response.data.msg == 'SUCCESS'){
-				$( "#Loader" ).modal("hide");
 				window.location = "#!secDashboard";
-			}else{
-				$timeout(function() {
-					$("#Loader").modal("hide");
-				   }, 500);
 			}
 		}, function myError(data){
-			$timeout(function() {
-				$("#Loader").modal("hide");
-			   }, 500);
 			console.log("some internal error");
 			console.log(data);
 		});
 	};
 	
 	$scope.securityCheckin = function(){
-		$( "#Loader" ).modal("show");
+		//$( "#Loader" ).modal("show");
 		$rootScope.visitCheckin.secCheckinBy = $scope.userName;
 		$http.post("/visitor-Management-System/Security/securityCheckin", $rootScope.visitCheckin).then(function mySuccess(response){
 			if(response.data.msg == 'SUCCESS'){
-				$( "#Loader" ).modal("hide");
-				$timeout(function() {
-					window.location = "#!secDashboard";
-				   }, 50);
-			}else{
-				$timeout(function() {
-					$("#Loader").modal("hide");
-				   }, 500);
+				//$( "#Loader" ).modal("hide");
+				window.location = "#!secDashboard";
 			}
 		}, function myError(data){
-			$timeout(function() {
-				$("#Loader").modal("hide");
-			   }, 500);
 			console.log("some internal error");
 			console.log(data);
 		});
