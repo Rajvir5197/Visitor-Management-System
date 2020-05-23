@@ -9,7 +9,7 @@ app.controller('settingController', function($scope, $http, $rootScope,$timeout)
 	}
 	
 	$scope.changePassword = function(){
-		$http.post("/visitor-Management-System/Employee/editEmp", $rootScope.emp).then(function mySuccess(response){
+		$http.post("/visitor-Management-System/Employee/changePassword", $rootScope.emp).then(function mySuccess(response){
 			$('#notificationModal').modal('show');
 			$scope.getUpdatedEmp();
 		}, function myError(data){
