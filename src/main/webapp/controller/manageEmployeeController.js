@@ -114,8 +114,7 @@ app.controller('manageEmployeeController', function($scope, $rootScope, $http, $
 						headers : {'Content-Type' : undefined}
 					}).then(function mySuccess(response){
 						$('#addNewEmpModal').modal('hide');
-						$( "#Loader" ).modal("show");
-						$scope.viewAllEmp();
+						$('#notificationModal').modal('show');
 					}, function myError(data){
 						console.log("some internal error");
 						console.log(data);

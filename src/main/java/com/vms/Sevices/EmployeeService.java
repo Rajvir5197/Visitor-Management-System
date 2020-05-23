@@ -109,7 +109,7 @@ public class EmployeeService {
 		JSONObject jsonObject = new JSONObject();
 		employee.setRegDate(Date.valueOf(LocalDate.now()));
 		employee.setRegTime(Time.valueOf(LocalTime.now()));
-		employee.setImage(compressBytes(employee.getImage()));
+		//employee.setImage(compressBytes(employee.getImage()));
 		
 		Employee employeeSaved = repository.save(employee);
 		if (null != employeeSaved) {
@@ -122,6 +122,24 @@ public class EmployeeService {
 		return jsonObject;
 	}
 
+	public JSONObject changePassword(Employee employee) {
+
+		logger.info("start of addNewEmp method");
+		JSONObject jsonObject = new JSONObject();
+		employee.setRegDate(Date.valueOf(LocalDate.now()));
+		employee.setRegTime(Time.valueOf(LocalTime.now()));
+		employee.setImage(compressBytes(employee.getImage()));
+		
+		Employee employeeSaved = repository.save(employee);
+		if (null != employeeSaved) {
+			jsonObject.put("data", "SUCCESS");
+			logger.info("employee added: " + employeeSaved.getEmpCode());
+		} else {
+			jsonObject.put("data", "FAIL");
+		}
+		logger.info("end of addNewEmp method");
+		return jsonObject;
+	}
 	public JSONObject addOrEditEmployee(String jsonEmployee, MultipartFile file) {
 
 		logger.info("start of addOrEditEmployee method");

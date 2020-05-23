@@ -50,6 +50,12 @@ public class EmployeeController {
 		return service.addNewEmp(employee);
 	}
 	
+	@RequestMapping(value = "/changePassword", method = RequestMethod.POST)
+	@ResponseBody
+	public JSONObject changePassword(@RequestBody Employee employee) {
+		return service.changePassword(employee);
+	}
+	
 	@RequestMapping(value = "/editEmp", method = RequestMethod.POST)
 	@ResponseBody
 	public JSONObject editEmp(@RequestBody Employee employee) {
