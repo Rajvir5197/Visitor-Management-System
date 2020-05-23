@@ -264,4 +264,8 @@ app.controller('manageVisitController', function($scope, $rootScope, $http, $tim
 		});
 	};
 	
+	$scope.backToVisit = function(){
+		window.location.href  = "#!viewAllVisit";
+	};
+	
 });

@@ -49,7 +49,9 @@ app.config(function($routeProvider){
         }).when('/empCheckinCheckout',{
             templateUrl: '/visitor-Management-System/inputs.html'
         }).when('/profile',{
-            templateUrl: '/visitor-Management-System/profile.html'
+            templateUrl: '/visitor-Management-System/manage_Profile.html'
+        }).when('/settings',{
+            templateUrl: '/visitor-Management-System/manage-Settings.html'
         });
 });
 app.directive('fileModel', ['$parse', function ($parse) {

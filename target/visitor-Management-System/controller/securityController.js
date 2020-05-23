@@ -289,7 +289,9 @@ app.controller('securityController', function($scope, $rootScope, $http,$timeout
 		$http.post("/visitor-Management-System/Security/securityCheckin", $rootScope.visitCheckin).then(function mySuccess(response){
 			if(response.data.msg == 'SUCCESS'){
 				$( "#Loader" ).modal("hide");
-				window.location = "#!secDashboard";
+				$timeout(function() {
+					window.location = "#!secDashboard";
+				   }, 50);
 			}else{
 				$timeout(function() {
 					$("#Loader").modal("hide");
