@@ -91,10 +91,12 @@ public class EmployeeService {
 
 		logger.info("start of allEmployee method");
 		List<Employee> E = repository.findAll();
+		logger.info("after fetching data:"+E.size());
 		for (Employee emp : E) {
 			if (emp.getImage() != null) {
-
+				logger.info("before decompressing");
 				emp.setImage(decompressBytes(emp.getImage()));
+				logger.info("after decompressing");
 			}
 		}
 
@@ -198,6 +200,7 @@ public class EmployeeService {
 
 	// uncompress the image bytes before returning it to the angular application
 	public static byte[] decompressBytes(byte[] data) {
+		//logger.info("before decompressing");
 		Inflater inflater = new Inflater();
 		inflater.setInput(data);
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream(data.length);
