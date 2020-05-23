@@ -105,25 +105,27 @@ app.controller('manageEmployeeController', function($scope, $rootScope, $http, $
 				$scope.newEmp.regBy = $scope.UserID;
 				if($scope.myFile != null && $scope.myFile != undefined){
 					var file = $scope.myFile;
-					var fd = new FormData();
-					fd.append('file', file);
-					fd.append('empDetails', JSON.stringify($scope.newEmp));
-					
-					$http.post("/visitor-Management-System/Employee/addNewOrEditEmp", fd, {
-						transformRequest : angular.identity,
-						headers : {'Content-Type' : undefined}
-					}).then(function mySuccess(response){
-						if(response.data.data == "Exist"){
-							$scope.dataExist = true;
-						}else{
-							$scope.dataExist = false;
-						}
-						$('#addNewEmpModal').modal('hide');
-						$('#notificationModal').modal('show');
-					}, function myError(data){
-						console.log("some internal error");
-						console.log(data);
-					});
+					if(file.size <= 72925){
+						var fd = new FormData();
+						fd.append('file', file);
+						fd.append('empDetails', JSON.stringify($scope.newEmp));
+						
+						$http.post("/visitor-Management-System/Employee/addNewOrEditEmp", fd, {
+							transformRequest : angular.identity,
+							headers : {'Content-Type' : undefined}
+						}).then(function mySuccess(response){
+							if(response.data.data == "Exist"){
+								$scope.dataExist = true;
+							}else{
+								$scope.dataExist = false;
+							}
+							$('#addNewEmpModal').modal('hide');
+							$('#notificationModal').modal('show');
+						}, function myError(data){
+							console.log("some internal error");
+							console.log(data);
+						});
+					}
 				}else{
 					$http.post("/visitor-Management-System/Employee/addNewEmp", $scope.newEmp).then(function mySuccess(response){
 						if(response.data.data == "Exist"){
@@ -186,22 +188,25 @@ app.controller('manageEmployeeController', function($scope, $rootScope, $http, $
 				$scope.editedEmp.regBy = $scope.UserID;
 				if($scope.myFile != null && $scope.myFile != undefined){
 					var file = $scope.myFile;
-					var fd = new FormData();
-					fd.append('file', file);
-					fd.append('empDetails', JSON.stringify($scope.editedEmp));
 					
-					$http.post("/visitor-Management-System/Employee/editNewOrEditEmp", fd, {
-						transformRequest : angular.identity,
-						headers : {'Content-Type' : undefined}
-					}).then(function mySuccess(response){
-						$('#editEmpModal').modal('hide');
-						$( "#Loader" ).modal("show");
-						$('#dataTable').DataTable().clear().destroy();
-						$scope.viewAllEmp();
-					}, function myError(data){
-						console.log("some internal error");
-						console.log(data);
-					});
+					if(file.size <= 72925){
+						var fd = new FormData();
+						fd.append('file', file);
+						fd.append('empDetails', JSON.stringify($scope.editedEmp));
+						
+						$http.post("/visitor-Management-System/Employee/editNewOrEditEmp", fd, {
+							transformRequest : angular.identity,
+							headers : {'Content-Type' : undefined}
+						}).then(function mySuccess(response){
+							$('#editEmpModal').modal('hide');
+							$( "#Loader" ).modal("show");
+							$('#dataTable').DataTable().clear().destroy();
+							$scope.viewAllEmp();
+						}, function myError(data){
+							console.log("some internal error");
+							console.log(data);
+						});
+					}
 				}else{
 					$http.post("/visitor-Management-System/Employee/editEmp", $scope.editedEmp).then(function mySuccess(response){
 						$('#editEmpModal').modal('hide');

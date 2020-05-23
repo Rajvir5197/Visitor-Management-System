@@ -291,6 +291,9 @@ public class EmployeeService {
 
 		JSONObject jsonObject = new JSONObject();
 		employee.setEmpPlantCode(null);
+		if(employee.getImage() != null) {
+			employee.setImage(compressBytes(employee.getImage()));
+		}
 		repository.save(employee);
 
 		repository.delete(employee);
