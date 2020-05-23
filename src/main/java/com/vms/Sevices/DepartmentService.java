@@ -5,6 +5,7 @@ import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,9 +31,13 @@ public class DepartmentService {
 		return repository.findAll();
 	}
 
-	public JSONObject addOrEditDepartment(Department department) {
+	public JSONObject addDepartment(Department department) {
 
 		JSONObject jsonObject = new JSONObject();
+		if(isExists(department)) {
+			jsonObject.put("data", "Exist");
+			return jsonObject;
+		}
 		department.setRegDate(Date.valueOf(LocalDate.now()));
 		department.setRegTime(Time.valueOf(LocalTime.now()));
 
@@ -45,6 +50,14 @@ public class DepartmentService {
 		}
 
 		return jsonObject;
+	}
+	
+	public boolean isExists(Department dept) {
+		Optional<Department> l = repository.findById(dept.getDeptCode());
+		if(l.isPresent()) {
+			return true;
+		}
+			return false;
 	}
 
 	public JSONObject deleteDepartment(Department department) {
@@ -62,6 +75,23 @@ public class DepartmentService {
 		jsonObject.put("data", "SUCCESS");
 		return jsonObject;
 
+	}
+
+	public JSONObject EditDept(Department department) {
+
+		JSONObject jsonObject = new JSONObject();
+		department.setRegDate(Date.valueOf(LocalDate.now()));
+		department.setRegTime(Time.valueOf(LocalTime.now()));
+
+		Department departmentSaved = repository.save(department);
+
+		if (null != departmentSaved) {
+			jsonObject.put("data", "SUCCESS");
+		} else {
+			jsonObject.put("data", "FAIL");
+		}
+
+		return jsonObject;
 	}
 
 }

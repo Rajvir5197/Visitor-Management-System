@@ -39,9 +39,16 @@ public class EmployeeController {
 
 	@RequestMapping(value = "/addNewOrEditEmp", method = RequestMethod.POST)
 	@ResponseBody
-	public JSONObject addNewOrEditEmp(@RequestParam("file") MultipartFile file,
+	public JSONObject addNewEmp(@RequestParam("file") MultipartFile file,
 			@RequestParam("empDetails") String jsonEmployee) {
-		return service.addOrEditEmployee(jsonEmployee, file);
+		return service.addEmployee(jsonEmployee, file);
+	}
+	
+	@RequestMapping(value = "/editNewOrEditEmp", method = RequestMethod.POST)
+	@ResponseBody
+	public JSONObject editNewEmp(@RequestParam("file") MultipartFile file,
+			@RequestParam("empDetails") String jsonEmployee) {
+		return service.editEmployee(jsonEmployee, file);
 	}
 	
 	@RequestMapping(value = "/addNewEmp", method = RequestMethod.POST)
@@ -59,7 +66,7 @@ public class EmployeeController {
 	@RequestMapping(value = "/editEmp", method = RequestMethod.POST)
 	@ResponseBody
 	public JSONObject editEmp(@RequestBody Employee employee) {
-		return service.addNewEmp(employee);
+		return service.EditNewEmp(employee);
 	}
 
 	@RequestMapping(value = "/deleteEmp", method = RequestMethod.POST)

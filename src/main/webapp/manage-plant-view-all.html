@@ -388,7 +388,8 @@
 	          <span aria-hidden="true">&times;</span>
 	        </div>
 	        <div class="modal-body">
-	          <p>Plant Submitted Successfully</p>
+	          <p ng-if="!dataExist">Plant Submitted Successfully</p>
+	          <p ng-if="dataExist">Plant Already Present with Plant Code</p>
 	        </div>
 	        <div class="modal-footer">
 	          <button type="button" class="btn btn-default" ng-click="notiClose()" data-dismiss="modal">Close</button>

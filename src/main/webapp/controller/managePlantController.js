@@ -43,6 +43,11 @@ app.controller('managePlantController', function($scope, $rootScope, $http, $tim
 		if($scope.addForm.$valid){
 			$scope.newPlant.regBy = $scope.UserID;
 			$http.post("/visitor-Management-System/Plant/addNewPlant", $scope.newPlant).then(function mySuccess(response){
+				if(response.data.data == "Exist"){
+					$scope.dataExist = true;
+				}else{
+					$scope.dataExist = false;
+				}
 				$('#addNewPlantModal').modal('hide');
 				$('#notificationModal').modal('show');
 			}, function myError(data){
@@ -54,6 +59,7 @@ app.controller('managePlantController', function($scope, $rootScope, $http, $tim
 	
 	$scope.notiClose = function(){
 		$( "#Loader" ).modal("show");
+		$('#dataTable').DataTable().clear().destroy();
 		$scope.viewAllPlant();
 	};
 	
@@ -63,6 +69,7 @@ app.controller('managePlantController', function($scope, $rootScope, $http, $tim
 			$http.post("/visitor-Management-System/Plant/editPlant", $scope.edited).then(function mySuccess(response){
 				$('#editPlantModal').modal('hide');
 				$( "#Loader" ).modal("show");
+				$('#dataTable').DataTable().clear().destroy();
 				$scope.viewAllPlant();
 			}, function myError(data){
 				console.log("some internal error");
@@ -75,6 +82,7 @@ app.controller('managePlantController', function($scope, $rootScope, $http, $tim
 		$scope.plantToBeDeleted.regBy = $scope.UserID;
 		$http.post("/visitor-Management-System/Plant/deletePlant", $scope.plantToBeDeleted).then(function mySuccess(response){
 			$( "#Loader" ).modal("show");
+			$('#dataTable').DataTable().clear().destroy();
 			$scope.viewAllPlant();
 		}, function myError(data){
 			console.log("some internal error");

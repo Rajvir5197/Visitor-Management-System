@@ -113,6 +113,11 @@ app.controller('manageEmployeeController', function($scope, $rootScope, $http, $
 						transformRequest : angular.identity,
 						headers : {'Content-Type' : undefined}
 					}).then(function mySuccess(response){
+						if(response.data.data == "Exist"){
+							$scope.dataExist = true;
+						}else{
+							$scope.dataExist = false;
+						}
 						$('#addNewEmpModal').modal('hide');
 						$('#notificationModal').modal('show');
 					}, function myError(data){
@@ -121,6 +126,11 @@ app.controller('manageEmployeeController', function($scope, $rootScope, $http, $
 					});
 				}else{
 					$http.post("/visitor-Management-System/Employee/addNewEmp", $scope.newEmp).then(function mySuccess(response){
+						if(response.data.data == "Exist"){
+							$scope.dataExist = true;
+						}else{
+							$scope.dataExist = false;
+						}
 						$('#addNewEmpModal').modal('hide');
 						$('#notificationModal').modal('show');
 					}, function myError(data){
@@ -150,7 +160,7 @@ app.controller('manageEmployeeController', function($scope, $rootScope, $http, $
 		if($scope.editForm.$valid){
 			if(!isNaN($scope.editedEmp.empMobile) && angular.isNumber(+$scope.editedEmp.empMobile)){
 				$scope.editedEmp.regBy = $scope.UserID;
-				$http.post("/visitor-Management-System/Employee/addNewOrEditEmp", $scope.editedEmp).then(function mySuccess(response){
+				$http.post("/visitor-Management-System/Employee/editNewOrEditEmp", $scope.editedEmp).then(function mySuccess(response){
 					$('#editEmpModal').modal('hide');
 					$scope.viewAllEmp();
 					console.log(response.data);
@@ -180,7 +190,7 @@ app.controller('manageEmployeeController', function($scope, $rootScope, $http, $
 					fd.append('file', file);
 					fd.append('empDetails', JSON.stringify($scope.editedEmp));
 					
-					$http.post("/visitor-Management-System/Employee/addNewOrEditEmp", fd, {
+					$http.post("/visitor-Management-System/Employee/editNewOrEditEmp", fd, {
 						transformRequest : angular.identity,
 						headers : {'Content-Type' : undefined}
 					}).then(function mySuccess(response){

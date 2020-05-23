@@ -109,6 +109,32 @@ public class EmployeeService {
 
 		logger.info("start of addNewEmp method");
 		JSONObject jsonObject = new JSONObject();
+		if(isExists(employee)) {
+			jsonObject.put("data", "Exist");
+			return jsonObject;
+		}
+		employee.setRegDate(Date.valueOf(LocalDate.now()));
+		employee.setRegTime(Time.valueOf(LocalTime.now()));
+		if(employee.getImage() != null) {
+			employee.setImage(compressBytes(employee.getImage()));
+		}
+		//employee.setImage(compressBytes(employee.getImage()));
+		
+		Employee employeeSaved = repository.save(employee);
+		if (null != employeeSaved) {
+			jsonObject.put("data", "SUCCESS");
+			logger.info("employee added: " + employeeSaved.getEmpCode());
+		} else {
+			jsonObject.put("data", "FAIL");
+		}
+		logger.info("end of addNewEmp method");
+		return jsonObject;
+	}
+	
+	public JSONObject EditNewEmp(Employee employee) {
+
+		logger.info("start of addNewEmp method");
+		JSONObject jsonObject = new JSONObject();
 		employee.setRegDate(Date.valueOf(LocalDate.now()));
 		employee.setRegTime(Time.valueOf(LocalTime.now()));
 		if(employee.getImage() != null) {
@@ -147,7 +173,42 @@ public class EmployeeService {
 		logger.info("end of addNewEmp method");
 		return jsonObject;
 	}
-	public JSONObject addOrEditEmployee(String jsonEmployee, MultipartFile file) {
+	public JSONObject addEmployee(String jsonEmployee, MultipartFile file) {
+
+		logger.info("start of addOrEditEmployee method");
+		ObjectMapper mapper = new ObjectMapper();
+		JSONObject jsonObject = new JSONObject();
+		String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+		try {
+			Employee employee = mapper.readValue(jsonEmployee, Employee.class);
+			// employee.setProfileAttachment(new SerialBlob(file.getBytes()));
+			if(isExists(employee)) {
+				jsonObject.put("data", "Exist");
+				return jsonObject;
+			}
+			employee.setImage(compressBytes(file.getBytes()));
+			employee.setRegDate(Date.valueOf(LocalDate.now()));
+			employee.setRegTime(Time.valueOf(LocalTime.now()));
+			Employee employeeSaved = repository.save(employee);
+			if (null != employeeSaved) {
+				jsonObject.put("data", "SUCCESS");
+			} else {
+				jsonObject.put("data", "FAIL");
+			}
+		} /*
+			 * catch (SQLException e) {
+			 * 
+			 * e.printStackTrace();
+			 * 
+			 * }
+			 */
+		catch (IOException e) {
+			e.printStackTrace();
+		}
+		return jsonObject;
+	}
+	
+	public JSONObject editEmployee(String jsonEmployee, MultipartFile file) {
 
 		logger.info("start of addOrEditEmployee method");
 		ObjectMapper mapper = new ObjectMapper();
@@ -176,6 +237,14 @@ public class EmployeeService {
 			e.printStackTrace();
 		}
 		return jsonObject;
+	}
+	
+	public boolean isExists(Employee employee) {
+		Optional<Employee> l = repository.findById(employee.getEmpCode());
+		if(l.isPresent()) {
+			return true;
+		}
+			return false;
 	}
 
 	// compress the image bytes before storing it in the database
@@ -649,7 +718,7 @@ public class EmployeeService {
 		logger.info("after hiting repository:"+l.get().getEmpName());
 		if (l.isPresent()) {
 			empDetails = l.get();
-			logger.info("before compressing image"+empDetails.getImage().length);
+			logger.info("before compressing image");
 			if (empDetails.getImage() != null) {
 
 				empDetails.setImage(decompressBytes(empDetails.getImage()));

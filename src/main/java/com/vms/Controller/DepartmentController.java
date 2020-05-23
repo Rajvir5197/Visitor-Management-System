@@ -28,11 +28,18 @@ public class DepartmentController {
 		return service.allDepartment();
 	}
 	
-	@RequestMapping(value="/addNewOrEditDept", method=RequestMethod.POST)
+	@RequestMapping(value="/addNewDept", method=RequestMethod.POST)
 	@ResponseBody
-	public JSONObject addNewOrEditDep(@RequestBody Department department) {
+	public JSONObject addNewDep(@RequestBody Department department) {
 		
-		return service.addOrEditDepartment(department);
+		return service.addDepartment(department);
+	}
+	
+	@RequestMapping(value="/editDept", method=RequestMethod.POST)
+	@ResponseBody
+	public JSONObject EditDept(@RequestBody Department department) {
+		
+		return service.EditDept(department);
 	}
 	
 	

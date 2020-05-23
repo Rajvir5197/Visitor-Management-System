@@ -370,7 +370,8 @@
 	          <span aria-hidden="true">&times;</span>
 	        </div>
 	        <div class="modal-body">
-	          <p>Employee Submitted Successfully</p>
+	          <p ng-if="!dataExist">Employee Submitted Successfully</p>
+	          <p ng-if="dataExist">Employee Already exist with Employee Code</p>
 	        </div>
 	        <div class="modal-footer">
 	          <button type="button" class="btn btn-default" ng-click="notiClose()" data-dismiss="modal">Close</button>
