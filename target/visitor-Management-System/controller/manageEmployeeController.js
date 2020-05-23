@@ -141,6 +141,7 @@ app.controller('manageEmployeeController', function($scope, $rootScope, $http, $
 	
 	$scope.notiClose = function(){
 		$( "#Loader" ).modal("show");
+		$('#dataTable').DataTable().clear().destroy();
 		$scope.viewAllEmp();
 	};
 	
@@ -185,6 +186,7 @@ app.controller('manageEmployeeController', function($scope, $rootScope, $http, $
 					}).then(function mySuccess(response){
 						$('#editEmpModal').modal('hide');
 						$( "#Loader" ).modal("show");
+						$('#dataTable').DataTable().clear().destroy();
 						$scope.viewAllEmp();
 					}, function myError(data){
 						console.log("some internal error");
@@ -194,6 +196,7 @@ app.controller('manageEmployeeController', function($scope, $rootScope, $http, $
 					$http.post("/visitor-Management-System/Employee/editEmp", $scope.editedEmp).then(function mySuccess(response){
 						$('#editEmpModal').modal('hide');
 						$( "#Loader" ).modal("show");
+						$('#dataTable').DataTable().clear().destroy();
 						$scope.viewAllEmp();
 					}, function myError(data){
 						console.log("some internal error");
@@ -216,6 +219,7 @@ app.controller('manageEmployeeController', function($scope, $rootScope, $http, $
 		$scope.EmpToBeDeleted.regBy = $scope.UserID;
 		$http.post("/visitor-Management-System/Employee/deleteEmp", $scope.EmpToBeDeleted).then(function mySuccess(response){
 			$( "#Loader" ).modal("show");
+			$('#dataTable').DataTable().clear().destroy();
 			$scope.viewAllEmp();
 		}, function myError(data){
 			console.log("some internal error");

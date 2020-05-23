@@ -81,19 +81,19 @@ app.controller('indexController', function($scope, $rootScope, $http) {
 	if($rootScope.UserName == undefined || $rootScope.UserName == null ){
 		window.location = "/visitor-Management-System/index.html";
 	}else{
-		if($scope.role == "Security"){
-			window.location = "#!secDashboard";
-		}else{
-			window.location = "#!employeeDashboard";
-		}
-		
 		$http.post("/visitor-Management-System/Employee/GetLoggedInDetails",$scope.loginId).then(function mySuccess(response){
 			$rootScope.emp = response.data;
+			if($scope.role == "Security"){
+				window.location = "#!secDashboard";
+			}else{
+				window.location = "#!employeeDashboard";
+			}
 			console.log("in indexController");
 		}, function myError(data){
 			console.log("some internal error");
 			console.log(data);
 		});
+		
 	}																											
 	$scope.logoutUser = function(){
 		window.localStorage.removeItem("loginDetails");
