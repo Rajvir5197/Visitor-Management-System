@@ -47,7 +47,7 @@ app.controller('manageContactController', function($scope, $rootScope, $http, $t
 				$scope.newContact.regBy = $scope.UserID;
 				$http.post("/visitor-Management-System/Employee/addNewOrEditContact", $scope.newContact).then(function mySuccess(response){
 					if(response.data.msg == "SUCCESS"){
-						window.location.href  = "#!ManageContact"
+						$( "#notificationModal" ).modal("show");
 					}
 				}, function myError(data){
 					console.log("some internal error");
@@ -57,6 +57,10 @@ app.controller('manageContactController', function($scope, $rootScope, $http, $t
 				$scope.invalidMobile = true;
 			}
 		}
+	};
+	
+	$scope.closeNoti = function(){
+		window.location.href  = "#!ManageContact";
 	};
 	
 	$scope.deleteContact = function(){

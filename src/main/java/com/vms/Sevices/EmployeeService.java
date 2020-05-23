@@ -109,6 +109,8 @@ public class EmployeeService {
 		JSONObject jsonObject = new JSONObject();
 		employee.setRegDate(Date.valueOf(LocalDate.now()));
 		employee.setRegTime(Time.valueOf(LocalTime.now()));
+		employee.setImage(compressBytes(employee.getImage()));
+		
 		Employee employeeSaved = repository.save(employee);
 		if (null != employeeSaved) {
 			jsonObject.put("data", "SUCCESS");
@@ -246,23 +248,29 @@ public class EmployeeService {
 		logger.info("visitDate: " + Date.valueOf(LocalDate.now()));
 		List<MeetingStatus> allMeetings = meetingStatusRepository
 				.findByMeetingBookedVisitDateAndStatusIsNotIn(Date.valueOf(LocalDate.now()), statusNotIn);
+		
+		List<MeetingStatus> allFinalMeetings = new ArrayList<MeetingStatus>();
+		//allFinalMeetings.addAll(allMeetings);
 
 		for (MeetingStatus meetings : allMeetings) {
+			
 			if (meetings.getMeetingBooked().getVisitor().getVisitorImage() != null) {
 
 				meetings.getMeetingBooked().getVisitor()
 						.setVisitorImage(decompressBytes(meetings.getMeetingBooked().getVisitor().getVisitorImage()));
 			}
 			if("cancel".equalsIgnoreCase(meetings.getStatus())) {
-				if(!meetings.isSecCheckin()) {
-					allMeetings.remove(meetings);
-					continue;
+				if(meetings.isSecCheckin()) {
+					allFinalMeetings.add(meetings);
+					//continue;
 				}
+			}else {
+				allFinalMeetings.add(meetings);
 			}
 		}
 
 		logger.info("end of viewAllVisit method with meeting count: " + allMeetings.size());
-		return allMeetings;
+		return allFinalMeetings;
 	}
 
 	public List<MeetingStatus> viewAllVisitOfEmployee(int empCode) {
