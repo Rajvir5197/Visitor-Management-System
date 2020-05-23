@@ -109,6 +109,9 @@ public class EmployeeService {
 		JSONObject jsonObject = new JSONObject();
 		employee.setRegDate(Date.valueOf(LocalDate.now()));
 		employee.setRegTime(Time.valueOf(LocalTime.now()));
+		if(employee.getImage() != null) {
+			employee.setImage(compressBytes(employee.getImage()));
+		}
 		//employee.setImage(compressBytes(employee.getImage()));
 		
 		Employee employeeSaved = repository.save(employee);
@@ -128,7 +131,9 @@ public class EmployeeService {
 		JSONObject jsonObject = new JSONObject();
 		employee.setRegDate(Date.valueOf(LocalDate.now()));
 		employee.setRegTime(Time.valueOf(LocalTime.now()));
-		employee.setImage(compressBytes(employee.getImage()));
+		if(employee.getImage() != null) {
+			employee.setImage(compressBytes(employee.getImage()));
+		}
 		
 		Employee employeeSaved = repository.save(employee);
 		if (null != employeeSaved) {
@@ -635,17 +640,21 @@ public class EmployeeService {
 
 	public Employee getLoggedInDetails(int loginId) {
 
+		logger.info("start of getLoggedInDetails method with loginId:"+loginId);
 		Employee empDetails = new Employee();
 		Optional<Employee> l = repository.findById(loginId);
+		logger.info("after hiting repository:"+l.get().getEmpName());
 		if (l.isPresent()) {
 			empDetails = l.get();
+			logger.info("before compressing image"+empDetails.getImage().length);
 			if (empDetails.getImage() != null) {
 
 				empDetails.setImage(decompressBytes(empDetails.getImage()));
+				logger.info("after compressing image"+empDetails.getImage().length);
 			}
 
 		}
-
+		logger.info("end of getLoggedInDetails method with loginId:"+loginId);
 		return empDetails;
 	}
 
