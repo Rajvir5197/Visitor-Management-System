@@ -4,7 +4,8 @@ app.controller('manageContactEditController', function($scope, $rootScope, $http
 	
 	if($scope.UserID == undefined || $scope.UserID == null ){
 		window.location = "/visitor-Management-System/index.html";
-	};	
+	};
+	window.localStorage.setItem("pagePosition", "FromContactEditPage");
 	$scope.invalidEditedMobile = false;
 	$scope.editContact = function(){
 		$scope.invalidEditedMobile = false;

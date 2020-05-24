@@ -75,6 +75,7 @@ app.controller('indexController', function($scope, $rootScope, $http) {
 	$rootScope.UserName = window.localStorage.getItem("userName");
 	$scope.role = window.localStorage.getItem("loginRole");
 	$scope.loginId = window.localStorage.getItem("loginDetails");
+	$scope.page = window.localStorage.getItem("pagePosition");
 	$scope.reportType = '';
 	
 	
@@ -83,10 +84,12 @@ app.controller('indexController', function($scope, $rootScope, $http) {
 	}else{
 		$http.post("/visitor-Management-System/Employee/GetLoggedInDetails",$scope.loginId).then(function mySuccess(response){
 			$rootScope.emp = response.data;
-			if($scope.role == "Security"){
-				window.location = "#!secDashboard";
-			}else{
-				window.location = "#!employeeDashboard";
+			if("FromLoginPage" == $scope.page){
+				if($scope.role == "Security"){
+					window.location = "#!secDashboard";
+				}else{
+					window.location = "#!employeeDashboard";
+				}
 			}
 			console.log("in indexController");
 		}, function myError(data){

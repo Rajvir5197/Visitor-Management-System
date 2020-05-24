@@ -8,6 +8,7 @@ app.controller('manageVisitController', function($scope, $rootScope, $http, $tim
 		window.location = "/visitor-Management-System/index.html";
 	}
 	
+	window.localStorage.setItem("pagePosition", "FromVisitPage");
 	$( "#Loader" ).modal("show");
 	
 	$( "#datepicker" ).datepicker({

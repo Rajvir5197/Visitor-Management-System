@@ -11,6 +11,7 @@ app.controller('securityController', function($scope, $rootScope, $http,$timeout
 		window.location = "#!secDashboard";
 	};
 	
+	window.localStorage.setItem("pagePosition", "FromSecurityPage");
 	$( "#Loader" ).modal("show");
 	$scope.addAssetArrayList = [];
 	$scope.addCoVisitorAssetArrayList = [];

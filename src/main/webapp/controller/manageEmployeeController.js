@@ -6,6 +6,7 @@ app.controller('manageEmployeeController', function($scope, $rootScope, $http, $
 		window.location = "/visitor-Management-System/index.html";
 	}
 	
+	window.localStorage.setItem("pagePosition", "FromEmpPage");
 	$( "#Loader" ).modal("show");
 	$scope.allEmp = [];
 	$scope.invalidEditedMobile = false;

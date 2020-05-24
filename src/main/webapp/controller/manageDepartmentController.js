@@ -7,6 +7,7 @@ app.controller('manageDeptController', function($scope, $rootScope, $http, $time
 		window.location = "/visitor-Management-System/index.html";
 	}
 	
+	window.localStorage.setItem("pagePosition", "FromDepartmentPage");
 	$( "#Loader" ).modal("show");
 	$scope.getPlantCode = function(dept){
 		$scope.plantCodeArray = [];
