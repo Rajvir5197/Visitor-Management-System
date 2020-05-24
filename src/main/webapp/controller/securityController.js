@@ -36,7 +36,7 @@ app.controller('securityController', function($scope, $rootScope, $http,$timeout
 						});
 						$timeout(function() {
 							$("#Loader").modal("hide");
-						   }, 500);
+						   }, 3000);
 					}, function myError(data){
 						console.log("some internal error");
 						console.log(data);
@@ -45,9 +45,12 @@ app.controller('securityController', function($scope, $rootScope, $http,$timeout
 			}else{
 				$timeout(function() {
 					$("#Loader").modal("hide");
-				   }, 500);
+				   }, 3000);
 			}
 		}, function myError(data){
+			$timeout(function() {
+				$("#Loader").modal("hide");
+			   }, 3000);
 			console.log("some internal error");
 			console.log(data);
 		});

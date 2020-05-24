@@ -197,7 +197,7 @@ app.controller('dashboardController', function($scope, $http, $rootScope,$timeou
 			}else{
 				$timeout(function() {
 					$("#Loader").modal("hide");
-				   }, 500);
+				   }, 3000);
 				/*angular.forEach($scope.allVisits,function(visit){
 					$scope.viewAllCoVisitor(visit);
 				});*/
@@ -205,7 +205,7 @@ app.controller('dashboardController', function($scope, $http, $rootScope,$timeou
 		}, function myError(data){
 			$timeout(function() {
 				$("#Loader").modal("hide");
-			   }, 500);
+			   }, 3000);
 			console.log("some internal error");
 			console.log(data);
 		});
@@ -289,7 +289,7 @@ app.controller('dashboardController', function($scope, $http, $rootScope,$timeou
 				visit.invalidSecCode = true;
 				$timeout(function() {
 					$("#Loader").modal("hide");
-				   }, 500);
+				   }, 3000);
 			}
 		}
 	};
@@ -363,7 +363,7 @@ app.controller('dashboardController', function($scope, $http, $rootScope,$timeou
 					}, function myError(data){
 						$timeout(function() {
 							$("#Loader").modal("hide");
-						   }, 500);
+						   }, 3000);
 						console.log("some internal error");
 						console.log(data);
 					});
@@ -391,7 +391,7 @@ app.controller('dashboardController', function($scope, $http, $rootScope,$timeou
 						}, function myError(data){
 							$timeout(function() {
 								$("#Loader").modal("hide");
-							   }, 500);
+							   }, 3000);
 							console.log("some internal error");
 							console.log(data);
 						});

@@ -109,7 +109,7 @@ app.controller('manageVisitController', function($scope, $rootScope, $http, $tim
 			$scope.allVisits = response.data;
 			$timeout(function() {
 				$("#Loader").modal("hide");
-			   }, 500);
+			   }, 2000);
 		}, function myError(data){
 			console.log("some internal error");
 			console.log(data);
