@@ -8,6 +8,7 @@ app.controller('dashboardController', function($scope, $http, $rootScope,$timeou
 		window.location = "/visitor-Management-System/index.html";
 	}
 	
+	window.localStorage.setItem("pagePosition", "FromDashboardPage");
 	$( "#Loader" ).modal("show");
 	
 	$( "#datepicker" ).datepicker({
