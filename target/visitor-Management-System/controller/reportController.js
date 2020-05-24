@@ -7,6 +7,7 @@ app.controller('reportController', function($scope, $rootScope, $http, $timeout)
 		window.location = "/visitor-Management-System/index.html";
 	}
 	
+	window.localStorage.setItem("pagePosition", "FromReportPage");
 	$scope.allVisits=[];
 	$scope.errorInDate = false;
 	$scope.viewAllVisits = function(){

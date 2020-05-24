@@ -8,6 +8,7 @@ app.controller('manageContactController', function($scope, $rootScope, $http, $t
 		window.location = "/visitor-Management-System/index.html";
 	}
 
+	window.localStorage.setItem("pagePosition", "FromContactPage");
 	$( "#Loader" ).modal("show");
 	$scope.invalidMobile = false;
 	$scope.viewAllContacts = function(){

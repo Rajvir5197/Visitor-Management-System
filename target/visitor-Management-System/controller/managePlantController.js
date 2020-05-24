@@ -7,6 +7,7 @@ app.controller('managePlantController', function($scope, $rootScope, $http, $tim
 		window.location = "/visitor-Management-System/index.html";
 	}
 	
+	window.localStorage.setItem("pagePosition", "FromPlantPage");
 	$( "#Loader" ).modal("show");
 	
 	$scope.allPlants = [];

@@ -19,6 +19,7 @@ app.controller('loginController', function($scope, $rootScope, $http) {
 				window.localStorage.setItem("loginDetails", response.data.empDetails.empCode);
 				window.localStorage.setItem("loginRole", response.data.empDetails.empRole);
 				window.localStorage.setItem("userName", response.data.empDetails.empName);
+				window.localStorage.setItem("pagePosition", "FromLoginPage");
 				window.location.href  = "index1.html";
 			}else{
 				$scope.invalidUser = true;
