@@ -122,5 +122,10 @@ public class PlantService {
 		
 	}
 	
+	public long getAllPlantCount() {
+		
+		return repository.count();		
+	}
+	
 
 }

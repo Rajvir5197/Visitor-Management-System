@@ -78,6 +78,13 @@ public class SecurityController {
 		return service.addVisitorImage(meeting);
 	}
 	
+	@RequestMapping(value = "/addCoVisitorImage", method = RequestMethod.POST)
+	@ResponseBody
+	public JSONObject addCoVisitorImage(@RequestBody CoVisitor coVisitor) {
+		
+		return service.addCoVisitorImage(coVisitor);
+	}
+	
 	
 	@RequestMapping(value = "/getVisitAllAsset", method = RequestMethod.POST)
 	@ResponseBody

@@ -62,6 +62,8 @@ app.controller('manageDeptController', function($scope, $rootScope, $http, $time
 	};
 	
 	$scope.addNewDept = function(){
+		$scope.deleteData = false;
+		$scope.updateData = false;
 		if($scope.addForm.$valid){
 			$scope.newDept.regBy = $scope.UserID;
 			$http.post("/visitor-Management-System/Department/addNewDept", $scope.newDept).then(function mySuccess(response){
@@ -87,13 +89,14 @@ app.controller('manageDeptController', function($scope, $rootScope, $http, $time
 	};
 	
 	$scope.editDept = function(){
+		$scope.deleteData = false;
+		$scope.updateData = false;
 		if($scope.editForm.$valid){
 			$scope.editedDept.regBy = $scope.UserID;
 			$http.post("/visitor-Management-System/Department/editDept", $scope.editedDept).then(function mySuccess(response){
 				$('#editDeptModal').modal('hide');
-				$( "#Loader" ).modal("show");
-				$('#dataTable').DataTable().clear().destroy();
-				$scope.viewAllDept();
+				$scope.updateData = true;
+				$('#notificationModal').modal('show');
 			}, function myError(data){
 				console.log("some internal error");
 				console.log(data);
@@ -102,11 +105,12 @@ app.controller('manageDeptController', function($scope, $rootScope, $http, $time
 	};
 	
 	$scope.deleteDept = function(){
+		$scope.deleteData = false;
+		$scope.updateData = false;
 		$scope.deptToBeDeleted.regBy = $scope.UserID;
 		$http.post("/visitor-Management-System/Department/deleteDept", $scope.deptToBeDeleted).then(function mySuccess(response){
-			$( "#Loader" ).modal("show");
-			$('#dataTable').DataTable().clear().destroy();
-			$scope.viewAllDept();
+			$scope.deleteData = true;
+			$('#notificationModal').modal('show');
 		}, function myError(data){
 			console.log("some internal error");
 			console.log(data);

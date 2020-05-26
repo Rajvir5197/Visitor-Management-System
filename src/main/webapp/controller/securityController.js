@@ -246,13 +246,24 @@ app.controller('securityController', function($scope, $rootScope, $http,$timeout
 		if($scope.visitorImg != null && $scope.visitorImg != undefined){
 			$scope.image = [];
 			$scope.image = $scope.visitorImg.split(",");
-			$rootScope.visitCheckin.meetingBooked.visitor.visitorImage = $scope.image[1];
-			$http.post("/visitor-Management-System/Security/addVisitorImage", $rootScope.visitCheckin).then(function mySuccess(response){
-				$('#captureImageModal').modal('hide');
-			}, function myError(data){
-				console.log("some internal error");
-				console.log(data);
-			});
+			if($scope.picOf == 'visitor'){
+				$rootScope.visitCheckin.meetingBooked.visitor.visitorImage = $scope.image[1];
+				$http.post("/visitor-Management-System/Security/addVisitorImage", $rootScope.visitCheckin).then(function mySuccess(response){
+					$('#captureImageModal').modal('hide');
+				}, function myError(data){
+					console.log("some internal error");
+					console.log(data);
+				});
+			}else{
+				$scope.captureCoVisitor.coVisitorImage = $scope.image[1];
+				$http.post("/visitor-Management-System/Security/addCoVisitorImage", $scope.captureCoVisitor).then(function mySuccess(response){
+					$('#captureImageModal').modal('hide');
+					$scope.viewAllCoVisitor();
+				}, function myError(data){
+					console.log("some internal error");
+					console.log(data);
+				});
+			}
 		}
 	};
 	
@@ -291,6 +302,11 @@ app.controller('securityController', function($scope, $rootScope, $http,$timeout
 			console.log("some internal error");
 			console.log(data);
 		});
-	}
+	};
+	
+	$scope.captureCoVisitorMethod = function(coVisitor){
+		$scope.picOf = "coVisitor";
+		$scope.captureCoVisitor = coVisitor;
+	};
 	
 });

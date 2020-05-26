@@ -74,6 +74,7 @@
 	<script src="controller/securityController.js"></script>
 	<script src="controller/reportController.js"></script>
 	<script src="controller/profileSetting.js"></script>
+  	<script src="controller/manageMeetingTypeController.js"></script>
   	
 	<div style="width: 100%;" ng-controller="indexController">
  		<!-- Page Wrapper -->
@@ -112,8 +113,6 @@
 		<div id="masterMVisit" class="collapse" aria-labelledby="masterMVisit" data-parent="#accordionSidebar">
 		<div class="collapse-inner" style="background-color:#3482ae;">
 		<a class="collapse-item" href="#!viewAllVisit">Todays Visits Listing</a>
-		<a class="collapse-item" href="#!empCheckinCheckout" ng-hide="role == 'Super Admin'">Person Checkout</a>
-		<a class="collapse-item" href="#!empCheckinCheckout" ng-hide="role == 'Super Admin'">Manage Check In</a>
 		</div>
 		</div>
 		</li>
@@ -133,6 +132,7 @@
 		<div class="collapse-inner" style="background-color:#3482ae;">
 		<a class="collapse-item" href="#!ViewAllEmployee">Employee Master</a>
 		<a class="collapse-item" href="#!ViewAllDepartment">Department Master</a>
+		<a class="collapse-item" href="#!ViewAllMeetingType">Meeting Type Master</a>
 		</div>
 		</div>
 		</li>

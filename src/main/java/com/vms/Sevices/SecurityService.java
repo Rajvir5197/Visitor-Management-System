@@ -77,6 +77,9 @@ public class SecurityService {
 		int v = coVisitor.getVisitor().getVisitorId();
 		Optional<Visitor> vis = visitorRepository.findById(v);
 		logger.info("no. of covisitor: " + vis.get().getNumberOfCoVisitor());
+		if(coVisitor.getCoVisitorImage() != null) {
+			coVisitor.setCoVisitorImage(compressBytes(coVisitor.getCoVisitorImage()));
+		}
 		CoVisitor coVisitorSaved = coVisitorRepository.save(coVisitor);
 		vis.get().setNumberOfCoVisitor(vis.get().getNumberOfCoVisitor() + 1);
 		Visitor visSaved = visitorRepository.save(vis.get());
@@ -106,6 +109,11 @@ public class SecurityService {
 	public List<CoVisitor> viewAllCoVisitor(MeetingStatus meeting) {
 
 		List<CoVisitor> allCoVisitor = coVisitorRepository.findByVisitor(meeting.getMeetingBooked().getVisitor());
+		for(CoVisitor coVisitor: allCoVisitor) {
+			if(coVisitor.getCoVisitorImage() != null) {
+				coVisitor.setCoVisitorImage(decompressBytes(coVisitor.getCoVisitorImage()));
+			}
+		}
 		return allCoVisitor;
 	}
 
@@ -202,6 +210,20 @@ public class SecurityService {
 
 		MeetingStatus visitorSaved = meetingStatusRepository.save(meet.get());
 		if (null != visitorSaved) {
+			jsonObject.put("data", "SUCCESS");
+		} else {
+			jsonObject.put("data", "FAIL");
+		}
+		return jsonObject;
+	}
+	
+	public JSONObject addCoVisitorImage(CoVisitor coVisitor) {
+
+		JSONObject jsonObject = new JSONObject();
+		coVisitor.setCoVisitorImage(compressBytes(coVisitor.getCoVisitorImage()));
+
+		CoVisitor savedCoVisitor = coVisitorRepository.save(coVisitor);
+		if (null != savedCoVisitor) {
 			jsonObject.put("data", "SUCCESS");
 		} else {
 			jsonObject.put("data", "FAIL");
@@ -347,5 +369,6 @@ public class SecurityService {
 
 		return Visitor;
 	}
+
 
 }

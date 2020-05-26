@@ -16,4 +16,6 @@ public interface EmployeeRepository extends JpaRepository<Employee, Integer>{
 
 	public List<Employee> findByEmpDept(@Param("empDept") Department department);
 	
+	public List<Employee> findByActive(@Param("active") boolean active);
+	
 }

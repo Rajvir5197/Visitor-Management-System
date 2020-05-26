@@ -80,7 +80,7 @@
 <div class="col-lg-3 mb-3">
 <img ng-show="visitCheckin.meetingBooked.visitor.visitorImage != null" src="data:image/jpeg;base64,{{visitCheckin.meetingBooked.visitor.visitorImage}}" class="img-fluid border p-2" />
 <img ng-hide="visitCheckin.meetingBooked.visitor.visitorImage != null" src="images/profile-pic.jpg" class="img-fluid border p-2" />
-<button type="button" style="margin-top: 3%;margin-left: 23%;"style="margin-top: 3%;margin-left: 23%;" class="btn btn-primary" data-toggle="modal" data-target="#captureImageModal">Capture Image</button>
+<button type="button" style="margin-top: 3%;margin-left: 23%;"style="margin-top: 3%;margin-left: 23%;" class="btn btn-primary" data-toggle="modal" data-target="#captureImageModal" ng-click="picOf = 'visitor'">Capture Image</button>
 <button type="button" style="margin-top: 3%;margin-left: 23%;"style="margin-top: 3%;margin-left: 23%;" class="btn btn-primary" ng-click="getVisitorAsset()">Visitor Asset</button>
 </div>
 
@@ -94,6 +94,7 @@
 <table class="table table-bordered">
 <thead>
 <tr>
+<th>Visitor Image</th>
 <th>Visitor Name</th>
 <th>Phone No.</th>
 <th>Asset</th>
@@ -103,6 +104,9 @@
 
 <tbody>
 <tr ng-repeat="coVisitor in allCoVisitor">
+<td><img ng-show="coVisitor.coVisitorImage != null" src="data:image/jpeg;base64,{{coVisitor.coVisitorImage}}" height="50px" />
+<button ng-hide="coVisitor.coVisitorImage != null" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#captureImageModal" ng-click="captureCoVisitorMethod(coVisitor);" >click</button>
+</td>
 <td>{{coVisitor.coVisitorName}}</td>
 <td>{{coVisitor.coVisitorContact}}</td>
 <td><button type="button" class="btn btn-secondary btn-sm" ng-click="getCovisitorAsset(coVisitor)" data-toggle="modal" data-target="#viewAssetModal"><i class="fa fa-eye fa-fw fa-lg"></i>View and Add</button></td>

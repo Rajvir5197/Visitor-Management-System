@@ -22,7 +22,7 @@ public class Visitor {
 	@GeneratedValue
 	private int visitorId;
 	
-	@Column (name = "visitor_image", length = 20000)
+	@Column (name = "visitor_image", length = 100000)
 	private byte[] visitorImage;
 	
 	@Column (name = "visitor_name")

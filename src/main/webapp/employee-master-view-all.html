@@ -102,7 +102,7 @@
 <div class="custom-file">
 <input type="file" name="myFile" file-model="myFile" class="custom-file-input" id="customFile">
 <label class="custom-file-label" for="customFile"><span ng-show="myFile != null">{{myFile.name}}</span><span ng-hide="myFile != null">Choose file</span></label>
-<span ng-if="myFile.size > 72925" style="color: red;">image maximum size allowed is 72Kb</span>
+<span ng-if="myFile.size > 900484" style="color: red;">image maximum size allowed is 800Kb</span>
 </div>
 </div>
 </div>
@@ -221,7 +221,7 @@
 <div class="custom-file">
 <input type="file" name="myFile" file-model="myFile" class="custom-file-input" id="customFile1">
 <label class="custom-file-label" for="customFile"><span ng-show="myFile != null">{{myFile.name}}</span><span ng-hide="myFile != null">Choose file</span></label>
-<span ng-if="myFile.size > 72925" style="color: red;">image maximum size allowed is 72Kb</span>
+<span ng-if="myFile.size > 900484" style="color: red;">image maximum size allowed is 800Kb</span>
 </div>
 </div>
 </div>
@@ -368,12 +368,14 @@
 		<div class="modal-content">
 	        <div class="modal-header">
 	          <h5 class="modal-title BlackTxtColor" id="exampleModalLabel">Notification</h5>
-	          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	          <button type="button" class="close" data-dismiss="modal" ng-click="notiClose()" aria-label="Close"></button>
 	          <span aria-hidden="true">&times;</span>
 	        </div>
 	        <div class="modal-body">
-	          <p ng-if="!dataExist">Employee Submitted Successfully</p>
-	          <p ng-if="dataExist">Employee Already exist with Employee Code</p>
+	          <p ng-if="!dataExist && !deleteData && !updateData">Employee Submitted Successfully</p>
+	          <p ng-if="dataExist && !deleteData && !updateData">Employee Already exist with Employee Code</p>
+	          <p ng-if="deleteData">Employee Deleted Successfully</p>
+	          <p ng-if="updateData">Employee Updated Successfully</p>
 	        </div>
 	        <div class="modal-footer">
 	          <button type="button" class="btn btn-default" ng-click="notiClose()" data-dismiss="modal">Close</button>

@@ -205,12 +205,14 @@
 		<div class="modal-content">
 	        <div class="modal-header">
 	          <h5 class="modal-title BlackTxtColor" id="exampleModalLabel">Notification</h5>
-	          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	          <button type="button" class="close" ng-click="notiClose()" data-dismiss="modal" aria-label="Close"></button>
 	          <span aria-hidden="true">&times;</span>
 	        </div>
 	        <div class="modal-body">
-	          <p ng-if="!dataExist">Department Submitted Successfully</p>
-	          <p ng-if="dataExist">Department Already Present with Department Code</p>
+	          <p ng-if="!dataExist && !deleteData && !updateData">Department Submitted Successfully</p>
+	          <p ng-if="dataExist && !deleteData && !updateData">Department Already Present with Department Code</p>
+	           <p ng-if="deleteData">Department Deleted Successfully</p>
+	          <p ng-if="updateData">Department Updated Successfully</p>
 	        </div>
 	        <div class="modal-footer">
 	          <button type="button" class="btn btn-default" ng-click="notiClose()" data-dismiss="modal">Close</button>

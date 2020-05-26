@@ -384,12 +384,14 @@
 		<div class="modal-content">
 	        <div class="modal-header">
 	          <h5 class="modal-title BlackTxtColor" id="exampleModalLabel">Notification</h5>
-	          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	          <button type="button" class="close" data-dismiss="modal" ng-click="notiClose()" aria-label="Close"></button>
 	          <span aria-hidden="true">&times;</span>
 	        </div>
 	        <div class="modal-body">
-	          <p ng-if="!dataExist">Plant Submitted Successfully</p>
-	          <p ng-if="dataExist">Plant Already Present with Plant Code</p>
+	          <p ng-if="!dataExist && !deleteData && !updateData">Plant Submitted Successfully</p>
+	          <p ng-if="dataExist  && !deleteData && !updateData">Plant Already Present with Plant Code</p>
+	          <p ng-if="deleteData">Plant Deleted Successfully</p>
+	          <p ng-if="updateData">Plant Updated Successfully</p>
 	        </div>
 	        <div class="modal-footer">
 	          <button type="button" class="btn btn-default" ng-click="notiClose()" data-dismiss="modal">Close</button>
@@ -421,46 +423,6 @@
 <span data-toggle="modal" ng-click="viewPlant(plant)" data-target="#viewPlantModal"><i class="fa fa-eye fa-lg fa-fw Pointer text-dark" data-toggle="tooltip" data-placement="top" title="View"></i></span> 
 <span data-toggle="modal" ng-click="deletePlantDetails(plant)" data-target="#deletePlantModal"><i class="fa fa-trash-alt fa-lg fa-fw Pointer text-danger" data-toggle="tooltip" data-placement="top" title="Delete"></i></span></td>
 </tr>
-
-<!-- <tr>
-<td>1001</td>
-<td>Rucha Engineers Pvt. Ltd. Unit-1</td>
-<td>K-249, MIDC, WalujWALUJ K-249A, K-252-54 MIDC Waluj</td>
-<td>Aurangabad</td>
-<td><span data-toggle="modal" data-target="#editPlantModal"><i class="fa fa-edit fa-lg fa-fw Pointer text-primary" data-toggle="tooltip" data-placement="top" title="Edit"></i></span> 
-<span data-toggle="modal" data-target="#viewPlantModal"><i class="fa fa-eye fa-lg fa-fw Pointer text-dark" data-toggle="tooltip" data-placement="top" title="View"></i></span> 
-<i class="fa fa-trash-alt fa-lg fa-fw Pointer text-danger" data-toggle="tooltip" data-placement="top" title="Delete"></i></td>
-</tr>
-
-<tr>
-<td>1001</td>
-<td>Rucha Engineers Pvt. Ltd. Unit-1</td>
-<td>K-249, MIDC, WalujWALUJ K-249A, K-252-54 MIDC Waluj</td>
-<td>Aurangabad</td>
-<td><span data-toggle="modal" data-target="#editPlantModal"><i class="fa fa-edit fa-lg fa-fw Pointer text-primary" data-toggle="tooltip" data-placement="top" title="Edit"></i></span> 
-<span data-toggle="modal" data-target="#viewPlantModal"><i class="fa fa-eye fa-lg fa-fw Pointer text-dark" data-toggle="tooltip" data-placement="top" title="View"></i></span> 
-<i class="fa fa-trash-alt fa-lg fa-fw Pointer text-danger" data-toggle="tooltip" data-placement="top" title="Delete"></i></td>
-</tr>
-
-<tr>
-<td>1001</td>
-<td>Rucha Engineers Pvt. Ltd. Unit-1</td>
-<td>K-249, MIDC, WalujWALUJ K-249A, K-252-54 MIDC Waluj</td>
-<td>Aurangabad</td>
-<td><span data-toggle="modal" data-target="#editPlantModal"><i class="fa fa-edit fa-lg fa-fw Pointer text-primary" data-toggle="tooltip" data-placement="top" title="Edit"></i></span> 
-<span data-toggle="modal" data-target="#viewPlantModal"><i class="fa fa-eye fa-lg fa-fw Pointer text-dark" data-toggle="tooltip" data-placement="top" title="View"></i></span> 
-<i class="fa fa-trash-alt fa-lg fa-fw Pointer text-danger" data-toggle="tooltip" data-placement="top" title="Delete"></i></td>
-</tr>
-
-<tr>
-<td>1001</td>
-<td>Rucha Engineers Pvt. Ltd. Unit-1</td>
-<td>K-249, MIDC, WalujWALUJ K-249A, K-252-54 MIDC Waluj</td>
-<td>Aurangabad</td>
-<td><span data-toggle="modal" data-target="#editPlantModal"><i class="fa fa-edit fa-lg fa-fw Pointer text-primary" data-toggle="tooltip" data-placement="top" title="Edit"></i></span> 
-<span data-toggle="modal" data-target="#viewPlantModal"><i class="fa fa-eye fa-lg fa-fw Pointer text-dark" data-toggle="tooltip" data-placement="top" title="View"></i></span> 
-<i class="fa fa-trash-alt fa-lg fa-fw Pointer text-danger" data-toggle="tooltip" data-placement="top" title="Delete"></i></td>
-</tr> -->
 </tbody>
 </table>
 </div>
@@ -480,63 +442,3 @@
 </div>
 <!-- /End Page Content -->
 
-
-
-<!-- </div>
-End of Main Content
-
-
-
-Footer
-<footer class="sticky-footer bg-white">
-<div class="container my-auto">
-<div class="copyright text-center my-auto">
-<span>Copyright &copy; Rucha Group 2020</span>
-</div>
-</div>
-</footer>
-End of Footer
-
-</div>
-End of Content Wrapper
-
-</div>
-End of Page Wrapper
-
-
-
-Scroll to Top Button
-<a class="scroll-to-top rounded" href="#page-top">
-<i class="fas fa-angle-up"></i>
-</a>
-
-
-
-Bootstrap core JavaScript
-<script src="js/jquery.min.js"></script>
-<script src="js/bootstrap.bundle.min.js"></script>
-Core plugin JavaScript
-<script src="js/jquery.easing.min.js"></script>
-Custom scripts for all pages
-<script src="js/sb-admin-2.min.js"></script>
-
-Page level plugins
-<script src="js/jquery.dataTables.min.js"></script>
-<script src="js/dataTables.bootstrap4.min.js"></script>
-
-Page level custom scripts
-<script src="js/datatables-demo.js"></script>
-<script src="js/bs-custom-file-input.js"></script>
-<script>
-$(document).ready(function () {
-  bsCustomFileInput.init()
-})
-</script>
-
-<script>
-$(function () {
-  $('[data-toggle="tooltip"]').tooltip()
-})
-</script>
-</body>
-</html> -->

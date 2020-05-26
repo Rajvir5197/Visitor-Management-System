@@ -27,6 +27,9 @@ public class CoVisitor {
 	@GeneratedValue
 	private int coVisitorId;
 	
+	@Column (name = "co_visitor_image", length = 100000)
+	private byte[] coVisitorImage;
+	
 	@Column (name = "co_visitor_name")
 	@NotNull
 	private String coVisitorName;
@@ -149,6 +152,23 @@ public class CoVisitor {
 	public void setCoVisitorEmail(String coVisitorEmail) {
 		this.coVisitorEmail = coVisitorEmail;
 	}
+
+	public String getCheckOutRemarks() {
+		return checkOutRemarks;
+	}
+
+	public void setCheckOutRemarks(String checkOutRemarks) {
+		this.checkOutRemarks = checkOutRemarks;
+	}
+
+	public byte[] getCoVisitorImage() {
+		return coVisitorImage;
+	}
+
+	public void setCoVisitorImage(byte[] coVisitorImage) {
+		this.coVisitorImage = coVisitorImage;
+	}
+	
 	
 	
 }

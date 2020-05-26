@@ -9,7 +9,9 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.sql.Blob;
 import java.sql.Date;
+import java.sql.SQLException;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
@@ -25,6 +27,8 @@ import java.util.zip.Inflater;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.AddressException;
+import javax.sql.rowset.serial.SerialBlob;
+import javax.sql.rowset.serial.SerialException;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -35,6 +39,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +48,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -84,13 +90,16 @@ public class EmployeeService {
 
 	@Autowired
 	AssetRepository assetRepository;
+	/*
+	 * @Autowired SessionFactory sessionFactory;
+	 */
 
 	Logger logger = LoggerFactory.getLogger(EmployeeService.class);
 
 	public List<Employee> allEmployee() {
 
 		logger.info("start of allEmployee method");
-		List<Employee> E = repository.findAll();
+		List<Employee> E = repository.findByActive(true);
 		logger.info("after fetching data:"+E.size());
 		for (Employee emp : E) {
 			if (emp.getImage() != null) {
@@ -119,7 +128,7 @@ public class EmployeeService {
 			employee.setImage(compressBytes(employee.getImage()));
 		}
 		//employee.setImage(compressBytes(employee.getImage()));
-		
+		employee.setActive(true);
 		Employee employeeSaved = repository.save(employee);
 		if (null != employeeSaved) {
 			jsonObject.put("data", "SUCCESS");
@@ -187,8 +196,11 @@ public class EmployeeService {
 				return jsonObject;
 			}
 			employee.setImage(compressBytes(file.getBytes()));
+			//Blob blob = Hibernate.getLobCreator(sessionFactory.getCurrentSession()).createBlob(file.getInputStream(), file.getSize());
+			//employee.setProfileAttachment(blob);
 			employee.setRegDate(Date.valueOf(LocalDate.now()));
 			employee.setRegTime(Time.valueOf(LocalTime.now()));
+			employee.setActive(true);
 			Employee employeeSaved = repository.save(employee);
 			if (null != employeeSaved) {
 				jsonObject.put("data", "SUCCESS");
@@ -294,9 +306,10 @@ public class EmployeeService {
 		if(employee.getImage() != null) {
 			employee.setImage(compressBytes(employee.getImage()));
 		}
+		employee.setActive(false);
 		repository.save(employee);
 
-		repository.delete(employee);
+		//repository.delete(employee);
 
 		jsonObject.put("data", "SUCCESS");
 		return jsonObject;
@@ -528,6 +541,16 @@ public class EmployeeService {
 		}
 
 		return count;
+	}
+	
+	public long getAllVisitCount() {
+		
+		return meetingStatusRepository.count();		
+	}
+	
+	public long getAllEmployeeCount() {
+		
+		return repository.count();		
 	}
 
 	public int getTodaysVisitCount(int loginId) {

@@ -67,7 +67,7 @@ app.controller('manageContactController', function($scope, $rootScope, $http, $t
 	$scope.deleteContact = function(){
 		$scope.contactToBeDeleted.regBy = $scope.UserID;
 		$http.post("/visitor-Management-System/Employee/deleteContact", $scope.contactToBeDeleted).then(function mySuccess(response){
-			$scope.viewAllContacts();
+			$( "#notificationModal" ).modal("show");
 		}, function myError(data){
 			console.log("some internal error");
 			console.log(data);

@@ -1,9 +1,11 @@
 package com.vms.Controller;
 
+import java.sql.Blob;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -41,6 +43,7 @@ public class EmployeeController {
 	@ResponseBody
 	public JSONObject addNewEmp(@RequestParam("file") MultipartFile file,
 			@RequestParam("empDetails") String jsonEmployee) {
+		
 		return service.addEmployee(jsonEmployee, file);
 	}
 	
@@ -179,6 +182,18 @@ public class EmployeeController {
 	@ResponseBody
 	public int getTotalVisitCount(@RequestBody int loginId) {
 		return service.getTotalVisitCount(loginId);
+	}
+	
+	@RequestMapping(value = "/getAllVisitCount", method = RequestMethod.POST)
+	@ResponseBody
+	public long getAllVisitCount(@RequestBody int loginId) {
+		return service.getAllVisitCount();
+	}
+	
+	@RequestMapping(value = "/getAllEmployeeCount", method = RequestMethod.POST)
+	@ResponseBody
+	public long getAllEmployeeCount(@RequestBody int loginId) {
+		return service.getAllEmployeeCount();
 	}
 
 	@RequestMapping(value = "/TodaysVisitCount", method = RequestMethod.POST)

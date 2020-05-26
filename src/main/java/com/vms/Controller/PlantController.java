@@ -49,5 +49,11 @@ public class PlantController {
 		return service.deletePlant(plant);
 	}
 	
+	@RequestMapping(value = "/getAllPlantCount", method = RequestMethod.POST)
+	@ResponseBody
+	public long getAllPlantCount(@RequestBody int loginId) {
+		return service.getAllPlantCount();
+	}
+	
 	
 }
