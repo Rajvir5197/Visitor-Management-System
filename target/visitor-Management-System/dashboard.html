@@ -87,7 +87,7 @@
 
 <tbody>
 <tr ng-repeat="visit in allVisits">
-<td>{{visit.meetingBooked.visitor.visitorName}}</td>
+<td><a href="" ng-click="towardMeeting(visit)">{{visit.meetingBooked.visitor.visitorName}}</a></td>
 <td>{{visit.meetingBooked.visitDate}}</td>
 <td>{{visit.meetingBooked.visitTime}}</td>
 </tr>
@@ -216,8 +216,9 @@
 <div class="form-group">
 <label>Meeting type<span class="text-danger">*</span></label>
 <select ng-model="visit.meetingBooked.meetingType" class="form-control" required>
-<option>Meeting Type 1</option>
-<option>Meeting Type 2</option>
+<!-- <option>Meeting Type 1</option>
+<option>Meeting Type 2</option> -->
+<option ng-repeat="meetingType in allMeetingType">{{meetingType.meetingType}}</option>
 </select>
 </div>
 </div>

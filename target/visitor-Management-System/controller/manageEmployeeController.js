@@ -19,6 +19,9 @@ app.controller('manageEmployeeController', function($scope, $rootScope, $http, $
 				$scope.getPlantCode(value);
 			});
 		}, function myError(data){
+			$timeout(function() {
+				$("#Loader").modal("hide");
+			   }, 500);
 			console.log("some internal error");
 			console.log(data);
 		});
@@ -75,38 +78,16 @@ app.controller('manageEmployeeController', function($scope, $rootScope, $http, $
 		$scope.EmpToBeDeleted = emp;
 	};
 	
-	$scope.addNewEmp1 = function(){
-		$scope.invalidMobile = false;
-		if($scope.addForm.$valid){
-			if(!isNaN($scope.newEmp.empMobile) && angular.isNumber(+$scope.newEmp.empMobile)){
-				$scope.newEmp.regBy = $scope.UserID;
-				$http.post("/visitor-Management-System/Employee/addNewOrEditEmp", $scope.newEmp).then(function mySuccess(response){
-					$('#addNewEmpModal').modal('hide');
-					$scope.viewAllEmp();
-					console.log(response.data);
-				}, function myError(data){
-					console.log("some internal error");
-					console.log(data);
-				});
-			}else{
-				$scope.invalidMobile = true;
-			}
-			
-		}else{
-			if(!isNaN($scope.newEmp.empMobile) && !angular.isNumber(+$scope.newEmp.empMobile)){
-				$scope.invalidMobile = true;
-			}
-		}
-	};
-	
 	$scope.addNewEmp = function(){
+		$scope.deleteData = false;
+		$scope.updateData = false;
 		$scope.invalidMobile = false;
 		if($scope.addForm.$valid){
 			if(!isNaN($scope.newEmp.empMobile) && angular.isNumber(+$scope.newEmp.empMobile)){
 				$scope.newEmp.regBy = $scope.UserID;
 				if($scope.myFile != null && $scope.myFile != undefined){
 					var file = $scope.myFile;
-					if(file.size <= 72925){
+					if(file.size <= 900484){
 						var fd = new FormData();
 						fd.append('file', file);
 						fd.append('empDetails', JSON.stringify($scope.newEmp));
@@ -158,31 +139,9 @@ app.controller('manageEmployeeController', function($scope, $rootScope, $http, $
 		$scope.viewAllEmp();
 	};
 	
-	$scope.editEmp1 = function(){
-		$scope.invalidEditedMobile = false;
-		if($scope.editForm.$valid){
-			if(!isNaN($scope.editedEmp.empMobile) && angular.isNumber(+$scope.editedEmp.empMobile)){
-				$scope.editedEmp.regBy = $scope.UserID;
-				$http.post("/visitor-Management-System/Employee/editNewOrEditEmp", $scope.editedEmp).then(function mySuccess(response){
-					$('#editEmpModal').modal('hide');
-					$scope.viewAllEmp();
-					console.log(response.data);
-				}, function myError(data){
-					console.log("some internal error");
-					console.log(data);
-				});
-			}else{
-				$scope.invalidEditedMobile = true;
-			}
-			
-		}else{
-			if(!isNaN($scope.editedEmp.empMobile) && !angular.isNumber(+$scope.editedEmp.empMobile)){
-				$scope.invalidEditedMobile = true;
-			}
-		}
-	};
-	
 	$scope.editEmp = function(){
+		$scope.deleteData = false;
+		$scope.updateData = false;
 		$scope.invalidEditedMobile = false;
 		if($scope.editForm.$valid){
 			if(!isNaN($scope.editedEmp.empMobile) && angular.isNumber(+$scope.editedEmp.empMobile)){
@@ -190,7 +149,7 @@ app.controller('manageEmployeeController', function($scope, $rootScope, $http, $
 				if($scope.myFile != null && $scope.myFile != undefined){
 					var file = $scope.myFile;
 					
-					if(file.size <= 72925){
+					if(file.size <= 900484){
 						var fd = new FormData();
 						fd.append('file', file);
 						fd.append('empDetails', JSON.stringify($scope.editedEmp));
@@ -200,9 +159,8 @@ app.controller('manageEmployeeController', function($scope, $rootScope, $http, $
 							headers : {'Content-Type' : undefined}
 						}).then(function mySuccess(response){
 							$('#editEmpModal').modal('hide');
-							$( "#Loader" ).modal("show");
-							$('#dataTable').DataTable().clear().destroy();
-							$scope.viewAllEmp();
+							$scope.updateData = true;
+							$('#notificationModal').modal('show');
 						}, function myError(data){
 							console.log("some internal error");
 							console.log(data);
@@ -211,9 +169,8 @@ app.controller('manageEmployeeController', function($scope, $rootScope, $http, $
 				}else{
 					$http.post("/visitor-Management-System/Employee/editEmp", $scope.editedEmp).then(function mySuccess(response){
 						$('#editEmpModal').modal('hide');
-						$( "#Loader" ).modal("show");
-						$('#dataTable').DataTable().clear().destroy();
-						$scope.viewAllEmp();
+						$scope.updateData = true;
+						$('#notificationModal').modal('show');
 					}, function myError(data){
 						console.log("some internal error");
 						console.log(data);
@@ -232,11 +189,12 @@ app.controller('manageEmployeeController', function($scope, $rootScope, $http, $
 	};
 	
 	$scope.deleteEmp = function(){
+		$scope.deleteData = false;
+		$scope.updateData = false;
 		$scope.EmpToBeDeleted.regBy = $scope.UserID;
 		$http.post("/visitor-Management-System/Employee/deleteEmp", $scope.EmpToBeDeleted).then(function mySuccess(response){
-			$( "#Loader" ).modal("show");
-			$('#dataTable').DataTable().clear().destroy();
-			$scope.viewAllEmp();
+			$scope.deleteData = true;
+			$('#notificationModal').modal('show');
 		}, function myError(data){
 			console.log("some internal error");
 			console.log(data);

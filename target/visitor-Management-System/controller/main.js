@@ -10,6 +10,9 @@ app.config(function($routeProvider){
         }).when('/employeeDashboard',{
             templateUrl: '/visitor-Management-System/dashboard.html',
             controller: 'dashboardController'
+        }).when('/superAdminDashboard',{
+            templateUrl: '/visitor-Management-System/superAdminDashboard.html',
+            controller: 'dashboardController'
         }).when('/ViewAllPlants',{
             templateUrl: '/visitor-Management-System/manage-plant-view-all.html',
             controller: 'managePlantController'
@@ -19,6 +22,9 @@ app.config(function($routeProvider){
         }).when('/ViewAllEmployee',{
             templateUrl: '/visitor-Management-System/employee-master-view-all.html',
             controller: 'manageEmployeeController'
+        }).when('/ViewAllMeetingType',{
+            templateUrl: '/visitor-Management-System/meeting-type-master-view-all.html',
+            controller: 'manageMeetingTypeController'
         }).when('/ManageContact',{
             templateUrl: '/visitor-Management-System/manage-contact-view-all.html',
             controller: 'manageContactController'
@@ -46,8 +52,6 @@ app.config(function($routeProvider){
         }).when('/empReportCancelReport',{
             templateUrl: '/visitor-Management-System/employee-report-for-cancelled-visitor.html',
             controller: 'reportController'
-        }).when('/empCheckinCheckout',{
-            templateUrl: '/visitor-Management-System/inputs.html'
         }).when('/profile',{
             templateUrl: '/visitor-Management-System/manage_Profile.html'
         }).when('/settings',{
@@ -87,6 +91,8 @@ app.controller('indexController', function($scope, $rootScope, $http) {
 			if("FromLoginPage" == $scope.page){
 				if($scope.role == "Security"){
 					window.location = "#!secDashboard";
+				}else if($scope.role == "Super Admin"){
+					window.location = "#!superAdminDashboard";
 				}else{
 					window.location = "#!employeeDashboard";
 				}
@@ -102,14 +108,18 @@ app.controller('indexController', function($scope, $rootScope, $http) {
 		window.localStorage.removeItem("loginDetails");
 		window.localStorage.removeItem("loginRole");
 		window.localStorage.removeItem("userName");
+		window.localStorage.removeItem("pagePosition");
 		window.location.href  = "/visitor-Management-System/index.html";
 	};
 	
 	$scope.navToDashboard = function(){
 		if($scope.role == "Security"){
 			window.location = "#!secDashboard";
+		}else if($scope.role == "Super Admin"){
+			window.location = "#!superAdminDashboard";
 		}else{
 			window.location = "#!employeeDashboard";
 		}
 	};
+	
 });

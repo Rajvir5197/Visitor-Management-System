@@ -3,6 +3,7 @@ com\vms\Sevices\DepartmentService.class
 com\vms\Model\Asset.class
 com\vms\Repository\EmployeeRepository.class
 com\vms\Model\Plant.class
+com\vms\Sevices\MeetingsService.class
 com\vms\Controller\SecurityController.class
 com\vms\ServletInitializer.class
 com\vms\Controller\PlantController.class
@@ -25,10 +26,12 @@ com\vms\Repository\MeetingStatusRepository.class
 com\vms\Model\Department.class
 com\vms\Model\Visitor.class
 com\vms\Model\CoVisitor.class
+com\vms\Model\Meetings.class
 com\vms\Repository\AssetRepository.class
 com\vms\Repository\DepartmentRepository.class
 com\vms\Repository\CoVisitorRepository.class
 com\vms\VisitorManagementSystemApplication.class
+com\vms\Repository\MeetingMasterRepository.class
 com\vms\Controller\DepartmentController.class
 com\vms\Model\Employee.class
 com\vms\Repository\MeetingRepository.class

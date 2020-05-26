@@ -108,6 +108,11 @@ app.controller('manageVisitController', function($scope, $rootScope, $http, $tim
 		$http.post("/visitor-Management-System/Employee/viewAllVisits",$scope.param).then(function mySuccess(response){
 			console.log(response.data);
 			$scope.allVisits = response.data;
+			if($rootScope.visitSelected.meetingId != undefined && $rootScope.visitSelected.meetingId != null){
+				$scope.allVisits = $scope.allVisits.filter(function(value){
+					return (value.meetingId == $rootScope.visitSelected.meetingId);
+				});
+			}
 			$timeout(function() {
 				$("#Loader").modal("hide");
 			   }, 2000);
@@ -130,8 +135,19 @@ app.controller('manageVisitController', function($scope, $rootScope, $http, $tim
 		});
 	};
 	
+	$scope.viewAllMeetingType = function(){
+		$http.post("/visitor-Management-System/Admin/viewAllMeeting").then(function mySuccess(response){
+			console.log(response.data);
+			$scope.allMeetingType = response.data;
+		}, function myError(data){
+			console.log("some internal error");
+			console.log(data);
+		});
+	};
+	
 	$scope.viewAllVisits();
 	$scope.viewEmpPlant();
+	$scope.viewAllMeetingType();
 	
 	$scope.addNewVisit = function(){
 		$( "#Loader" ).modal("show");
@@ -157,7 +173,8 @@ app.controller('manageVisitController', function($scope, $rootScope, $http, $tim
 					$http.post("/visitor-Management-System/Employee/addNewVisit", $scope.newVisit).then(function mySuccess(response){
 						if(response.data.msg == "SUCCESS"){
 							$("#Loader").modal("hide");
-							window.location.href  = "#!viewAllVisit";
+							$('#notificationModal').modal('show');
+							//window.location.href  = "#!viewAllVisit";
 						}else{
 							$timeout(function() {
 								$("#Loader").modal("hide");
@@ -188,7 +205,8 @@ app.controller('manageVisitController', function($scope, $rootScope, $http, $tim
 						$http.post("/visitor-Management-System/Employee/addNewVisit", $scope.newVisit).then(function mySuccess(response){
 							if(response.data.msg == "SUCCESS"){
 								$("#Loader").modal("hide");
-								window.location.href  = "#!viewAllVisit";
+								$('#notificationModal').modal('show');
+								//window.location.href  = "#!viewAllVisit";
 							}else{
 								$timeout(function() {
 									$("#Loader").modal("hide");
@@ -214,6 +232,10 @@ app.controller('manageVisitController', function($scope, $rootScope, $http, $tim
 				$("#Loader").modal("hide");
 			   }, 500);
 		}
+	};
+	
+	$scope.notiClose = function(){
+		window.location.href  = "#!viewAllVisit";
 	};
 	
 	$scope.empCheckIn = function(visits){

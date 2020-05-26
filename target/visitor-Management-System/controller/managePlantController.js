@@ -41,6 +41,8 @@ app.controller('managePlantController', function($scope, $rootScope, $http, $tim
 	};
 	
 	$scope.addNewPlant = function(){
+		$scope.deleteData = false;
+		$scope.updateData = false;
 		if($scope.addForm.$valid){
 			$scope.newPlant.regBy = $scope.UserID;
 			$http.post("/visitor-Management-System/Plant/addNewPlant", $scope.newPlant).then(function mySuccess(response){
@@ -65,13 +67,14 @@ app.controller('managePlantController', function($scope, $rootScope, $http, $tim
 	};
 	
 	$scope.editPlant = function(){
+		$scope.deleteData = false;
+		$scope.updateData = false;
 		if($scope.editForm.$valid){
 			$scope.edited.regBy = $scope.UserID;
 			$http.post("/visitor-Management-System/Plant/editPlant", $scope.edited).then(function mySuccess(response){
 				$('#editPlantModal').modal('hide');
-				$( "#Loader" ).modal("show");
-				$('#dataTable').DataTable().clear().destroy();
-				$scope.viewAllPlant();
+				$scope.updateData = true;
+				$('#notificationModal').modal('show');
 			}, function myError(data){
 				console.log("some internal error");
 				console.log(data);
@@ -80,11 +83,12 @@ app.controller('managePlantController', function($scope, $rootScope, $http, $tim
 	}; 
 	
 	$scope.deletePlant = function(){
+		$scope.deleteData = false;
+		$scope.updateData = false;
 		$scope.plantToBeDeleted.regBy = $scope.UserID;
 		$http.post("/visitor-Management-System/Plant/deletePlant", $scope.plantToBeDeleted).then(function mySuccess(response){
-			$( "#Loader" ).modal("show");
-			$('#dataTable').DataTable().clear().destroy();
-			$scope.viewAllPlant();
+			$scope.deleteData = true;
+			$('#notificationModal').modal('show');
 		}, function myError(data){
 			console.log("some internal error");
 			console.log(data);
