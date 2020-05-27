@@ -43,7 +43,7 @@
 
 <div class="col-lg-4 mb-3">
 <button type="button" class="btn btn-primary" ng-click="filterData(reportType)">Submit</button>
-<a href="https://54.196.47.108:8443/visitor-Management-System/Admin/downloadReport/reports.xlsx" class="btn btn-primary">Download</a>
+<a href="/visitor-Management-System/Admin/downloadReport/reports.xlsx" class="btn btn-primary">Download</a>
 </div>
 </div>
 
@@ -55,7 +55,7 @@
 <div class="col-sm-8">
 <div class="FaIcon">
 <i class="fa fa-calendar-alt FloatIcon"></i>
-<input type="date" ng-model="selectedFromDate" class="form-control">
+<input type="date" id="selectedFromDateEmp" ng-model="selectedFromDate" class="form-control">
 </div>
 </div>
 </div>
@@ -67,7 +67,7 @@
 <div class="col-sm-8">
 <div class="FaIcon">
 <i class="fa fa-calendar-alt FloatIcon"></i>
-<input type="date" ng-model="selectedToDate" class="form-control">
+<input type="date" id="selectedToDate" ng-model="selectedToDate" class="form-control">
 </div>
 </div>
 </div>
@@ -77,9 +77,9 @@
 <div class="row">
 <div class="col-sm-4 align-self-center">Select Plant</div>
 <div class="col-sm-8">
-<select class="form-control" ng-model="selectedPlant" >
+<select class="form-control" id="selectedPlant" ng-model="selectedPlant" >
 <option>All Plant</option>
-<option ng-repeat="plant in allPlants">{{plant.plantName}}</option>
+<option ng-repeat="plant in allPlants" value="{{plant.plantCode}}">{{plant.plantName}}</option>
 </select>
 </div>
 </div>
@@ -89,17 +89,17 @@
 <div class="row">
 <div class="col-sm-4 align-self-center">Select Dept.</div>
 <div class="col-sm-8">
-<select class="form-control" ng-model="selectedDept">
+<select class="form-control" id="selectedDept" ng-model="selectedDept">
 <option>All Dept</option>
-<option ng-repeat="dept in allDept">{{dept.deptName}}</option>
+<option ng-repeat="dept in allDept" value="{{dept.deptCode}}">{{dept.deptName}}</option>
 </select>
 </div>
 </div>
 </div>
 
 <div class="col-lg-12 mb-3 text-right">
-<button type="button" class="btn btn-primary">Submit</button>
-<a href="https://54.196.47.108:8443/visitor-Management-System/Admin/downloadReport/reports.xlsx" class="btn btn-primary">Download</a>
+<button type="button" class="btn btn-primary" ng-click="filterDataForPlant(reportType)">Submit</button>
+<a href="/visitor-Management-System/Admin/downloadReport/reports.xlsx" class="btn btn-primary">Download</a>
 </div>
 </div>
 
@@ -110,7 +110,7 @@
 <div class="col-sm-8">
 <div class="FaIcon">
 <i class="fa fa-calendar-alt FloatIcon"></i>
-<input type="date" class="form-control">
+<input type="date" id="selectedFromDateEmp" ng-model="selectedFromDate" class="form-control">
 </div>
 </div>
 </div>
@@ -122,7 +122,7 @@
 <div class="col-sm-8">
 <div class="FaIcon">
 <i class="fa fa-calendar-alt FloatIcon"></i>
-<input type="date" class="form-control">
+<input type="date" id="selectedToDate" ng-model="selectedToDate" class="form-control">
 </div>
 </div>
 </div>
@@ -132,7 +132,7 @@
 <div class="row">
 <div class="col-sm-4 align-self-center">Department</div>
 <div class="col-sm-8">
-<select class="form-control" ng-model="selectedDept">
+<select class="form-control" id="selectedDept" ng-model="selectedDept">
 <option>All Dept</option>
 <option ng-repeat="dept in allDept">{{dept.deptName}}</option>
 </select>
@@ -141,8 +141,8 @@
 </div>
 
 <div class="col-lg-2 mb-3">
-<button type="button" class="btn btn-primary">Submit</button>
-<a href="https://54.196.47.108:8443/visitor-Management-System/Admin/downloadReport/reports.xlsx" class="btn btn-primary">Download</a>
+<button type="button" class="btn btn-primary" ng-click="filterDataHr(reportType)">Submit</button>
+<a href="/visitor-Management-System/Admin/downloadReport/reports.xlsx" class="btn btn-primary">Download</a>
 </div>
 </div>
 
@@ -227,7 +227,10 @@
 <div class="col-lg-6">
 <div class="row">
 <div class="col-sm-4 mb-3">Photo</div>
-<div class="col-sm-8 mb-3 BlackTxtColor">: <img src="images/profile-pic.jpg" width="80px" class="border p-1" /></div>
+<div class="col-sm-8 mb-3 BlackTxtColor">: <img ng-show="selectedVisitor.meetingBooked.visitor.visitorImage != null" src="data:image/jpeg;base64,{{selectedVisitor.meetingBooked.visitor.visitorImage}}" width="80px" class="border p-1" />
+<img ng-hide="selectedVisitor.meetingBooked.visitor.visitorImage != null" src="images/profile-pic.jpg" width="80px" class="border p-1" />
+
+</div>
 </div>
 
 <div class="row">

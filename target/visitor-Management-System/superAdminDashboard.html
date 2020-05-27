@@ -64,66 +64,7 @@
 
 <div class="row">
 <div class="col-lg-8">
-<div class="row">
-<div class="col-lg-6 mb-3">
-<div class="w-100 bg-white">
-<h2 class="m-0 FontSize22 p-3 TopBarBgColor text-white border-bottom">
-<i class="fa fa-bullhorn fa-fw"></i> Upcoming Visits
-</h2>
-<div class="p-2" style="max-height:360px; overflow-y:scroll; overflow-x:hidden;">
-<span ng-hide="allVisits.length > 0">No Upcoming Visit</span>
-<!-- <ul class="listNew">
-<li ng-repeat="visit in allVisits"><i class="fa fa-user fa-fw"></i> {{visit.meetingBooked.visitor.visitorName}}</li>
-</ul>  -->
-<div ng-show="allVisits.length > 0" class="table-responsive">
-<table class="table">
-<thead>
-<tr>
-<th class="BlackTxtColor">Visitor Name</th>
-<th class="BlackTxtColor">Visit Date</th>
-<th class="BlackTxtColor">Time</th>
-</tr>
-</thead>
 
-<tbody>
-<tr ng-repeat="visit in allVisits">
-<td>{{visit.meetingBooked.visitor.visitorName}}</td>
-<td>{{visit.meetingBooked.visitDate}}</td>
-<td>{{visit.meetingBooked.visitTime}}</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</div>
-</div>
-
-<div class="col-lg-6 mb-3">
-<div class="w-100 bg-white">
-<h2 class="m-0 FontSize22 p-3 TopBarBgColor text-white border-bottom">
-<div class="row">
-	<div class="col-lg-8">
-		<i class="fa fa-file-alt fa-fw"></i> To do list
-	</div>
-	<div class="col-lg-4">
-		<button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addNewTask" ng-click="newTask = {};">Add Task</button>
-	</div>
-</div>
-</h2>
-<div class="p-2" style="max-height:360px; overflow-y:scroll; overflow-x:hidden;">
-<span ng-hide="allTask.length > 0">No Task added</span>
-<ul class="listNew">
-<li ng-repeat="task in allTask" class="Rel"><i class="fa fa-file-alt fa-fw"></i>
-<div class="tooltip"> {{task.taskName}}
-<span class="tooltiptext">{{task.taskDescription}}</span></div>
-<button class="btn btn-primary btn-sm ContFloatingBtn" ng-click="updateTask(task)">Pending</button>
-</li>
-
-</ul> 
-</div>
-</div>
-</div>
-</div>
 
 <div class="row mb-3">
 <div class="col-lg-12">
@@ -150,26 +91,26 @@
 <div class="col-lg-12">
 <div class="w-100 bg-white">
 <h2 class="m-0 FontSize22 p-3 TopBarBgColor text-white border-bottom">
-<i class="fa fa-users fa-fw"></i> Contacts
+<div class="row">
+	<div class="col-lg-8">
+		<i class="fa fa-file-alt fa-fw"></i> To do list
+	</div>
+	<div class="col-lg-4">
+		<button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addNewTask" ng-click="newTask = {};">Add Task</button>
+	</div>
+</div>
 </h2>
-
-<div class="w-100 px-2 mt-2">
-<div class="input-group mb-2">
-<input type="text" class="form-control" placeholder="Search" ng-model="query">
-<div class="input-group-prepend">
-<div class="input-group-text rounded-right border-left"><i class="fa fa-search"></i></div>
-</div>
-</div>
-</div>
-
-<div class="p-2" style="max-height:480px; overflow-y:scroll; overflow-x:hidden;">
-<span ng-hide="allContacts.length > 0">No Contacts</span>
+<div class="p-2" style="max-height:360px; overflow-y:scroll; overflow-x:hidden;">
+<span ng-hide="allTask.length > 0">No Task added</span>
 <ul class="listNew">
-<li ng-repeat="contact in allContacts | filter: query" class="Rel"><i class="fa fa-user fa-fw"></i><a href="tel:{{contact.mobileNumb}}">{{contact.firstName}} {{contact.lastName}} </a>
-<button class="btn btn-primary btn-sm ContFloatingBtn" data-toggle="modal" data-target="#VisitScheduleModal" ng-click="setVisit(contact)">Set Visit</button></li>
+<li ng-repeat="task in allTask" class="Rel"><i class="fa fa-file-alt fa-fw"></i>
+<div class="tooltip"> {{task.taskName}}
+<span class="tooltiptext">{{task.taskDescription}}</span></div>
+<button class="btn btn-primary btn-sm ContFloatingBtn" ng-click="updateTask(task)">Pending</button>
+</li>
+
 </ul> 
 </div>
-
 </div>
 </div>
 </div>
@@ -455,7 +396,7 @@
 </button>
 </div>
 
-<div class="modal-body">
+<div class="modal-body" style="overflow-y: auto; max-height: calc(100vh - 200px);">
 
 
 <div class="row">
