@@ -652,11 +652,18 @@ public class EmployeeService {
 	    BufferedReader reader = null;
 	    StringBuilder stringBuilder = new StringBuilder();
 	    SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+	    String message1 = null;
 		
-		String message1 = "Your Meeting is schedule on " + sdf.format(visitor.getMeetingBooked().getVisitDate()) + " "
-				+ visitor.getMeetingBooked().getVisitTime() + " with " + visitor.getMeetingBooked().getEmpName()
-				+ " at " + visitor.getMeetingBooked().getVisitLocation().getPlantName() + " and your checkin code is: "
-				+ visitor.getSecurityCode();
+	    if("cancel".equalsIgnoreCase(visitor.getStatus())) {
+	    	message1 = "Hello, " + visitor.getMeetingBooked().getVisitor().getVisitorName()+", sorry to inform you that your scheduled visit on " +sdf.format(visitor.getMeetingBooked().getVisitDate()) + " at "
+					+ visitor.getMeetingBooked().getVisitTime() +" is cancelled.";
+	    }else {
+	    	message1 = "Your Meeting is schedule on " + sdf.format(visitor.getMeetingBooked().getVisitDate()) + " "
+					+ visitor.getMeetingBooked().getVisitTime() + " with " + visitor.getMeetingBooked().getEmpName()
+					+ " at " + visitor.getMeetingBooked().getVisitLocation().getPlantName() + " and your checkin code is: "
+					+ visitor.getSecurityCode();
+	    }
+	    
 		
 		String message = message1.replaceAll(" ", "%20");
 	    //String message = "hello";
@@ -723,6 +730,7 @@ public class EmployeeService {
 			meeting.setStatus("Cancel");
 
 			MeetingStatus meetingSaved = meetingStatusRepository.save(meeting);
+			sendMessage(meetingSaved);
 			if (null != meetingSaved) {
 				jsonObject.put("msg", "SUCCESS");
 			} else {
@@ -761,7 +769,12 @@ public class EmployeeService {
 		List<String> statusNotIn = new ArrayList<String>();
 		statusNotIn.add("Cancel");
 		List<MeetingStatus> allMeetings = meetingStatusRepository.findByStatusIsNotIn(statusNotIn);
-
+		
+		for(MeetingStatus meeting : allMeetings) {
+			if(meeting.getMeetingBooked().getVisitor().getVisitorImage() != null) {
+				meeting.getMeetingBooked().getVisitor().setVisitorImage(decompressBytes(meeting.getMeetingBooked().getVisitor().getVisitorImage()));
+			}
+		}
 		return allMeetings;
 	}
 

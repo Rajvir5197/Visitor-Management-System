@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import com.vms.Model.Department;
 import com.vms.Model.Employee;
 import com.vms.Model.Plant;
+import com.vms.Repository.DepartmentRepository;
 import com.vms.Repository.EmployeeRepository;
 import com.vms.Repository.PlantRepository;
 
@@ -30,9 +31,12 @@ public class PlantService {
 	@Autowired
 	EmployeeRepository employeeRepository;
 	
+	@Autowired
+	DepartmentRepository departmentRepository;
+	
 	public List<Plant> allPlant() {
 		
-		return repository.findAll();
+		return repository.findByActive(true);
 	}
 	
 	public JSONObject addPlant(Plant plant) {
@@ -45,6 +49,7 @@ public class PlantService {
 		
 		plant.setRegDate(Date.valueOf(LocalDate.now()));
 		plant.setRegTime(Time.valueOf(LocalTime.now()));
+		plant.setActive(true);
 		
 		Plant plantSaved = repository.save(plant);
 		
@@ -114,8 +119,34 @@ public class PlantService {
 			
 		}
 		
+		List<Department> allDepartments = departmentRepository.findAll();
+		List<Department> sortedDepartment = new ArrayList<Department>();
+		for(Department department : allDepartments) {
+			department.getDeptPlantCode().stream().forEach((plan) -> {
+				if(plan.getPlantCode()== plant.getPlantCode()) {
+					sortedDepartment.add(department);
+				}
+			});
+		}
 		
-		repository.deleteById(plant.getPlantCode());
+		for (Department department : sortedDepartment) {
+			Set<Plant> plantE= department.getDeptPlantCode();
+			Set<Plant> plantF = new HashSet<Plant>();
+			
+			plantE.stream().forEach((plantp) -> {
+				if(plantp.getPlantCode() != plant.getPlantCode()) {
+					plantF.add(plantp);
+				}
+			});
+			Optional<Department> e = departmentRepository.findById(department.getDeptCode());
+			e.get().setDeptPlantCode(plantF);
+			departmentRepository.save(e.get());
+			
+		}
+		
+		plant.setActive(false);
+		//repository.deleteById(plant.getPlantCode());
+		repository.save(plant);
 		
 		jsonObject.put("data", "SUCCESS");
 		return jsonObject;

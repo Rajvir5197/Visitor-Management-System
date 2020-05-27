@@ -68,6 +68,9 @@ public class Plant {
 	@Column (name = "reg_time")
 	private Time regTime;
 	
+	@Column (name = "active")
+	private boolean active;
+	
 	@ManyToMany(mappedBy = "empPlantCode")
 	@Column (name = "empPlantCode")
 	private Set<Employee> employeeMaster;
@@ -187,5 +190,14 @@ public class Plant {
 	public void setRegTime(Time regTime) {
 		this.regTime = regTime;
 	}
+
+	public boolean isActive() {
+		return active;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
+	}
+	
 	
 }

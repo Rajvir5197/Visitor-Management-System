@@ -28,7 +28,7 @@ public class DepartmentService {
 
 	public List<Department> allDepartment() {
 
-		return repository.findAll();
+		return repository.findByActive(true);
 	}
 
 	public JSONObject addDepartment(Department department) {
@@ -40,6 +40,7 @@ public class DepartmentService {
 		}
 		department.setRegDate(Date.valueOf(LocalDate.now()));
 		department.setRegTime(Time.valueOf(LocalTime.now()));
+		department.setActive(true);
 
 		Department departmentSaved = repository.save(department);
 
@@ -70,8 +71,11 @@ public class DepartmentService {
 			empRepository.save(employee);
 		}
 
-		repository.deleteById(department.getDeptCode());
-
+		department.setActive(false);
+		department.setDeptPlantCode(null);
+		//repository.deleteById(department.getDeptCode());
+		repository.save(department);
+		
 		jsonObject.put("data", "SUCCESS");
 		return jsonObject;
 

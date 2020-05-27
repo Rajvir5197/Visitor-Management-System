@@ -40,6 +40,9 @@ public class Department{
 	
 	@OneToMany(mappedBy = "empDept")
 	private Set<Employee> employeeMaster;
+
+	@Column (name = "active")
+	private boolean active;
 	
 	public int getDeptCode() {
 		return deptCode;
@@ -87,6 +90,14 @@ public class Department{
 
 	public void setRegTime(Time regTime) {
 		this.regTime = regTime;
+	}
+
+	public boolean isActive() {
+		return active;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
 	}
 
 	
