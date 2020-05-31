@@ -319,7 +319,7 @@ app.controller('dashboardController', function($scope, $http, $rootScope,$timeou
 	}else{
 		$scope.viewAllMeetingType();
 		$scope.viewAllContacts();
-		$scope.viewEmpPlant();
+		$scope.getAllPlants();
 		$scope.getTasks();
 		$scope.viewAllVisits();
 	}

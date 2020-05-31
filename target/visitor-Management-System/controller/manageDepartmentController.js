@@ -27,9 +27,12 @@ app.controller('manageDeptController', function($scope, $rootScope, $http, $time
 		$http.post("/visitor-Management-System/Department/viewAllDept").then(function mySuccess(response){
 			console.log(response.data);
 			$scope.allDept = response.data;
-			angular.forEach($scope.allDept,function(value){
+			$timeout(function() {
+				$("#Loader").modal("hide");
+			   }, 500);
+			/*angular.forEach($scope.allDept,function(value){
 				$scope.getPlantCode(value);
-			});
+			});*/
 		}, function myError(data){
 			console.log("some internal error");
 			console.log(data);
@@ -47,7 +50,7 @@ app.controller('manageDeptController', function($scope, $rootScope, $http, $time
 	};
 	
 	$scope.viewAllDept();
-	$scope.getAllPlants();
+	//$scope.getAllPlants();
 	
 	$scope.viewSelectedDept = function(dept){
 		$scope.viewDept = dept;

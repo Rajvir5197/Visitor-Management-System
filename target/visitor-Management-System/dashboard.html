@@ -269,7 +269,7 @@
 <div class="col-lg-6">
 <div class="form-group">
 <label>Location<span class="text-danger">*</span></label>
-<select id="plantCode" ng-model="visit.meetingBooked.visitLocation" ng-options="plant.plantName for plant in EmpPlants track by plant.plantCode" class="form-control" name="plantCode" required>
+<select id="plantCode" ng-model="visit.meetingBooked.visitLocation" ng-options="plant.plantName for plant in allPlants track by plant.plantCode" class="form-control" name="plantCode" required>
 </select>
 </div>
 </div>

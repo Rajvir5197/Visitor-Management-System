@@ -38,7 +38,7 @@
 <td>{{visits.meetingBooked.visitor.numberOfCoVisitor}}</td>
 <td>{{visits.secCheckinTime}}</td>
 <td><button class="btn btn-success btn-sm" ng-click="empCheckIn(visits)" ng-disabled="visits.empCheckin || !visits.secCheckin"><span ng-hide="visits.empCheckin">Check In</span><span ng-show="visits.empCheckin">Checked In</span></button></td>
-<td><button class="btn btn-danger btn-sm" data-toggle="modal" data-target="#cancelVisitModal" ng-disabled="visits.empCheckin" ng-click="cancelSelectedEmp(visits)">Cancel</button></td>
+<td><button class="btn btn-danger btn-sm" data-toggle="modal" data-target="#cancelVisitModal" ng-disabled="visits.secCheckin" ng-click="cancelSelectedEmp(visits)">Cancel</button></td>
 <td><button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#CheckOutModal" ng-click="checkoutSelectedEmp(visits)" ng-disabled="!visits.empCheckin || visits.empCheckout">Check Out</button></td>
 </tr>
 
