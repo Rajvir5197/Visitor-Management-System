@@ -72,7 +72,7 @@ public class DepartmentService {
 		}
 
 		department.setActive(false);
-		department.setDeptPlantCode(null);
+		//department.setDeptPlantCode(null);
 		//repository.deleteById(department.getDeptCode());
 		repository.save(department);
 		

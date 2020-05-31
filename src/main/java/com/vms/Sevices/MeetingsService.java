@@ -25,11 +25,25 @@ public class MeetingsService {
 	public JSONObject addMeeting(Meetings meeting) {
 		
 		JSONObject jsonObject = new JSONObject();
+		if(isExist(meeting)) {
+			jsonObject.put("data", "Exist");
+			return jsonObject;
+		}
 		meeting.setRegDate(Date.valueOf(LocalDate.now()));
 		meeting.setRegTime(Time.valueOf(LocalTime.now()));
 		repository.save(meeting);
 		jsonObject.put("data", "SUCCESS");
 		return jsonObject;
+	}
+	
+	public boolean isExist(Meetings meeting) {
+		List<Meetings> allmeetings = repository.findAll();
+		for(Meetings m : allmeetings) {
+			if(m.getMeetingType().equalsIgnoreCase(meeting.getMeetingType())) {
+				return true;
+			}
+		}
+		return false; 
 	}
 	
 	public JSONObject updateMeeting(Meetings meeting) {

@@ -122,6 +122,16 @@ app.controller('manageVisitController', function($scope, $rootScope, $http, $tim
 		});
 	};
 	
+	$scope.getAllPlants = function(){
+		$http.post("/visitor-Management-System/Plant/viewAllPlant").then(function mySuccess(response){
+			console.log(response.data);
+			$scope.allPlants = response.data;
+		}, function myError(data){
+			console.log("some internal error");
+			console.log(data);
+		});
+	};
+	
 	$scope.viewEmpPlant = function(){
 		$scope.param = {
 				empCode: $scope.UserID,
@@ -146,7 +156,7 @@ app.controller('manageVisitController', function($scope, $rootScope, $http, $tim
 	};
 	
 	$scope.viewAllVisits();
-	$scope.viewEmpPlant();
+	$scope.getAllPlants();
 	$scope.viewAllMeetingType();
 	
 	$scope.addNewVisit = function(){

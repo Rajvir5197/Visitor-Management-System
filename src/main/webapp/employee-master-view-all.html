@@ -38,10 +38,10 @@
 </div>
 </div>
 
-<div ng-hide="newEmp.empDept == undefined" class="col-lg-12">
+<div class="col-lg-12"> 
 <div class="form-group">
 <label>Plant Code</label>
-<select id="plantCode1" ng-model="newEmp.empPlantCode" ng-options="plant.plantCode for plant in newEmp.empDept.deptPlantCode track by plant.plantCode" class="form-control" name="plantCode1" multiple required>
+<select id="plantCode1" ng-model="newEmp.empPlantCode" ng-options="plant.plantCode for plant in allPlants track by plant.plantCode" class="form-control" name="plantCode1" multiple required>
 </select>
 </div>
 </div>
@@ -157,10 +157,10 @@
 </div>
 </div>
 
-<div ng-hide="editedEmp.empDept == undefined" class="col-lg-12">
+<div class="col-lg-12">
 <div class="form-group">
 <label>Plant Code</label>
-<select id="plantCode2" ng-model="editedEmp.empPlantCode" ng-options="plant.plantCode for plant in editedEmp.empDept.deptPlantCode track by plant.plantCode" class="form-control" name="plantCode2" multiple required>
+<select id="plantCode2" ng-model="editedEmp.empPlantCode" ng-options="plant.plantCode for plant in allPlants track by plant.plantCode" class="form-control" name="plantCode2" multiple required>
 </select>
 </div>
 </div>

@@ -107,7 +107,7 @@ public class EmployeeController {
 	public List<MeetingStatus> viewAllVisits(@RequestBody Employee employee) {
 
 		if("Security".equalsIgnoreCase(employee.getEmpRole())) {
-			return service.viewAllVisit();
+			return service.viewAllVisit(employee);
 		}else {
 			return service.viewAllVisitOfEmployee(employee.getEmpCode());
 		}

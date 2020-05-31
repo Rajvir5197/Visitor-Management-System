@@ -7,7 +7,7 @@ app.controller('reportController', function($scope, $rootScope, $http, $timeout)
 		window.location = "/visitor-Management-System/index.html";
 	}
 	
-	window.localStorage.setItem("pagePosition", "FromReportPage");
+	window.localStorage.setItem("pagePosition", "FromLoginPage");
 	$scope.allVisits=[];
 	$scope.errorInDate = false;
 	$scope.viewAllVisits = function(){
@@ -128,7 +128,7 @@ app.controller('reportController', function($scope, $rootScope, $http, $timeout)
 					$('#dataTable').DataTable().clear().destroy();
 					if(document.getElementById("selectedDept").value != 'All Dept' && document.getElementById("selectedPlant").value == 'All Plant'){
 						$scope.allVisits = $scope.allVisits.filter(function(value){
-							return (value.meetingBooked.visitDate >= document.getElementById("selectedFromDateEmp").value && value.meetingBooked.visitDate <= document.getElementById("selectedToDate").value);
+							return (value.meetingBooked.visitDate >= document.getElementById("selectedFromDateEmp").value && value.meetingBooked.visitDate <= document.getElementById("selectedToDate").value && value.meetingBooked.visitDepartment.deptCode == document.getElementById("selectedDept").value);
 						});
 					}else if(document.getElementById("selectedDept").value == 'All Dept' && document.getElementById("selectedPlant").value != 'All Plant'){
 						$scope.allVisits = $scope.allVisits.filter(function(value){
@@ -136,7 +136,7 @@ app.controller('reportController', function($scope, $rootScope, $http, $timeout)
 						});
 					}else if(document.getElementById("selectedDept").value != 'All Dept' && document.getElementById("selectedPlant").value != 'All Plant'){
 						$scope.allVisits = $scope.allVisits.filter(function(value){
-							return (value.meetingBooked.visitDate >= document.getElementById("selectedFromDateEmp").value && value.meetingBooked.visitDate <= document.getElementById("selectedToDate").value && value.meetingBooked.visitLocation.plantCode == document.getElementById("selectedPlant").value);
+							return (value.meetingBooked.visitDate >= document.getElementById("selectedFromDateEmp").value && value.meetingBooked.visitDate <= document.getElementById("selectedToDate").value && value.meetingBooked.visitLocation.plantCode == document.getElementById("selectedPlant").value && value.meetingBooked.visitDepartment.deptCode == document.getElementById("selectedDept").value);
 						});
 					}else{
 						$scope.allVisits = $scope.allVisits.filter(function(value){
@@ -147,7 +147,7 @@ app.controller('reportController', function($scope, $rootScope, $http, $timeout)
 					$('#dataTable').DataTable().clear().destroy();
 					if(document.getElementById("selectedDept").value != 'All Dept' && document.getElementById("selectedPlant").value == 'All Plant'){
 						$scope.allVisits = $scope.allVisits.filter(function(value){
-							return (value.meetingBooked.visitDate >= document.getElementById("selectedFromDateEmp").value);
+							return (value.meetingBooked.visitDate >= document.getElementById("selectedFromDateEmp").value && value.meetingBooked.visitDepartment.deptCode == document.getElementById("selectedDept").value);
 						});
 					}else if(document.getElementById("selectedDept").value == 'All Dept' && document.getElementById("selectedPlant").value != 'All Plant'){
 						$scope.allVisits = $scope.allVisits.filter(function(value){
@@ -155,7 +155,7 @@ app.controller('reportController', function($scope, $rootScope, $http, $timeout)
 						});
 					}else if(document.getElementById("selectedDept").value != 'All Dept' && document.getElementById("selectedPlant").value != 'All Plant'){
 						$scope.allVisits = $scope.allVisits.filter(function(value){
-							return (value.meetingBooked.visitDate >= document.getElementById("selectedFromDateEmp").value && value.meetingBooked.visitLocation.plantCode == document.getElementById("selectedPlant").value);
+							return (value.meetingBooked.visitDate >= document.getElementById("selectedFromDateEmp").value && value.meetingBooked.visitLocation.plantCode == document.getElementById("selectedPlant").value && value.meetingBooked.visitDepartment.deptCode == document.getElementById("selectedDept").value);
 						});
 					}else{
 						$scope.allVisits = $scope.allVisits.filter(function(value){
@@ -166,7 +166,7 @@ app.controller('reportController', function($scope, $rootScope, $http, $timeout)
 					$('#dataTable').DataTable().clear().destroy();
 					if(document.getElementById("selectedDept").value != 'All Dept' && document.getElementById("selectedPlant").value == 'All Plant'){
 						$scope.allVisits = $scope.allVisits.filter(function(value){
-							return (value.meetingBooked.visitDate <= document.getElementById("selectedToDate").value);
+							return (value.meetingBooked.visitDate <= document.getElementById("selectedToDate").value && value.meetingBooked.visitDepartment.deptCode == document.getElementById("selectedDept").value);
 						});
 					}else if(document.getElementById("selectedDept").value == 'All Dept' && document.getElementById("selectedPlant").value != 'All Plant'){
 						$scope.allVisits = $scope.allVisits.filter(function(value){
@@ -174,7 +174,7 @@ app.controller('reportController', function($scope, $rootScope, $http, $timeout)
 						});
 					}else if(document.getElementById("selectedDept").value != 'All Dept' && document.getElementById("selectedPlant").value != 'All Plant'){
 						$scope.allVisits = $scope.allVisits.filter(function(value){
-							return (value.meetingBooked.visitDate <= document.getElementById("selectedToDate").value && value.meetingBooked.visitLocation.plantCode == document.getElementById("selectedPlant").value);
+							return (value.meetingBooked.visitDate <= document.getElementById("selectedToDate").value && value.meetingBooked.visitLocation.plantCode == document.getElementById("selectedPlant").value && value.meetingBooked.visitDepartment.deptCode == document.getElementById("selectedDept").value);
 						});
 					}else{
 						$scope.allVisits = $scope.allVisits.filter(function(value){
@@ -184,14 +184,16 @@ app.controller('reportController', function($scope, $rootScope, $http, $timeout)
 				}else{
 					$('#dataTable').DataTable().clear().destroy();
 					if(document.getElementById("selectedDept").value != 'All Dept' && document.getElementById("selectedPlant").value == 'All Plant'){
-						
+						$scope.allVisits = $scope.allVisits.filter(function(value){
+							return (value.meetingBooked.visitDepartment.deptCode == document.getElementById("selectedDept").value);
+						});
 					}else if(document.getElementById("selectedDept").value == 'All Dept' && document.getElementById("selectedPlant").value != 'All Plant'){
 						$scope.allVisits = $scope.allVisits.filter(function(value){
 							return (value.meetingBooked.visitLocation.plantCode == document.getElementById("selectedPlant").value);
 						});
 					}else if(document.getElementById("selectedDept").value != 'All Dept' && document.getElementById("selectedPlant").value != 'All Plant'){
 						$scope.allVisits = $scope.allVisits.filter(function(value){
-							return (value.meetingBooked.visitLocation.plantCode == document.getElementById("selectedPlant").value);
+							return (value.meetingBooked.visitLocation.plantCode == document.getElementById("selectedPlant").value && value.meetingBooked.visitDepartment.deptCode == document.getElementById("selectedDept").value);
 						});
 					};
 				}

@@ -57,6 +57,7 @@ import com.vms.Model.CoVisitor;
 import com.vms.Model.ContactManager;
 import com.vms.Model.Employee;
 import com.vms.Model.MeetingStatus;
+import com.vms.Model.Plant;
 import com.vms.Model.Task;
 import com.vms.Repository.AssetRepository;
 import com.vms.Repository.CoVisitorRepository;
@@ -350,18 +351,25 @@ public class EmployeeService {
 		return jsonObject;
 	}
 
-	public List<MeetingStatus> viewAllVisit() {
+	public List<MeetingStatus> viewAllVisit(Employee employee) {
 
 		logger.info("start of viewAllVisit method");
 		List<String> statusNotIn = new ArrayList<String>();
-		//statusNotIn.add("Cancel");
+		statusNotIn.add("Cancel");
 		statusNotIn.add("Sec Checked Out");
+		
+		Optional<Employee> loginEmployee = repository.findById(employee.getEmpCode());
+		
+		List<Plant> plantsIn = new ArrayList<Plant>();
+		if(null != loginEmployee.get().getEmpPlantCode()) {
+			for(Plant plant: loginEmployee.get().getEmpPlantCode()) {
+				plantsIn.add(plant);
+			}
+		}
 		logger.info("visitDate: " + Date.valueOf(LocalDate.now()));
 		List<MeetingStatus> allMeetings = meetingStatusRepository
-				.findByMeetingBookedVisitDateAndStatusIsNotIn(Date.valueOf(LocalDate.now()), statusNotIn);
+				.findByMeetingBookedVisitDateAndStatusIsNotInAndMeetingBookedVisitLocationIn(Date.valueOf(LocalDate.now()), statusNotIn, plantsIn);
 		
-		List<MeetingStatus> allFinalMeetings = new ArrayList<MeetingStatus>();
-		//allFinalMeetings.addAll(allMeetings);
 
 		for (MeetingStatus meetings : allMeetings) {
 			
@@ -370,18 +378,10 @@ public class EmployeeService {
 				meetings.getMeetingBooked().getVisitor()
 						.setVisitorImage(decompressBytes(meetings.getMeetingBooked().getVisitor().getVisitorImage()));
 			}
-			if("cancel".equalsIgnoreCase(meetings.getStatus())) {
-				if(meetings.isSecCheckin()) {
-					allFinalMeetings.add(meetings);
-					//continue;
-				}
-			}else {
-				allFinalMeetings.add(meetings);
-			}
 		}
 
 		logger.info("end of viewAllVisit method with meeting count: " + allMeetings.size());
-		return allFinalMeetings;
+		return allMeetings;
 	}
 
 	public List<MeetingStatus> viewAllVisitOfEmployee(int empCode) {
@@ -406,10 +406,12 @@ public class EmployeeService {
 			// Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 			// SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			/// java.util.Date d = sdf.parse(sdf.format(timestamp));
+			Optional<Employee> employee = repository.findById(meeting.getMeetingBooked().getEmpId());
 			Random rnd = new Random();
 			// int number = Integer.valueOf(String.format("%06d", rnd.nextInt(999999)));
 			int number = rnd.nextInt(900000) + 100000;
 			meeting.setSecurityCode(number);
+			meeting.getMeetingBooked().setVisitDepartment(employee.get().getEmpDept());
 			meeting.setCreatedDate(Date.valueOf(LocalDate.now()));
 			meeting.setCreatedTime(Time.valueOf(LocalTime.now()));
 			meeting.setLastUpdatedDate(Date.valueOf(LocalDate.now()));
@@ -604,68 +606,30 @@ public class EmployeeService {
 		return count;
 	}
 
-	public String sendMessage1(@RequestBody MeetingStatus visitor) {
-		
-		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-		try {
-			// Construct data
-			String apiKey = "apikey=" + "SLNDsGimV1s-MQPRtuGHKqeF6V8MkQY2mYVw2DriO1";
-			String message = "Your Meeting is schedule on " + sdf.format(visitor.getMeetingBooked().getVisitDate())
-					+ " " + visitor.getMeetingBooked().getVisitTime() + " with "
-					+ visitor.getMeetingBooked().getEmpName() + " at "
-					+ visitor.getMeetingBooked().getVisitLocation().getPlantName() + " and your checkin code is: "
-					+ visitor.getSecurityCode();
-
-			String numbers = "&numbers=" + visitor.getMeetingBooked().getVisitor().getContactNumber();
-
-			// Send data
-			HttpURLConnection conn = (HttpURLConnection) new URL("https://api.textlocal.in/send/?").openConnection();
-			String data = apiKey + numbers + "&message=" + message;
-			System.out.println("data: " + data);
-			conn.setDoOutput(true);
-			conn.setRequestMethod("POST");
-			conn.setRequestProperty("Content-Length", Integer.toString(data.length()));
-			conn.getOutputStream().write(data.getBytes("UTF-8"));
-
-			final BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-
-			final StringBuffer stringBuffer = new StringBuffer();
-
-			String line;
-			while ((line = rd.readLine()) != null) {
-				stringBuffer.append(line);
-			}
-			rd.close();
-			 
-			
-			sendmail(visitor.getMeetingBooked().getVisitor().getEmailId(),message);
-			
-			return stringBuffer.toString();
-		} catch (Exception e) {
-			System.out.println("Error SMS "+e);
-			return "Error "+e;
-		}
-	}
-
-	public String sendMessage(@RequestBody MeetingStatus visitor) {
+	public String sendMessage(MeetingStatus visitor) {
 		URL url = null;
 	    BufferedReader reader = null;
 	    StringBuilder stringBuilder = new StringBuilder();
 	    SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 	    String message1 = null;
+	    String subject = null;
+	    String message = null;
 		
 	    if("cancel".equalsIgnoreCase(visitor.getStatus())) {
+	    	subject = "You scheduled visit is cancelled with Rucha Engineers Pvt Ltd.";
 	    	message1 = "Hello, " + visitor.getMeetingBooked().getVisitor().getVisitorName()+", sorry to inform you that your scheduled visit on " +sdf.format(visitor.getMeetingBooked().getVisitDate()) + " at "
 					+ visitor.getMeetingBooked().getVisitTime() +" is cancelled.";
+	    	message = message1.replaceAll(" ", "%20");
 	    }else {
-	    	message1 = "Your Meeting is schedule on " + sdf.format(visitor.getMeetingBooked().getVisitDate()) + " "
-					+ visitor.getMeetingBooked().getVisitTime() + " with " + visitor.getMeetingBooked().getEmpName()
-					+ " at " + visitor.getMeetingBooked().getVisitLocation().getPlantName() + " and your checkin code is: "
+	    	subject = "Your visit is scheduled at Rucha Engineers Pvt Ltd.";
+	    	message1 = "Hello, " + visitor.getMeetingBooked().getVisitor().getVisitorName()+ " Your Visit is schedule with " + visitor.getMeetingBooked().getEmpName() +
+	    			" on " + sdf.format(visitor.getMeetingBooked().getVisitDate()) + " at " + visitor.getMeetingBooked().getVisitTime() 
+					+ " in " + visitor.getMeetingBooked().getVisitLocation().getPlantName() + ". And your Appointment Number is: "
 					+ visitor.getSecurityCode();
+	    	message = message1.replaceAll(" ", "%20");
+	    	message1 = message1 + "/n Visit Location: "+visitor.getMeetingBooked().getVisitLocation().getPlantMapLink();
 	    }
 	    
-		
-		String message = message1.replaceAll(" ", "%20");
 	    //String message = "hello";
 		 try
 		    {
@@ -689,7 +653,7 @@ public class EmployeeService {
 		      {
 		        stringBuilder.append(line + "\n");
 		      }
-		      sendmail(visitor.getMeetingBooked().getVisitor().getEmailId(),message1);
+		      sendmail(visitor.getMeetingBooked().getVisitor().getEmailId(),message1,subject);
 		     
 		    }
 		    catch (Exception e)
@@ -699,13 +663,13 @@ public class EmployeeService {
 		 return (stringBuilder.toString());
 	}
 
-	public void sendmail(String MailTo, String message) throws AddressException, MessagingException, IOException {
+	public void sendmail(String MailTo, String message, String subject) throws AddressException, MessagingException, IOException {
 		SimpleMailMessage msg = new SimpleMailMessage();
 		//msg.setFrom("raj.viradiya@syscort.com");no-reply@rucha.co.in
 		msg.setFrom("no-reply@rucha.co.in");
 		msg.setTo(MailTo);
 
-		msg.setSubject("Meeting Details");
+		msg.setSubject(subject);
 		msg.setText(message);
 
 		System.out.println("sending msg");
@@ -858,9 +822,12 @@ public class EmployeeService {
 				CoVisitorCount++;
 			}
 			String AssetMain;
+			String subject;
 			if(meeting.isEmpCheckout() || "cancel".equalsIgnoreCase(meeting.getStatus())) {
+				subject="checkin Details";
 				AssetMain = "Below is the list of Asset details at the time of check-out: \n";
 			}else {
+				subject="checkout Details";
 				AssetMain = "Below is the list of Asset details stored in Locker: \n";
 			}
 			 
@@ -885,7 +852,7 @@ public class EmployeeService {
 			}
 			
 			String message = Greet + CoVisitorList + AssetMain + AssetDetailsM + "\n\n" +meeting.getSecCheckinBy() + "\n" + meeting.getMeetingBooked().getVisitLocation().getPlantAddress() +"\n";
-			sendmail(meeting.getMeetingBooked().getVisitor().getEmailId(),message);
+			sendmail(meeting.getMeetingBooked().getVisitor().getEmailId(),message,subject);
 		     
 	    } catch (Exception e) {
 			System.out.println("Error SMS "+e);

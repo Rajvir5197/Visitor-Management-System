@@ -9,10 +9,11 @@ app.controller('securityController', function($scope, $rootScope, $http,$timeout
 	
 	if($rootScope.visitCheckin == undefined || $rootScope.visitCheckin == null){
 		window.location = "#!secDashboard";
-	};
+	}else{
+		$( "#Loader" ).modal("show");
+	}
 	
 	window.localStorage.setItem("pagePosition", "FromSecurityPage");
-	$( "#Loader" ).modal("show");
 	$scope.addAssetArrayList = [];
 	$scope.addCoVisitorAssetArrayList = [];
 	$scope.showAddAsset = false;

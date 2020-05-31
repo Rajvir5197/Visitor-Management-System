@@ -99,11 +99,11 @@
 		<span>Dashboard</span></a>
 		</li>
 		
-		<li ng-show="role == 'Super Admin'" class="nav-item">
+		<!-- <li ng-show="role == 'Super Admin'" class="nav-item">
 		<a class="nav-link" href="#!ViewAllPlants">
 		<i class="fas fa-fw fa-industry"></i>
 		<span>Manage Plants</span></a>
-		</li>
+		</li> -->
 		
 		<li ng-show="role == 'Employee'" class="nav-item">
 		<a class="nav-link collapsed" href="" data-toggle="collapse" data-target="#masterMVisit" aria-expanded="true" aria-controls="masterMVisit">
@@ -130,6 +130,7 @@
 		</a>
 		<div id="masterMenu" class="collapse" aria-labelledby="masterMenu" data-parent="#accordionSidebar">
 		<div class="collapse-inner" style="background-color:#3482ae;">
+		<a class="collapse-item" href="#!ViewAllPlants">Manage Plants</a>
 		<a class="collapse-item" href="#!ViewAllEmployee">Employee Master</a>
 		<a class="collapse-item" href="#!ViewAllDepartment">Department Master</a>
 		<a class="collapse-item" href="#!ViewAllMeetingType">Meeting Type Master</a>

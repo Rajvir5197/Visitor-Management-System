@@ -25,9 +25,11 @@ public class Department{
 	@NotNull
 	private String deptName;
 
-	@ManyToMany
-	@JoinColumn (name = "dept_plant_code")
-	private Set<Plant> deptPlantCode;
+	/*
+	 * @ManyToMany
+	 * 
+	 * @JoinColumn (name = "dept_plant_code") private Set<Plant> deptPlantCode;
+	 */
 	
 	@Column (name = "reg_by")
 	private int regBy;
@@ -60,13 +62,12 @@ public class Department{
 		this.deptName = deptName;
 	}
 	
-	public Set<Plant> getDeptPlantCode() {
-		return deptPlantCode;
-	}
-
-	public void setDeptPlantCode(Set<Plant> deptPlantCode) {
-		this.deptPlantCode = deptPlantCode;
-	}
+	/*
+	 * public Set<Plant> getDeptPlantCode() { return deptPlantCode; }
+	 * 
+	 * public void setDeptPlantCode(Set<Plant> deptPlantCode) { this.deptPlantCode =
+	 * deptPlantCode; }
+	 */
 
 	public int getRegBy() {
 		return regBy;

@@ -119,30 +119,24 @@ public class PlantService {
 			
 		}
 		
-		List<Department> allDepartments = departmentRepository.findAll();
-		List<Department> sortedDepartment = new ArrayList<Department>();
-		for(Department department : allDepartments) {
-			department.getDeptPlantCode().stream().forEach((plan) -> {
-				if(plan.getPlantCode()== plant.getPlantCode()) {
-					sortedDepartment.add(department);
-				}
-			});
-		}
-		
-		for (Department department : sortedDepartment) {
-			Set<Plant> plantE= department.getDeptPlantCode();
-			Set<Plant> plantF = new HashSet<Plant>();
-			
-			plantE.stream().forEach((plantp) -> {
-				if(plantp.getPlantCode() != plant.getPlantCode()) {
-					plantF.add(plantp);
-				}
-			});
-			Optional<Department> e = departmentRepository.findById(department.getDeptCode());
-			e.get().setDeptPlantCode(plantF);
-			departmentRepository.save(e.get());
-			
-		}
+		/*
+		 * List<Department> allDepartments = departmentRepository.findAll();
+		 * List<Department> sortedDepartment = new ArrayList<Department>();
+		 * for(Department department : allDepartments) {
+		 * department.getDeptPlantCode().stream().forEach((plan) -> {
+		 * if(plan.getPlantCode()== plant.getPlantCode()) {
+		 * sortedDepartment.add(department); } }); }
+		 * 
+		 * for (Department department : sortedDepartment) { Set<Plant> plantE=
+		 * department.getDeptPlantCode(); Set<Plant> plantF = new HashSet<Plant>();
+		 * 
+		 * plantE.stream().forEach((plantp) -> { if(plantp.getPlantCode() !=
+		 * plant.getPlantCode()) { plantF.add(plantp); } }); Optional<Department> e =
+		 * departmentRepository.findById(department.getDeptCode());
+		 * e.get().setDeptPlantCode(plantF); departmentRepository.save(e.get());
+		 * 
+		 * }
+		 */
 		
 		plant.setActive(false);
 		//repository.deleteById(plant.getPlantCode());

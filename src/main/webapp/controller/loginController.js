@@ -3,6 +3,7 @@ app.controller('loginController', function($scope, $rootScope, $http) {
 	console.log("in js");
 	$scope.invalidUser = false;
 	$scope.UserName = window.localStorage.getItem("userName");
+	window.localStorage.setItem("pagePosition", "FromLoginPage");
 	if($scope.UserName != undefined || $scope.UserName != null ){
 		window.location.href  = "index1.html";
 	}
@@ -19,7 +20,6 @@ app.controller('loginController', function($scope, $rootScope, $http) {
 				window.localStorage.setItem("loginDetails", response.data.empDetails.empCode);
 				window.localStorage.setItem("loginRole", response.data.empDetails.empRole);
 				window.localStorage.setItem("userName", response.data.empDetails.empName);
-				window.localStorage.setItem("pagePosition", "FromLoginPage");
 				window.location.href  = "index1.html";
 			}else{
 				$scope.invalidUser = true;

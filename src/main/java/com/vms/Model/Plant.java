@@ -75,9 +75,11 @@ public class Plant {
 	@Column (name = "empPlantCode")
 	private Set<Employee> employeeMaster;
 	
-	@ManyToMany(mappedBy = "deptPlantCode")
-	@Column 
-	private Set<Department> department;
+	/*
+	 * @ManyToMany(mappedBy = "deptPlantCode")
+	 * 
+	 * @Column private Set<Department> department;
+	 */
 
 	public int getPlantCode() {
 		return plantCode;
