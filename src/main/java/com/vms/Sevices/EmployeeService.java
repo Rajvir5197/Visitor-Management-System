@@ -420,11 +420,17 @@ public class EmployeeService {
 
 			MeetingStatus meetingSaved = meetingStatusRepository.save(meeting);
 			String mailStatus = sendMessage(meeting);
-			if (null != meetingSaved /* && "SUCCESS".equalsIgnoreCase(mailStatus) */ ) {
-				jsonObject.put("msg", "SUCCESS");
+			List<ContactManager> contact = contactRepository.findByMobileNumbAndRegBy(meeting.getMeetingBooked().getVisitor().getContactNumber(), meeting.getCreatedBy());
+			if(contact.size() == 0) {
+				jsonObject.put("msg", "SUCCESSANDCONTACT");
 				jsonObject.put("meetingData", meetingSaved);
-			} else {
-				jsonObject.put("msg", "FAIL");
+			}else {
+				if (null != meetingSaved /* && "SUCCESS".equalsIgnoreCase(mailStatus) */ ) {
+					jsonObject.put("msg", "SUCCESS");
+					jsonObject.put("meetingData", meetingSaved);
+				} else {
+					jsonObject.put("msg", "FAIL");
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -617,12 +623,12 @@ public class EmployeeService {
 		
 	    if("cancel".equalsIgnoreCase(visitor.getStatus())) {
 	    	subject = "You scheduled visit is cancelled with Rucha Engineers Pvt Ltd.";
-	    	message1 = "Hello, " + visitor.getMeetingBooked().getVisitor().getVisitorName()+", sorry to inform you that your scheduled visit on " +sdf.format(visitor.getMeetingBooked().getVisitDate()) + " at "
+	    	message1 = "Hello, " + visitor.getMeetingBooked().getVisitor().getFirstName()+", sorry to inform you that your scheduled visit on " +sdf.format(visitor.getMeetingBooked().getVisitDate()) + " at "
 					+ visitor.getMeetingBooked().getVisitTime() +" is cancelled.";
 	    	message = message1.replaceAll(" ", "%20");
 	    }else {
 	    	subject = "Your visit is scheduled at Rucha Engineers Pvt Ltd.";
-	    	message1 = "Hello, " + visitor.getMeetingBooked().getVisitor().getVisitorName()+ " Your Visit is schedule with " + visitor.getMeetingBooked().getEmpName() +
+	    	message1 = "Hello, " + visitor.getMeetingBooked().getVisitor().getFirstName()+ " Your Visit is schedule with " + visitor.getMeetingBooked().getEmpName() +
 	    			" on " + sdf.format(visitor.getMeetingBooked().getVisitDate()) + " at " + visitor.getMeetingBooked().getVisitTime() 
 					+ " in " + visitor.getMeetingBooked().getVisitLocation().getPlantName() + ". And your Appointment Number is: "
 					+ visitor.getSecurityCode();
@@ -792,7 +798,7 @@ public class EmployeeService {
 			for (MeetingStatus visit : visits) {
 				Row row = sheet.createRow(rowIdx++);
 
-				row.createCell(0).setCellValue(visit.getMeetingBooked().getVisitor().getVisitorName());
+				row.createCell(0).setCellValue(visit.getMeetingBooked().getVisitor().getFirstName());
 				row.createCell(1).setCellValue(visit.getMeetingBooked().getVisitor().getOrganisation());
 				row.createCell(2).setCellValue(visit.getMeetingBooked().getVisitor().getContactNumber());
 				row.createCell(3).setCellValue(visit.getMeetingBooked().getVisitDate().toString());
@@ -811,7 +817,7 @@ public class EmployeeService {
 		JSONObject jsonObject = new JSONObject();
 		try {
 			// Construct data
-			String Greet = "Dear " + meeting.getMeetingBooked().getVisitor().getVisitorName() + "\n\n\n";
+			String Greet = "Dear " + meeting.getMeetingBooked().getVisitor().getFirstName() + "\n\n\n";
 			
 			String CoVisitorList = "";
 			List<CoVisitor> CoVisitorListdetails = coVisitorRepository.findByVisitor(meeting.getMeetingBooked().getVisitor());

@@ -207,6 +207,10 @@ public class SecurityService {
 		Optional<MeetingStatus> meet = meetingStatusRepository.findById(visitor.getMeetingId());
 		meet.get().getMeetingBooked().getVisitor()
 				.setVisitorImage(compressBytes(visitor.getMeetingBooked().getVisitor().getVisitorImage()));
+		meet.get().getMeetingBooked().getVisitor().setArogyaPresent(visitor.getMeetingBooked().getVisitor().isArogyaPresent());
+		meet.get().getMeetingBooked().getVisitor().setBatchNo(visitor.getMeetingBooked().getVisitor().getBatchNo());
+		meet.get().getMeetingBooked().getVisitor().setBatchStatus(visitor.getMeetingBooked().getVisitor().getBatchStatus());
+		meet.get().getMeetingBooked().getVisitor().setBodyTemperature(visitor.getMeetingBooked().getVisitor().getBodyTemperature());
 
 		MeetingStatus visitorSaved = meetingStatusRepository.save(meet.get());
 		if (null != visitorSaved) {
@@ -368,6 +372,22 @@ public class SecurityService {
 		List<Asset> Visitor = assetRepository.findByMainVisitor(visitor);
 
 		return Visitor;
+	}
+
+	public JSONObject submitBatch(MeetingStatus meeting) {
+		
+		JSONObject jsonObject = new JSONObject();
+		Optional<Visitor> visitor = visitorRepository.findById(meeting.getMeetingBooked().getVisitor().getVisitorId());
+		visitor.get().setBatchStatus("submited");
+		visitorRepository.save(visitor.get());
+		
+		List<CoVisitor> allCovisitor = coVisitorRepository.findByVisitor(visitor.get());
+		for(CoVisitor covisitor: allCovisitor) {
+			covisitor.setBatchStatus("submited");
+			coVisitorRepository.save(covisitor);
+		}
+		jsonObject.put("msg", "SUCCESS");
+		return jsonObject;
 	}
 
 

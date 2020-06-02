@@ -25,9 +25,34 @@ public class Visitor {
 	@Column (name = "visitor_image", length = 100000)
 	private byte[] visitorImage;
 	
-	@Column (name = "visitor_name")
+	/*
+	 * @Column (name = "visitor_name")
+	 * 
+	 * @NotNull private String visitorName;
+	 */
+	
+	@Column (name = "salutation")
 	@NotNull
-	private String visitorName;
+	private String salutation;
+	
+	@Column (name = "first_name")
+	@NotNull
+	private String firstName;
+	
+	@Column (name = "middle_name")
+	private String middleName;
+	
+	@Column (name = "last_name")
+	@NotNull
+	private String lastName;
+	
+	@Column (name = "designation")
+	@NotNull
+	private String designation;
+	
+	@Column (name = "gender")
+	@NotNull
+	private String gender;
 	
 	@Column (name = "contact_number")
 	@NotNull
@@ -43,6 +68,18 @@ public class Visitor {
 	
 	@Column (name = "co_visitor_no")
 	private int numberOfCoVisitor;
+	
+	@Column (name = "batch_no")
+	private long batchNo;
+	
+	@Column (name = "batch_status")
+	private String batchStatus;
+	
+	@Column(name = "arogya_present")
+	private boolean arogyaPresent;
+	
+	@Column(name = "body_temperature")
+	private int bodyTemperature;
 	
 	@OneToOne(mappedBy = "visitor")
 	@JoinColumn
@@ -67,13 +104,12 @@ public class Visitor {
 		this.visitorId = visitorId;
 	}
 
-	public String getVisitorName() {
-		return visitorName;
-	}
-
-	public void setVisitorName(String visitorName) {
-		this.visitorName = visitorName;
-	}
+	/*
+	 * public String getVisitorName() { return visitorName; }
+	 * 
+	 * public void setVisitorName(String visitorName) { this.visitorName =
+	 * visitorName; }
+	 */
 
 	public long getContactNumber() {
 		return contactNumber;
@@ -113,6 +149,86 @@ public class Visitor {
 
 	public void setVisitorImage(byte[] visitorImage) {
 		this.visitorImage = visitorImage;
+	}
+
+	public String getSalutation() {
+		return salutation;
+	}
+
+	public void setSalutation(String salutation) {
+		this.salutation = salutation;
+	}
+
+	public String getFirstName() {
+		return firstName;
+	}
+
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
+	public String getMiddleName() {
+		return middleName;
+	}
+
+	public void setMiddleName(String middleName) {
+		this.middleName = middleName;
+	}
+
+	public String getLastName() {
+		return lastName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+
+	public String getDesignation() {
+		return designation;
+	}
+
+	public void setDesignation(String designation) {
+		this.designation = designation;
+	}
+
+	public String getGender() {
+		return gender;
+	}
+
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+
+	public long getBatchNo() {
+		return batchNo;
+	}
+
+	public void setBatchNo(long batchNo) {
+		this.batchNo = batchNo;
+	}
+
+	public String getBatchStatus() {
+		return batchStatus;
+	}
+
+	public void setBatchStatus(String batchStatus) {
+		this.batchStatus = batchStatus;
+	}
+
+	public boolean isArogyaPresent() {
+		return arogyaPresent;
+	}
+
+	public void setArogyaPresent(boolean arogyaPresent) {
+		this.arogyaPresent = arogyaPresent;
+	}
+
+	public int getBodyTemperature() {
+		return bodyTemperature;
+	}
+
+	public void setBodyTemperature(int bodyTemperature) {
+		this.bodyTemperature = bodyTemperature;
 	}
 
 	

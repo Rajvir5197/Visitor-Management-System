@@ -384,17 +384,24 @@ app.controller('dashboardController', function($scope, $http, $rootScope,$timeou
 	};
 	
 	$scope.setVisit = function(contact){
-		$scope.visit = {};
-		$scope.visit.meetingBooked = {};
-		$scope.visit.meetingBooked.visitor = {};
-		$scope.visit.meetingBooked.visitor.visitorName = contact.firstName +" "+ contact.lastName;
-		$scope.visit.meetingBooked.visitor.emailId = contact.emailId;
-		$scope.visit.meetingBooked.visitor.contactNumber = contact.mobileNumb;
-		$scope.visit.meetingBooked.visitor.organisation = contact.company;
+		$rootScope.visitFromContact = {};
+		$rootScope.visitFromContact.meetingBooked = {};
+		$rootScope.visitFromContact.meetingBooked.visitor = {};
+		$rootScope.visitFromContact.meetingBooked.visitor.salutation = contact.salutation;
+		$rootScope.visitFromContact.meetingBooked.visitor.firstName = contact.firstName;
+		$rootScope.visitFromContact.meetingBooked.visitor.lastName = contact.lastName;
+		$rootScope.visitFromContact.meetingBooked.visitor.middleName = contact.middleName;
+		$rootScope.visitFromContact.meetingBooked.visitor.gender = contact.gender;
+		$rootScope.visitFromContact.meetingBooked.visitor.designation = contact.designation;
+		$rootScope.visitFromContact.meetingBooked.visitor.emailId = contact.emailId;
+		$rootScope.visitFromContact.meetingBooked.visitor.contactNumber = contact.mobileNumb;
+		$rootScope.visitFromContact.meetingBooked.visitor.organisation = contact.company;
+		window.location.href  = "#!addVisit";
 	};
 	
 	$scope.addNewVisit = function(){
-		$scope.invalidMobile = false;
+		window.location.href  = "#!addVisit";
+		/*$scope.invalidMobile = false;
 		$scope.invalidDate = false;
 		$scope.invalidTime = false;
 		if($scope.addVisitForm.$valid){
@@ -460,7 +467,7 @@ app.controller('dashboardController', function($scope, $http, $rootScope,$timeou
 			}else{
 				$scope.invalidMobile = true;
 			}
-		}
+		}*/
 	};
 	
 	$scope.openAddModal = function(type){

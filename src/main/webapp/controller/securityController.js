@@ -13,6 +13,10 @@ app.controller('securityController', function($scope, $rootScope, $http,$timeout
 		$( "#Loader" ).modal("show");
 	}
 	
+	$scope.enableCheckOut = false;
+	if($rootScope.visitCheckin.meetingBooked.visitor.batchStatus == "submited"){
+		$scope.enableCheckOut = true;
+	}
 	window.localStorage.setItem("pagePosition", "FromSecurityPage");
 	$scope.addAssetArrayList = [];
 	$scope.addCoVisitorAssetArrayList = [];
@@ -247,7 +251,14 @@ app.controller('securityController', function($scope, $rootScope, $http,$timeout
 		if($scope.visitorImg != null && $scope.visitorImg != undefined){
 			$scope.image = [];
 			$scope.image = $scope.visitorImg.split(",");
+			console.log("appInstalled:",$scope.appInstalled);
+			console.log("batchNo: ",$scope.batchNo);
+			
 			if($scope.picOf == 'visitor'){
+				$rootScope.visitCheckin.meetingBooked.visitor.batchNo = $scope.batchNo;
+				$rootScope.visitCheckin.meetingBooked.visitor.batchStatus = "assigned";
+				$rootScope.visitCheckin.meetingBooked.visitor.arogyaPresent = $scope.appInstalled;
+				$rootScope.visitCheckin.meetingBooked.visitor.bodyTemperature = $scope.temperature;
 				$rootScope.visitCheckin.meetingBooked.visitor.visitorImage = $scope.image[1];
 				$http.post("/visitor-Management-System/Security/addVisitorImage", $rootScope.visitCheckin).then(function mySuccess(response){
 					$('#captureImageModal').modal('hide');
@@ -256,6 +267,10 @@ app.controller('securityController', function($scope, $rootScope, $http,$timeout
 					console.log(data);
 				});
 			}else{
+				$scope.captureCoVisitor.batchNo = $scope.batchNo;
+				$scope.captureCoVisitor.batchStatus = "assigned";
+				$scope.captureCoVisitor.arogyaPresent = $scope.appInstalled;
+				$scope.captureCoVisitor.bodyTemperature = $scope.temperature;
 				$scope.captureCoVisitor.coVisitorImage = $scope.image[1];
 				$http.post("/visitor-Management-System/Security/addCoVisitorImage", $scope.captureCoVisitor).then(function mySuccess(response){
 					$('#captureImageModal').modal('hide');
@@ -307,7 +322,28 @@ app.controller('securityController', function($scope, $rootScope, $http,$timeout
 	
 	$scope.captureCoVisitorMethod = function(coVisitor){
 		$scope.picOf = "coVisitor";
+		$scope.batchNo = "";
+		$scope.appInstalled = "";
+		$scope.temperature = 0;
 		$scope.captureCoVisitor = coVisitor;
 	};
+	
+	$scope.captureVisitorMethod = function(){
+		$scope.picOf = "visitor";
+		$scope.batchNo = "";
+		$scope.appInstalled = "";
+		$scope.temperature = 0;
+	};
+	
+	$scope.submitBatch = function(){
+		$http.post("/visitor-Management-System/Security/submitBatch", $rootScope.visitCheckin).then(function mySuccess(response){
+			if(response.data.msg == 'SUCCESS'){
+				$scope.enableCheckOut = true;
+			}
+		}, function myError(data){
+			console.log("some internal error");
+			console.log(data);
+		});
+	}
 	
 });

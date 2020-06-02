@@ -92,5 +92,13 @@ public class SecurityController {
 
 		return service.getVisitAllAsset(Visitor);
 	}
+	
+	@RequestMapping(value = "/submitBatch", method = RequestMethod.POST)
+	@ResponseBody
+	public JSONObject submitBatch(@RequestBody MeetingStatus meeting) {
+
+		return service.submitBatch(meeting);
+	}
+	
 
 }

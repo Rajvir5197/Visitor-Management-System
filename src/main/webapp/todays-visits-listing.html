@@ -33,7 +33,7 @@
 <tbody>
 <tr ng-repeat="visits in allVisits">
 <td>{{$index + 1}}</td>
-<td>{{visits.meetingBooked.visitor.visitorName}}</td>
+<td>{{visits.meetingBooked.visitor.firstName}} {{visits.meetingBooked.visitor.middleName}} {{visits.meetingBooked.visitor.lastName}}</td>
 <td>{{visits.meetingBooked.visitor.contactNumber}}</td>
 <td>{{visits.meetingBooked.visitor.numberOfCoVisitor}}</td>
 <td>{{visits.secCheckinTime}}</td>

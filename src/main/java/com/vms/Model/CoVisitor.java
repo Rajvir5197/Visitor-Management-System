@@ -66,6 +66,18 @@ public class CoVisitor {
 	
 	@Column (name = "created_time")
 	private Time createdTime;
+	
+	@Column (name = "batch_no")
+	private long batchNo;
+	
+	@Column (name = "batch_status")
+	private String batchStatus;
+	
+	@Column(name = "arogya_present")
+	private boolean arogyaPresent;
+	
+	@Column(name = "body_temperature")
+	private int bodyTemperature;
 
 	public int getCoVisitorId() {
 		return coVisitorId;
@@ -167,6 +179,38 @@ public class CoVisitor {
 
 	public void setCoVisitorImage(byte[] coVisitorImage) {
 		this.coVisitorImage = coVisitorImage;
+	}
+
+	public long getBatchNo() {
+		return batchNo;
+	}
+
+	public void setBatchNo(long batchNo) {
+		this.batchNo = batchNo;
+	}
+
+	public String getBatchStatus() {
+		return batchStatus;
+	}
+
+	public void setBatchStatus(String batchStatus) {
+		this.batchStatus = batchStatus;
+	}
+
+	public boolean isArogyaPresent() {
+		return arogyaPresent;
+	}
+
+	public void setArogyaPresent(boolean arogyaPresent) {
+		this.arogyaPresent = arogyaPresent;
+	}
+
+	public int getBodyTemperature() {
+		return bodyTemperature;
+	}
+
+	public void setBodyTemperature(int bodyTemperature) {
+		this.bodyTemperature = bodyTemperature;
 	}
 	
 	

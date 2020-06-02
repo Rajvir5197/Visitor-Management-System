@@ -12,4 +12,6 @@ import com.vms.Model.ContactManager;
 public interface ContactRepository extends JpaRepository<ContactManager, Integer>{
 
 	public List<ContactManager> findByRegBy(@Param("regBy") int userId);
+	
+	public List<ContactManager> findByMobileNumbAndRegBy(@Param("mobileNumb") long mobileNumb,@Param("regBy") int userId);
 }
