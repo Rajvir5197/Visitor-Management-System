@@ -87,7 +87,7 @@
 <div class="col-lg-9 mb-3">
 <h2 class="m-0 FontSize22 p-3 bg-light BlackTxtColor border border-bottom-0">Co-Visitor Information
 <!-- <button type="button" style="margin-left: 33%;" ng-disabled="visitCheckin.empCheckin" class="btn btn-primary" data-toggle="modal" data-target="#addCoVisitorModal" ng-click="newVisitor = {};">Add Co-Visitor</button> -->
-<button type="button" class="btn btn-primary" style="margin-left: 54%;" ng-disabled="visitCheckin.empCheckin" ng-click="sendMail()">send Email</button>
+<!-- <button type="button" class="btn btn-primary" style="margin-left: 54%;" ng-disabled="visitCheckin.empCheckin" ng-click="sendMail()">send Email</button> -->
 </h2>
 
 <div class="table-responsive">
@@ -152,7 +152,7 @@
 <tr ng-repeat="asset in allAsset">
 <td>{{asset.assetName}}</td>
 <td>{{asset.assetCount}}</td>
-<td><button ng-hide="asset.deliveredFlag" ng-disabled="!visitCheckin.empCheckout" ng-click="deliverAsset(asset)"  type="button" class="btn btn-danger btn-sm" ><i class="fa fa-times fa-fw fa-lg"></i> {{asset.assetStatus}}</button>
+<td><button ng-hide="asset.deliveredFlag" ng-disabled="!visitCheckin.empCheckout" ng-click="deliverAsset(asset)"  type="button" class="btn btn-danger btn-sm" >Checked</button>
 <button ng-show="asset.deliveredFlag" type="button" class="btn btn-success btn-sm" ><i class="fa fa-check fa-fw fa-lg"></i> {{asset.assetStatus}}</button>
 </td>
 </tr>
@@ -183,8 +183,8 @@
 <button type="button" ng-click="addCovisitorAssetArray()" style="margin-left: 93%;" ng-disabled="visitCheckin.empCheckin" class="btn btn-primary">Add</button>
 </div>
 <div class="modal-footer">
-<button type="button" class="btn btn-danger btn-sm"><i class="fa fa-times fa-fw fa-lg"></i> Not Delivered</button> - Assets are store in locker.
-<button type="button" class="btn btn-success btn-sm"><i class="fa fa-check fa-fw fa-lg"></i> Delivered</button><span style="margin-right: 10%;"> - Assets are delivered.</span>
+<button type="button" class="btn btn-danger btn-sm">Checked</button> - Assets are Checked.
+<button type="button" class="btn btn-success btn-sm"><i class="fa fa-check fa-fw fa-lg"></i> Verified</button><span style="margin-right: 10%;"> - Assets are verified.</span>
 <button type="button" class="btn btn-secondary" ng-click="viewAllCoVisitor()" data-dismiss="modal">Close</button>
 </div>
 </div>
@@ -217,7 +217,7 @@
 <tr ng-repeat="asset in allAsset">
 <td>{{asset.assetName}}</td>
 <td>{{asset.assetCount}}</td>
-<td><button ng-disabled="true" type="button" class="btn btn-danger btn-sm" ><i class="fa fa-times fa-fw fa-lg"></i> {{asset.assetStatus}}</button>
+<td><button ng-disabled="true" type="button" class="btn btn-danger btn-sm" >Checked<!-- {{asset.assetStatus}} --></button>
 </td>
 </tr>
 
@@ -247,8 +247,8 @@
 <button type="button" ng-click="addAssetArray()" style="margin-left: 93%;" ng-disabled="visitCheckin.empCheckin" class="btn btn-primary">Add</button>
 </div>
 <div class="modal-footer">
-<button type="button" class="btn btn-danger btn-sm"><i class="fa fa-times fa-fw fa-lg"></i> Not Delivered</button> - Assets are store in locker.
-<button type="button" class="btn btn-success btn-sm"><i class="fa fa-check fa-fw fa-lg"></i> Delivered</button><span style="margin-right: 10%;"> - Assets are delivered.</span>
+<button type="button" class="btn btn-danger btn-sm">Checked</button> - Assets are Checked.
+<button type="button" class="btn btn-success btn-sm"><i class="fa fa-check fa-fw fa-lg"></i> Verified</button><span style="margin-right: 10%;"> - Assets are verified.</span>
 <button type="button" class="btn btn-secondary" ng-click="viewAllCoVisitor()" data-dismiss="modal">Close</button>
 </div>
 </div>

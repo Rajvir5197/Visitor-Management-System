@@ -597,4 +597,9 @@ app.controller('dashboardController', function($scope, $http, $rootScope,$timeou
 		window.location = "#!viewAllVisit";
 	};
 	
+	$scope.navToReport = function(){
+		$rootScope.reportFromDash = "emp";
+		window.location = "#!empReportVisitedReport";
+	}
+	
 });

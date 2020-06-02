@@ -633,7 +633,7 @@ public class EmployeeService {
 					+ " in " + visitor.getMeetingBooked().getVisitLocation().getPlantName() + ". And your Appointment Number is: "
 					+ visitor.getSecurityCode();
 	    	message = message1.replaceAll(" ", "%20");
-	    	message1 = message1 + "/n Visit Location: "+visitor.getMeetingBooked().getVisitLocation().getPlantMapLink();
+	    	message1 = message1 + " \n Visit Location: "+visitor.getMeetingBooked().getVisitLocation().getPlantMapLink();
 	    }
 	    
 	    //String message = "hello";
@@ -817,14 +817,17 @@ public class EmployeeService {
 		JSONObject jsonObject = new JSONObject();
 		try {
 			// Construct data
+			//SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 			String Greet = "Dear " + meeting.getMeetingBooked().getVisitor().getFirstName() + "\n\n\n";
 			
 			String CoVisitorList = "";
+			//String forEmpCoVisitorList = "";
 			List<CoVisitor> CoVisitorListdetails = coVisitorRepository.findByVisitor(meeting.getMeetingBooked().getVisitor());
 			int CoVisitorCount = 1;
 			int AssetCount = 1 ;
 			for (CoVisitor CV : CoVisitorListdetails) {
 				CoVisitorList = CoVisitorList + "Co-Visitor " + CoVisitorCount + ": " + CV.getCoVisitorName() + "\n";
+				//forEmpCoVisitorList = forEmpCoVisitorList + CoVisitorCount +". " + CV.getCoVisitorName() + " - " + CV.getCoVisitorContact()+ "\n";
 				CoVisitorCount++;
 			}
 			String AssetMain;
@@ -835,6 +838,19 @@ public class EmployeeService {
 			}else {
 				subject="checkout Details";
 				AssetMain = "Below is the list of Asset details stored in Locker: \n";
+				/*
+				 * String msg = ""; msg = msg + "Dear " + meeting.getMeetingBooked().getEmpId()
+				 * +", \n" + "Mr. " + meeting.getMeetingBooked().getVisitor().getFirstName() +
+				 * " is successfully checked-in at the security gate on " +
+				 * sdf.format(meeting.getSecCheckinDate()) + " at " +
+				 * meeting.getSecCheckinTime() + ". \n" ;
+				 * 
+				 * if (!CoVisitorListdetails.isEmpty()){ msg = msg + "Co-Visitor list \n "; msg
+				 * = msg + CoVisitorList; }
+				 * 
+				 * msg = msg + "Thanks & Regards \n"; msg = msg + "Rucha Engineers Pvt. Ltd.";
+				 */
+				//sendmail(meeting.getMeetingBooked().getVisitor().getEmailId(),msg,"");
 			}
 			 
 			String AssetDetailsM = "";
@@ -858,6 +874,7 @@ public class EmployeeService {
 			}
 			
 			String message = Greet + CoVisitorList + AssetMain + AssetDetailsM + "\n\n" +meeting.getSecCheckinBy() + "\n" + meeting.getMeetingBooked().getVisitLocation().getPlantAddress() +"\n";
+			
 			sendmail(meeting.getMeetingBooked().getVisitor().getEmailId(),message,subject);
 		     
 	    } catch (Exception e) {

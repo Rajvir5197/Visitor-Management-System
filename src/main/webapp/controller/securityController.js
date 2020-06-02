@@ -129,7 +129,7 @@ app.controller('securityController', function($scope, $rootScope, $http,$timeout
 	}
 	
 	$scope.addAsset = function(asset){
-		asset.assetStatus = "Not Delivered";
+		asset.assetStatus = "Checked";
 		asset.deliveredFlag = false;
 		asset.visitor = $scope.selectedCoVisitor;
 		$http.post("/visitor-Management-System/Security/addCoVisitorAsset", asset).then(function mySuccess(response){
@@ -149,7 +149,7 @@ app.controller('securityController', function($scope, $rootScope, $http,$timeout
 	};
 	
 	$scope.addVisitorAsset = function(asset){
-		asset.assetStatus = "Not Delivered";
+		asset.assetStatus = "Checked";
 		asset.deliveredFlag = false;
 		asset.mainVisitor = $scope.visitCheckin.meetingBooked.visitor;
 		$http.post("/visitor-Management-System/Security/addCoVisitorAsset", asset).then(function mySuccess(response){
@@ -188,7 +188,7 @@ app.controller('securityController', function($scope, $rootScope, $http,$timeout
 	};
 	
 	$scope.deliverAsset = function(asset){
-		asset.assetStatus = "Delivered";
+		asset.assetStatus = "Verified";
 		asset.deliveredFlag = true;
 		$http.post("/visitor-Management-System/Security/addCoVisitorAsset", asset).then(function mySuccess(response){
 			if(response.data.msg == "SUCCESS"){
@@ -201,7 +201,7 @@ app.controller('securityController', function($scope, $rootScope, $http,$timeout
 	};
 	
 	$scope.deliverVisitorAsset = function(asset){
-		asset.assetStatus = "Delivered";
+		asset.assetStatus = "Verified";
 		asset.deliveredFlag = true;
 		$http.post("/visitor-Management-System/Security/addCoVisitorAsset", asset).then(function mySuccess(response){
 			if(response.data.msg == "SUCCESS"){
@@ -298,6 +298,12 @@ app.controller('securityController', function($scope, $rootScope, $http,$timeout
 		$rootScope.visitCheckin.secCheckoutBy = $scope.userName;
 		$http.post("/visitor-Management-System/Security/securityCheckout", $rootScope.visitCheckin).then(function mySuccess(response){
 			if(response.data.msg == 'SUCCESS'){
+				$http.post("/visitor-Management-System/Employee/sendEmail", $rootScope.visitCheckin).then(function mySuccess(response){
+					//$('#emailModal').modal('show');
+				}, function myError(data){
+					console.log("some internal error");
+					console.log(data);
+				});
 				window.location = "#!secDashboard";
 			}
 		}, function myError(data){
@@ -312,6 +318,14 @@ app.controller('securityController', function($scope, $rootScope, $http,$timeout
 		$http.post("/visitor-Management-System/Security/securityCheckin", $rootScope.visitCheckin).then(function mySuccess(response){
 			if(response.data.msg == 'SUCCESS'){
 				//$( "#Loader" ).modal("hide");
+				//$rootScope.visitCheckin.secCheckinBy = $scope.UserName;
+				$http.post("/visitor-Management-System/Employee/sendEmail", $rootScope.visitCheckin).then(function mySuccess(response){
+					//$('#emailModal').modal('show');
+				}, function myError(data){
+					console.log("some internal error");
+					console.log(data);
+				});
+				
 				window.location = "#!secDashboard";
 			}
 		}, function myError(data){
