@@ -134,7 +134,7 @@
 <div class="col-sm-8">
 <select class="form-control" id="selectedDept" ng-model="selectedDept">
 <option>All Dept</option>
-<option ng-repeat="dept in allDept">{{dept.deptName}}</option>
+<option ng-repeat="dept in allDept" value="{{dept.deptCode}}">{{dept.deptName}}</option>
 </select>
 </div>
 </div>
@@ -168,7 +168,7 @@
 <tbody id="visitData">
 <tr ng-repeat="visit in allVisits">
 <td>{{$index + 1}}</td>
-<td>{{visit.meetingBooked.visitor.visitorName}}</td>
+<td>{{visit.meetingBooked.visitor.firstName}} {{visit.meetingBooked.visitor.middleName}} {{visit.meetingBooked.visitor.lastName}}</td>
 <td>{{visit.meetingBooked.visitor.organisation}}</td>
 <td>{{visit.meetingBooked.visitor.contactNumber}}</td>
 <td>{{visit.meetingBooked.visitDate}}</td>
@@ -205,7 +205,7 @@
 <div class="col-lg-6 border-right">
 <div class="row">
 <div class="col-sm-4 mb-3">Visitor Name</div>
-<div class="col-sm-8 mb-3 BlackTxtColor">: {{selectedVisitor.meetingBooked.visitor.visitorName}}</div>
+<div class="col-sm-8 mb-3 BlackTxtColor">: {{selectedVisitor.meetingBooked.visitor.firstName}} {{selectedVisitor.meetingBooked.visitor.middleName}} {{selectedVisitor.meetingBooked.visitor.lastName}}</div>
 </div>
 
 <div class="row">

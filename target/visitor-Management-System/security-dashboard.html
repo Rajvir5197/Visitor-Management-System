@@ -14,8 +14,11 @@
 
 <div class="bg-white px-3 pt-3 mb-3">
 <span ng-show="allVisits.length <= 0" style="font-size: x-large;margin-left: 42%;">No Visit for Today</span>
+<div ng-hide="allVisits.length <= 0">
+	<input type="text"placeholder="Search" style="margin-left: 83%;margin-bottom: 1%;" ng-model="query">
+</div>
 <div class="row">
-<div ng-repeat="visit in allVisits" class="col-lg-3 col-sm-6 mb-3">
+<div ng-repeat="visit in allVisits  | filter: query" class="col-lg-3 col-sm-6 mb-3">
 <div class="card rounded-0 shadow-sm">
 <div class="BlueBgColor p-3">
 <div class="Circle80 bg-white m-auto"><i class="fa fa-user fa-2x"></i></div>

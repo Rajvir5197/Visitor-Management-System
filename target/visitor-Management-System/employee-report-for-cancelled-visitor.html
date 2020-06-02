@@ -164,7 +164,7 @@
 <tbody>
 <tr ng-repeat="visit in allVisits">
 <td>{{$index + 1}}</td>
-<td>{{visit.meetingBooked.visitor.visitorName}}</td>
+<td>{{visit.meetingBooked.visitor.firstName}} {{visit.meetingBooked.visitor.middleName}} {{visit.meetingBooked.visitor.lastName}}</td>
 <td>{{visit.meetingBooked.visitor.organisation}}</td>
 <td>{{visit.meetingBooked.visitor.contactNumber}}</td>
 <td>{{visit.meetingBooked.visitDate}}</td>
