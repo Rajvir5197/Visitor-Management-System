@@ -18,12 +18,12 @@
 <div class="col-lg-6">
 <div class="row">
 <div class="col-sm-5 mb-3">Visit No.</div>
-<div class="col-sm-7 BlackTxtColor mb-3">: 1234567890</div>
+<div class="col-sm-7 BlackTxtColor mb-3">: {{visitCheckin.meetingBooked.visitNo}}</div>
 </div>
 
 <div class="row">
 <div class="col-sm-5 mb-3">Visitor Name</div>
-<div class="col-sm-7 BlackTxtColor mb-3">: {{visitCheckin.meetingBooked.visitor.visitorName}}</div>
+<div class="col-sm-7 BlackTxtColor mb-3">: {{visitCheckin.meetingBooked.visitor.firstName}} {{visitCheckin.meetingBooked.visitor.middleName}} {{visitCheckin.meetingBooked.visitor.lastName}}</div>
 </div>
 
 <div class="row">
@@ -63,14 +63,14 @@
 <div class="col-lg-4">
 <div class="row">
 <div class="col-sm-5 mb-3">Check Out Time</div>
-<div class="col-sm-7 BlackTxtColor mb-3">: {{visitCheckin.empCheckinAt}}</div>
+<div class="col-sm-7 BlackTxtColor mb-3">: {{visitCheckin.empCheckoutTime}}</div>
 </div>
 </div>
 
 <div class="col-lg-4">
 <div class="row">
-<div class="col-sm-5 mb-3">Remark</div>
-<div class="col-sm-7 BlackTxtColor mb-3">: {{visitCheckin.meetingBooked.remarks}}</div>
+<div class="col-sm-5 mb-3">Batch Number</div>
+<div class="col-sm-7 BlackTxtColor mb-3">: {{visitCheckin.meetingBooked.visitor.batchNo}}</div>
 </div>
 </div>
 </div>
@@ -80,7 +80,6 @@
 <div class="col-lg-3 mb-3">
 <img ng-show="visitCheckin.meetingBooked.visitor.visitorImage != null" src="data:image/jpeg;base64,{{visitCheckin.meetingBooked.visitor.visitorImage}}" class="img-fluid border p-2" />
 <img ng-hide="visitCheckin.meetingBooked.visitor.visitorImage != null" src="images/profile-pic.jpg" class="img-fluid border p-2" />
-<button type="button" style="margin-top: 3%;margin-left: 23%;"style="margin-top: 3%;margin-left: 23%;" class="btn btn-primary" data-toggle="modal" data-target="#captureImageModal">Capture Image</button>
 <button type="button" style="margin-top: 3%;margin-left: 23%;"style="margin-top: 3%;margin-left: 16%;" class="btn btn-primary" ng-click="getVisitorAsset()">Return Visitor Asset</button>
 </div>
 
@@ -93,10 +92,11 @@
 <table class="table table-bordered">
 <thead>
 <tr>
+<th>Visitor Image</th>
 <th>Visitor Name</th>
 <th>Phone No.</th>
 <th>Asset</th>
-<th>Check Out</th>
+<th>Batch No.</th>
 </tr>
 </thead>
 
@@ -108,7 +108,9 @@
 <td>{{coVisitor.coVisitorName}}</td>
 <td>{{coVisitor.coVisitorContact}}</td>
 <td><button type="button" class="btn btn-secondary btn-sm" ng-click="getCovisitorAsset(coVisitor)" data-toggle="modal" data-target="#viewAssetModal"><i class="fa fa-eye fa-fw fa-lg"></i> View and return</button></td>
-<td><button type="button" class="btn btn-primary btn-sm" ng-disabled="!coVisitor.allowCheckOut || coVisitor.seccheckout" data-toggle="modal" data-target="#checkoutModal" ng-click="selectedCoVisitorForCheckout(coVisitor)" >Check Out</button></td>
+<td><!-- <button type="button" class="btn btn-primary btn-sm" ng-disabled="!coVisitor.allowCheckOut || coVisitor.seccheckout" data-toggle="modal" data-target="#checkoutModal" ng-click="selectedCoVisitorForCheckout(coVisitor)" >Check Out</button> -->
+{{coVisitor.batchNo}}
+</td>
 </tr>
 
 </tbody>
@@ -117,7 +119,8 @@
 </div>
 </div>
 <div class="row">
-	<button type="button" ng-disabled="!visitCheckin.secCheckin || !visitCheckin.enableVisitorCheckOut" style="margin-left: 85%;" ng-click="securityCheckout()" class="btn btn-primary">Gate Check-Out</button>
+		<button ng-disabled="enableCheckOut" type="button" style="margin-left: 55%;margin-right: 1%;" ng-click="submitBatch()" class="btn btn-primary">Submit Batch</button>
+	<button type="button" ng-disabled="!enableCheckOut" ng-click="securityCheckout()" class="btn btn-primary">Gate Check-Out</button>
 </div>
 </div>
 

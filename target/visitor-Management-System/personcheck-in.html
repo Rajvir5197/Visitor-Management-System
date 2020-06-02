@@ -18,12 +18,12 @@
 <div class="col-lg-6">
 <div class="row">
 <div class="col-sm-5 mb-3">Visit No.</div>
-<div class="col-sm-7 BlackTxtColor mb-3">: 1234567890</div>
+<div class="col-sm-7 BlackTxtColor mb-3">: {{visitCheckin.meetingBooked.visitNo}}</div>
 </div>
 
 <div class="row">
 <div class="col-sm-5 mb-3">Visitor Name</div>
-<div class="col-sm-7 BlackTxtColor mb-3">: {{visitCheckin.meetingBooked.visitor.visitorName}}</div>
+<div class="col-sm-7 BlackTxtColor mb-3">: {{visitCheckin.meetingBooked.visitor.firstName}} {{visitCheckin.meetingBooked.visitor.middleName}} {{visitCheckin.meetingBooked.visitor.lastName}}</div>
 </div>
 
 <div class="row">
@@ -63,14 +63,14 @@
 <div class="col-lg-4">
 <div class="row">
 <div class="col-sm-5 mb-3">Check Out Time</div>
-<div class="col-sm-7 BlackTxtColor mb-3">: {{visitCheckin.empCheckinAt}}</div>
+<div class="col-sm-7 BlackTxtColor mb-3">: {{visitCheckin.empCheckoutTime}}</div>
 </div>
 </div>
 
 <div class="col-lg-4">
 <div class="row">
-<div class="col-sm-5 mb-3">Remark</div>
-<div class="col-sm-7 BlackTxtColor mb-3">: {{visitCheckin.meetingBooked.remarks}}</div>
+<div class="col-sm-5 mb-3">Batch number:</div>
+<div class="col-sm-7 BlackTxtColor mb-3">: {{visitCheckin.meetingBooked.visitor.batchNo}}</div>
 </div>
 </div>
 </div>
@@ -80,14 +80,14 @@
 <div class="col-lg-3 mb-3">
 <img ng-show="visitCheckin.meetingBooked.visitor.visitorImage != null" src="data:image/jpeg;base64,{{visitCheckin.meetingBooked.visitor.visitorImage}}" class="img-fluid border p-2" />
 <img ng-hide="visitCheckin.meetingBooked.visitor.visitorImage != null" src="images/profile-pic.jpg" class="img-fluid border p-2" />
-<button type="button" style="margin-top: 3%;margin-left: 23%;"style="margin-top: 3%;margin-left: 23%;" class="btn btn-primary" data-toggle="modal" data-target="#captureImageModal" ng-click="picOf = 'visitor'">Capture Image</button>
+<button type="button" style="margin-top: 3%;margin-left: 23%;"style="margin-top: 3%;margin-left: 23%;" class="btn btn-primary" data-toggle="modal" data-target="#captureImageModal" ng-click="captureVisitorMethod();">Capture Image</button>
 <button type="button" style="margin-top: 3%;margin-left: 23%;"style="margin-top: 3%;margin-left: 23%;" class="btn btn-primary" ng-click="getVisitorAsset()">Visitor Asset</button>
 </div>
 
 <div class="col-lg-9 mb-3">
 <h2 class="m-0 FontSize22 p-3 bg-light BlackTxtColor border border-bottom-0">Co-Visitor Information
-<button type="button" style="margin-left: 33%;" ng-disabled="visitCheckin.empCheckin" class="btn btn-primary" data-toggle="modal" data-target="#addCoVisitorModal" ng-click="newVisitor = {};">Add Co-Visitor</button>
-<button type="button" class="btn btn-primary" ng-disabled="visitCheckin.empCheckin" ng-click="sendMail()">send Email</button>
+<!-- <button type="button" style="margin-left: 33%;" ng-disabled="visitCheckin.empCheckin" class="btn btn-primary" data-toggle="modal" data-target="#addCoVisitorModal" ng-click="newVisitor = {};">Add Co-Visitor</button> -->
+<button type="button" class="btn btn-primary" style="margin-left: 54%;" ng-disabled="visitCheckin.empCheckin" ng-click="sendMail()">send Email</button>
 </h2>
 
 <div class="table-responsive">
@@ -98,7 +98,7 @@
 <th>Visitor Name</th>
 <th>Phone No.</th>
 <th>Asset</th>
-<th>Check Out</th>
+<th>Batch No.</th>
 </tr>
 </thead>
 
@@ -110,7 +110,9 @@
 <td>{{coVisitor.coVisitorName}}</td>
 <td>{{coVisitor.coVisitorContact}}</td>
 <td><button type="button" class="btn btn-secondary btn-sm" ng-click="getCovisitorAsset(coVisitor)" data-toggle="modal" data-target="#viewAssetModal"><i class="fa fa-eye fa-fw fa-lg"></i>View and Add</button></td>
-<td><button type="button" class="btn btn-primary btn-sm" ng-disabled="!coVisitor.allowCheckOut || !visitCheckin.empCheckout || coVisitor.seccheckout" data-toggle="modal" data-target="#checkoutModal" ng-click="selectedCoVisitorForCheckout(coVisitor)" >Check Out</button></td>
+<td><!-- <button type="button" class="btn btn-primary btn-sm" ng-disabled="!coVisitor.allowCheckOut || !visitCheckin.empCheckout || coVisitor.seccheckout" data-toggle="modal" data-target="#checkoutModal" ng-click="selectedCoVisitorForCheckout(coVisitor)" >Check Out</button> -->
+{{coVisitor.batchNo}}
+</td>
 </tr>
 
 </tbody>
@@ -352,6 +354,20 @@
 <div class="form-group">
 
 
+<div>
+<form style="text-align: center;">
+	<p style="margin-bottom: 1%;">Do you have Aarogya Setu App installed?</p>
+	<input ng-model="appInstalled" value="true" type="radio">yes
+	<input ng-model="appInstalled" value="false" type="radio">no<br>
+	<p style="margin-bottom: 1%;margin-top:1%;margin-left: 16%;">Temperature:
+	<input type="number" ng-model="temperature">
+	</p>
+	<p style="margin-bottom: 1%;margin-top:1%">Batch number assigned:
+	<input type="text" ng-model="batchNo">
+	</p>
+	
+</form>
+</div>
 <div id="my_camera" style="margin-left: 15%;"></div>
 <input class="btn btn-primary" type=button style="margin-left: 37%; margin-top: 2%;margin-bottom: 2%;" value="Take Snapshot" ng-click="take_snapshot()">
  

@@ -8,6 +8,11 @@ app.controller('manageVisitController', function($scope, $rootScope, $http, $tim
 		window.location = "/visitor-Management-System/index.html";
 	}
 	
+	if($rootScope.visitFromContact != undefined){
+		$scope.newVisit = $rootScope.visitFromContact;
+	}
+	
+	$scope.enableAddVisitor = false;
 	window.localStorage.setItem("pagePosition", "FromVisitPage");
 	$( "#Loader" ).modal("show");
 	
@@ -108,7 +113,7 @@ app.controller('manageVisitController', function($scope, $rootScope, $http, $tim
 		$http.post("/visitor-Management-System/Employee/viewAllVisits",$scope.param).then(function mySuccess(response){
 			console.log(response.data);
 			$scope.allVisits = response.data;
-			if($rootScope.visitSelected.meetingId != undefined && $rootScope.visitSelected.meetingId != null){
+			if($rootScope.visitSelected != undefined && ($rootScope.visitSelected.meetingId != undefined && $rootScope.visitSelected.meetingId != null)){
 				$scope.allVisits = $scope.allVisits.filter(function(value){
 					return (value.meetingId == $rootScope.visitSelected.meetingId);
 				});
@@ -182,9 +187,16 @@ app.controller('manageVisitController', function($scope, $rootScope, $http, $tim
 					$scope.newVisit.meetingBooked.empName = $scope.userName;
 					$http.post("/visitor-Management-System/Employee/addNewVisit", $scope.newVisit).then(function mySuccess(response){
 						if(response.data.msg == "SUCCESS"){
+							$scope.addContactMsg = false;
+							$scope.addedVisitor = response.data.meetingData;
 							$("#Loader").modal("hide");
 							$('#notificationModal').modal('show');
 							//window.location.href  = "#!viewAllVisit";
+						}else if(response.data.msg == "SUCCESSANDCONTACT"){
+							$scope.addContactMsg = true;
+							$scope.addedVisitor = response.data.meetingData;
+							$("#Loader").modal("hide");
+							$('#notificationModal').modal('show');
 						}else{
 							$timeout(function() {
 								$("#Loader").modal("hide");
@@ -214,9 +226,16 @@ app.controller('manageVisitController', function($scope, $rootScope, $http, $tim
 						$scope.newVisit.meetingBooked.empName = $scope.userName;
 						$http.post("/visitor-Management-System/Employee/addNewVisit", $scope.newVisit).then(function mySuccess(response){
 							if(response.data.msg == "SUCCESS"){
+								$scope.addContactMsg = false;
+								$scope.addedVisitor = response.data.meetingData;
 								$("#Loader").modal("hide");
 								$('#notificationModal').modal('show');
 								//window.location.href  = "#!viewAllVisit";
+							}else if(response.data.msg == "SUCCESSANDCONTACT"){
+								$scope.addContactMsg = true;
+								$scope.addedVisitor = response.data.meetingData;
+								$("#Loader").modal("hide");
+								$('#notificationModal').modal('show');
 							}else{
 								$timeout(function() {
 									$("#Loader").modal("hide");
@@ -245,7 +264,81 @@ app.controller('manageVisitController', function($scope, $rootScope, $http, $tim
 	};
 	
 	$scope.notiClose = function(){
-		window.location.href  = "#!viewAllVisit";
+		//window.location.href  = "#!viewAllVisit";
+		$scope.enableAddVisitor = true;
+	};
+	
+	$scope.addNewContact = function(){
+		$( "#notificationModal" ).modal("hide");
+		$( "#Loader" ).modal("show");
+		$scope.newContact = {};
+		$scope.newContact.salutation = $scope.addedVisitor.meetingBooked.visitor.salutation;
+		$scope.newContact.firstName = $scope.addedVisitor.meetingBooked.visitor.firstName;
+		$scope.newContact.middleName = $scope.addedVisitor.meetingBooked.visitor.middleName;
+		$scope.newContact.lastName = $scope.addedVisitor.meetingBooked.visitor.lastName;
+		$scope.newContact.designation = $scope.addedVisitor.meetingBooked.visitor.designation;
+		$scope.newContact.gender = $scope.addedVisitor.meetingBooked.visitor.gender;
+		$scope.newContact.emailId = $scope.addedVisitor.meetingBooked.visitor.emailId;
+		$scope.newContact.mobileNumb = $scope.addedVisitor.meetingBooked.visitor.contactNumber;
+		$scope.newContact.company = $scope.addedVisitor.meetingBooked.visitor.organisation;
+		$scope.newContact.regBy = $scope.UserID;
+		$http.post("/visitor-Management-System/Employee/addNewOrEditContact", $scope.newContact).then(function mySuccess(response){
+			if(response.data.msg == "SUCCESS"){
+				$timeout(function() {
+					$("#Loader").modal("hide");
+					$( "#notificationModalForContact" ).modal("show");
+				   }, 2000);
+			}else{
+				$timeout(function() {
+					$("#Loader").modal("hide");
+				   }, 2000);
+			}
+		}, function myError(data){
+			console.log("some internal error");
+			console.log(data);
+		});
+			
+	};
+	
+	$scope.addCoVistor = function(){
+		$scope.invalidMobile = false;
+		if($scope.addCoVisitorForm.$valid){
+			if(!isNaN($scope.newVisitor.coVisitorContact) && angular.isNumber(+$scope.newVisitor.coVisitorContact)){
+				//$scope.newVisitor.secCheckin = true;
+				$scope.newVisitor.visitor = $scope.addedVisitor.meetingBooked.visitor;
+				$scope.newVisitor.createdBy = $scope.UserID;
+				$http.post("/visitor-Management-System/Security/addCoVisitor", $scope.newVisitor).then(function mySuccess(response){
+					$('#addCoVisitorModal').modal('hide');
+					$scope.newVisitor = {};
+					$scope.viewAllCoVisitor();
+					console.log(response.data);
+				}, function myError(data){
+					console.log("some internal error");
+					console.log(data);
+				});
+			}else{
+				$scope.invalidMobile = true;
+			};
+			
+		}else{
+			if(!isNaN($scope.newVisitor.coVisitorContact) && !angular.isNumber(+$scope.newVisitor.coVisitorContact)){
+				$scope.invalidMobile = true;
+			};
+		};
+	};
+	
+	$scope.viewAllCoVisitor = function(){
+		
+		$http.post("/visitor-Management-System/Security/viewAllCoVisitor", $scope.addedVisitor).then(function mySuccess(response){
+			console.log(response.data);
+			$scope.allCoVisitor = response.data;
+		}, function myError(data){
+			$timeout(function() {
+				$("#Loader").modal("hide");
+			   }, 3000);
+			console.log("some internal error");
+			console.log(data);
+		});
 	};
 	
 	$scope.empCheckIn = function(visits){
