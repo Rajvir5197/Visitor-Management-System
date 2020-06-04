@@ -112,7 +112,8 @@
 	          <span aria-hidden="true">&times;</span>
 	        </div>
 	        <div class="modal-body">
-	          <p>Contact Added successfully</p>
+	          <p ng-if="msg == 'SUCCESS'">Contact Added successfully</p>
+	          <p ng-if="msg == 'ALREADYTHERE'">Contact Number Already Present</p>
 	        </div>
 	        <div class="modal-footer">
 	          <button type="button" class="btn btn-default" ng-click="closeNoti()" data-dismiss="modal">Close</button>
