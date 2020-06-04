@@ -227,6 +227,9 @@ app.controller('dashboardController', function($scope, $http, $rootScope,$timeou
 		$http.post("/visitor-Management-System/Employee/viewAllUpcomingVisit",$scope.param).then(function mySuccess(response){
 			console.log(response.data);
 			$scope.allVisits = response.data;
+			$scope.allVisits.sort(function (a, b) {
+				  return new Date('1970/01/01 ' + a.meetingBooked.visitTime) - new Date('1970/01/01 ' + b.meetingBooked.visitTime);
+				});
 			if($scope.role != "Security"){
 				$scope.getCounts();
 			}else{
