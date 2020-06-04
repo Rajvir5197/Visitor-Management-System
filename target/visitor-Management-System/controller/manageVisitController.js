@@ -110,21 +110,39 @@ app.controller('manageVisitController', function($scope, $rootScope, $http, $tim
 				empCode: $scope.UserID,
 				empRole: $scope.role
 		};
-		$http.post("/visitor-Management-System/Employee/viewAllVisits",$scope.param).then(function mySuccess(response){
-			console.log(response.data);
-			$scope.allVisits = response.data;
-			if($rootScope.visitSelected != undefined && ($rootScope.visitSelected.meetingId != undefined && $rootScope.visitSelected.meetingId != null)){
-				$scope.allVisits = $scope.allVisits.filter(function(value){
-					return (value.meetingId == $rootScope.visitSelected.meetingId);
-				});
-			}
-			$timeout(function() {
-				$("#Loader").modal("hide");
-			   }, 2000);
-		}, function myError(data){
-			console.log("some internal error");
-			console.log(data);
-		});
+		if($rootScope.visitSelected != undefined && ($rootScope.visitSelected.meetingId != undefined && $rootScope.visitSelected.meetingId != null)){
+			$http.post("/visitor-Management-System/Employee/viewAllUpcomingVisit",$scope.param).then(function mySuccess(response){
+				console.log(response.data);
+				$scope.allVisits = response.data;
+				if($rootScope.visitSelected != undefined && ($rootScope.visitSelected.meetingId != undefined && $rootScope.visitSelected.meetingId != null)){
+					$scope.allVisits = $scope.allVisits.filter(function(value){
+						return (value.meetingId == $rootScope.visitSelected.meetingId);
+					});
+				}
+				$timeout(function() {
+					$("#Loader").modal("hide");
+				   }, 2000);
+			}, function myError(data){
+				console.log("some internal error");
+				console.log(data);
+			});
+		}else{
+			$http.post("/visitor-Management-System/Employee/viewAllVisits",$scope.param).then(function mySuccess(response){
+				console.log(response.data);
+				$scope.allVisits = response.data;
+				/*if($rootScope.visitSelected != undefined && ($rootScope.visitSelected.meetingId != undefined && $rootScope.visitSelected.meetingId != null)){
+					$scope.allVisits = $scope.allVisits.filter(function(value){
+						return (value.meetingId == $rootScope.visitSelected.meetingId);
+					});
+				}*/
+				$timeout(function() {
+					$("#Loader").modal("hide");
+				   }, 2000);
+			}, function myError(data){
+				console.log("some internal error");
+				console.log(data);
+			});
+		}
 	};
 	
 	$scope.getAllPlants = function(){
