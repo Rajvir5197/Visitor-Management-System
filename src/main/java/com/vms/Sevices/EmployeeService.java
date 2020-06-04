@@ -432,6 +432,21 @@ public class EmployeeService {
 		 */
 		return allMeetings;
 	}
+	
+	public List<MeetingStatus> viewAllUpcomingVisit(int empCode) {
+
+		List<String> statusNotIn = new ArrayList<String>();
+		statusNotIn.add("Cancel");
+		statusNotIn.add("Sec Checked Out");
+		List<MeetingStatus> allMeetings = meetingStatusRepository
+				.findByCreatedByAndMeetingBookedVisitDateIsAfterAndStatusIsNotInAndEmpCheckout(empCode,
+						Date.valueOf(LocalDate.now().minusDays(1)), statusNotIn, false);
+		/*
+		 * for(MeetingStatus ms : allMeetings) {
+		 * ms.getMeetingBooked().setVisitDate(Date.valueOf(LocalDate.now())); }
+		 */
+		return allMeetings;
+	}
 
 	public JSONObject addNewVisit(@RequestBody MeetingStatus meeting) {
 

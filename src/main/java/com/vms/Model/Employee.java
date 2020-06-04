@@ -58,10 +58,6 @@ public class Employee implements Serializable {
 	private String empPass;
 	
 	@Lob
-	@Column (name = "profile_attachment")
-	private Blob profileAttachment;
-	
-	@Lob
 	@Column (name = "image", length = 100000)
 	private byte[] image;
 	
@@ -143,14 +139,6 @@ public class Employee implements Serializable {
 
 	public void setEmpPass(String empPass) {
 		this.empPass = empPass;
-	}
-
-	public Blob getProfileAttachment() {
-		return profileAttachment;
-	}
-
-	public void setProfileAttachment(Blob profileAttachment) {
-		this.profileAttachment = profileAttachment;
 	}
 
 	public byte[] getImage() {

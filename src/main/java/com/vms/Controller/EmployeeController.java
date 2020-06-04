@@ -121,6 +121,13 @@ public class EmployeeController {
 		
 	}
 
+	@RequestMapping(value = "/viewAllUpcomingVisit", method = RequestMethod.POST)
+	@ResponseBody
+	public List<MeetingStatus> viewAllUpcomingVisit(@RequestBody Employee employee) {
+
+			return service.viewAllUpcomingVisit(employee.getEmpCode());
+	}
+	
 	@RequestMapping(value = "/addNewVisit", method = RequestMethod.POST)
 	@ResponseBody
 	public JSONObject addNewVisit(@RequestBody MeetingStatus meeting) {

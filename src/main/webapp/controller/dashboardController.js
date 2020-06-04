@@ -219,6 +219,33 @@ app.controller('dashboardController', function($scope, $http, $rootScope,$timeou
 	
 	};
 	
+	$scope.viewAllUpcomingVisits = function(){
+		$scope.param = {
+				empCode: $scope.UserID,
+				empRole: $scope.role
+		};
+		$http.post("/visitor-Management-System/Employee/viewAllUpcomingVisit",$scope.param).then(function mySuccess(response){
+			console.log(response.data);
+			$scope.allVisits = response.data;
+			if($scope.role != "Security"){
+				$scope.getCounts();
+			}else{
+				$timeout(function() {
+					$("#Loader").modal("hide");
+				   }, 3000);
+				/*angular.forEach($scope.allVisits,function(visit){
+					$scope.viewAllCoVisitor(visit);
+				});*/
+			}
+		}, function myError(data){
+			$timeout(function() {
+				$("#Loader").modal("hide");
+			   }, 3000);
+			console.log("some internal error");
+			console.log(data);
+		});
+	};
+	
 	$scope.viewAllVisits = function(){
 		$scope.param = {
 				empCode: $scope.UserID,
@@ -321,7 +348,7 @@ app.controller('dashboardController', function($scope, $http, $rootScope,$timeou
 		$scope.viewAllContacts();
 		$scope.getAllPlants();
 		$scope.getTasks();
-		$scope.viewAllVisits();
+		$scope.viewAllUpcomingVisits();
 	}
 	
 	$scope.securityCheckin = function(visit){
