@@ -86,7 +86,7 @@
 </thead>
 
 <tbody>
-<tr ng-repeat="visit in allVisits">
+<tr ng-repeat="visit in allVisits | orderBy : 'meetingBooked.visitDate'">
 <td><a href="" ng-click="towardMeeting(visit)">{{visit.meetingBooked.visitor.firstName}} {{visit.meetingBooked.visitor.middleName}} {{visit.meetingBooked.visitor.lastName}}</a></td>
 <td>{{visit.meetingBooked.visitDate}}</td>
 <td>{{visit.meetingBooked.visitTime}}</td>
