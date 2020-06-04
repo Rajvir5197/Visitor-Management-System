@@ -47,7 +47,10 @@ app.controller('manageContactController', function($scope, $rootScope, $http, $t
 			if(!isNaN($scope.newContact.mobileNumb) && angular.isNumber(+$scope.newContact.mobileNumb)){
 				$scope.newContact.regBy = $scope.UserID;
 				$http.post("/visitor-Management-System/Employee/addNewOrEditContact", $scope.newContact).then(function mySuccess(response){
+					$scope.msg = response.data.msg;
 					if(response.data.msg == "SUCCESS"){
+						$( "#notificationModal" ).modal("show");
+					}else if(response.data.msg == "ALREADYTHERE"){
 						$( "#notificationModal" ).modal("show");
 					}
 				}, function myError(data){

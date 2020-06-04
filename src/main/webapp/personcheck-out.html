@@ -56,7 +56,7 @@
 <div class="col-lg-4">
 <div class="row">
 <div class="col-sm-5 mb-3">Meeting with</div>
-<div class="col-sm-7 BlackTxtColor mb-3">: {{visitCheckin.meetingBooked.empId}}</div>
+<div class="col-sm-7 BlackTxtColor mb-3">: {{visitCheckin.meetingBooked.empName}}</div>
 </div>
 </div>
 
@@ -119,7 +119,8 @@
 </div>
 </div>
 <div class="row">
-		<button ng-disabled="enableCheckOut" type="button" style="margin-left: 55%;margin-right: 1%;" ng-click="submitBatch()" class="btn btn-primary">Submit Batch</button>
+		<button ng-if="!enableCheckOut" type="button" style="margin-left: 55%;margin-right: 1%;" ng-click="submitBatch()" class="btn btn-primary">Submit Batch</button>
+		<button ng-if="enableCheckOut" ng-disabled="enableCheckOut" type="button" style="margin-left: 55%;margin-right: 1%;" class="btn btn-primary">Batch Submited</button>
 	<button type="button" ng-disabled="!enableCheckOut" ng-click="securityCheckout()" class="btn btn-primary">Gate Check-Out</button>
 </div>
 </div>
@@ -127,7 +128,7 @@
 
 <!--Assets List Check Out-->
 <div class="modal fade" id="viewAssetModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-<div class="modal-dialog modal-md" role="document">
+<div class="modal-dialog modal-lg" role="document">
 <div class="modal-content">
 <div class="modal-header">
 <h5 class="modal-title BlackTxtColor" id="exampleModalLabel">Assets List</h5>
@@ -140,6 +141,7 @@
 <table class="table table-bordered">
 <thead>
 <tr>
+<th>Serial No.</th>
 <th>Asset Name</th>
 <th>Asset Count</th>
 <th>Asset Status</th>
@@ -149,6 +151,7 @@
 <tbody>
 
 <tr ng-repeat="asset in allAsset">
+<td>{{asset.assetSerialno}}</td>
 <td>{{asset.assetName}}</td>
 <td>{{asset.assetCount}}</td>
 <td><button ng-hide="asset.deliveredFlag" ng-disabled="!visitCheckin.empCheckout" type="button" class="btn btn-danger btn-sm" ><i class="fa fa-times fa-fw fa-lg"></i> {{asset.assetStatus}}</button>
@@ -176,7 +179,7 @@
 
 
 <div class="modal fade" id="viewVisitorAssetModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-<div class="modal-dialog modal-md" role="document">
+<div class="modal-dialog modal-lg" role="document">
 <div class="modal-content">
 <div class="modal-header">
 <h5 class="modal-title BlackTxtColor" id="exampleModalLabel">Assets List</h5>
@@ -189,6 +192,7 @@
 <table class="table table-bordered">
 <thead>
 <tr>
+<th>Serial No.</th>
 <th>Asset Name</th>
 <th>Asset Count</th>
 <th>Asset Status</th>
@@ -198,6 +202,7 @@
 <tbody>
 
 <tr ng-repeat="asset in allAsset">
+<td>{{asset.assetSerialno}}</td>
 <td>{{asset.assetName}}</td>
 <td>{{asset.assetCount}}</td>
 <td><button ng-hide="asset.deliveredFlag" ng-disabled="!visitCheckin.empCheckout" type="button" class="btn btn-danger btn-sm" ><i class="fa fa-times fa-fw fa-lg"></i> {{asset.assetStatus}}</button>

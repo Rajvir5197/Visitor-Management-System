@@ -14,6 +14,7 @@ app.controller('securityController', function($scope, $rootScope, $http,$timeout
 	}
 	
 	$scope.enableCheckOut = false;
+	$scope.enableCheckIn = false;
 	if($rootScope.visitCheckin.meetingBooked.visitor.batchStatus == "submited"){
 		$scope.enableCheckOut = true;
 	}
@@ -24,6 +25,7 @@ app.controller('securityController', function($scope, $rootScope, $http,$timeout
 	$scope.showAddCovisitorAsset = false;
 	Webcam.attach( '#my_camera' );
 	$scope.viewAllCoVisitor = function(){
+		$scope.enableCheckIn = true;
 		$scope.showAddAsset = false;
 		$scope.showAddCovisitorAsset = false;
 		$rootScope.visitCheckin.enableVisitorCheckOut = true;
@@ -33,6 +35,9 @@ app.controller('securityController', function($scope, $rootScope, $http,$timeout
 			if($scope.allCoVisitor.length > 0){
 				angular.forEach($scope.allCoVisitor,function(coVisitor){
 					coVisitor.allowCheckOut = true;
+					if(coVisitor.coVisitorImage == null){
+						$scope.enableCheckIn = false;
+					}
 					$http.post("/visitor-Management-System/Security/getAllAsset", coVisitor).then(function mySuccess(response){
 						angular.forEach(response.data,function(asset){
 							if(!asset.deliveredFlag){
@@ -72,6 +77,11 @@ app.controller('securityController', function($scope, $rootScope, $http,$timeout
 				console.log("some internal error");
 				console.log(data);
 			});
+		}
+		if($scope.enableCheckIn){
+			if($rootScope.visitCheckin.meetingBooked.visitor.visitorImage == null){
+				$scope.enableCheckIn = false;
+			}
 		}
 	
 	};
@@ -262,6 +272,7 @@ app.controller('securityController', function($scope, $rootScope, $http,$timeout
 				$rootScope.visitCheckin.meetingBooked.visitor.visitorImage = $scope.image[1];
 				$http.post("/visitor-Management-System/Security/addVisitorImage", $rootScope.visitCheckin).then(function mySuccess(response){
 					$('#captureImageModal').modal('hide');
+					$scope.viewAllCoVisitor();
 				}, function myError(data){
 					console.log("some internal error");
 					console.log(data);

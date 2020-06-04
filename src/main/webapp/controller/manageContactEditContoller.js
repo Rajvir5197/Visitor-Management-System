@@ -16,8 +16,11 @@ app.controller('manageContactEditController', function($scope, $rootScope, $http
 		if($scope.editForm.$valid){
 			if(!isNaN($rootScope.editedContact.mobileNumb) && angular.isNumber(+$rootScope.editedContact.mobileNumb)){
 				$rootScope.editedContact.regBy = $scope.UserID;
-				$http.post("/visitor-Management-System/Employee/addNewOrEditContact", $rootScope.editedContact).then(function mySuccess(response){
+				$http.post("/visitor-Management-System/Employee/addNewContact", $rootScope.editedContact).then(function mySuccess(response){
+					$scope.msg = response.data.msg;
 					if(response.data.msg == "SUCCESS"){
+						$( "#notificationModal" ).modal("show");
+					}else if(response.data.msg == "ALREADYTHERE"){
 						$( "#notificationModal" ).modal("show");
 					}
 				}, function myError(data){

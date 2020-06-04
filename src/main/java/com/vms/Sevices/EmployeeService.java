@@ -328,16 +328,50 @@ public class EmployeeService {
 	}
 
 	public JSONObject addNewOrEditContact(ContactManager contact) {
-
 		JSONObject jsonObject = new JSONObject();
-		contact.setRegDate(Date.valueOf(LocalDate.now()));
-		contact.setRegTime(Time.valueOf(LocalTime.now()));
-		ContactManager contanctSaved = contactRepository.save(contact);
-		if (null != contanctSaved) {
-			jsonObject.put("msg", "SUCCESS");
-		} else {
-			jsonObject.put("msg", "FAIL");
+		List<ContactManager> contactSearch = contactRepository.findByMobileNumbAndRegBy(contact.getMobileNumb(), contact.getRegBy());
+		if(contactSearch.size() == 0) {
+			//jsonObject.put("msg", "SUCCESS");
+			contact.setRegDate(Date.valueOf(LocalDate.now()));
+			contact.setRegTime(Time.valueOf(LocalTime.now()));
+			ContactManager contanctSaved = contactRepository.save(contact);
+			if (null != contanctSaved) {
+				jsonObject.put("msg", "SUCCESS");
+			} else {
+				jsonObject.put("msg", "FAIL");
+			}
 		}
+		else {
+			jsonObject.put("msg", "ALREADYTHERE");
+		}
+			
+		return jsonObject;
+	}
+	
+	public JSONObject EditContact(ContactManager contact) {
+		JSONObject jsonObject = new JSONObject();
+		List<ContactManager> contactSearch = contactRepository.findByMobileNumbAndRegBy(contact.getMobileNumb(), contact.getRegBy());
+		if(contactSearch.size() == 1 && contactSearch.get(0).getContactId() == contact.getContactId()) {
+			//jsonObject.put("msg", "SUCCESS");
+			ContactManager contanctSaved = contactRepository.save(contact);
+			if (null != contanctSaved) {
+				jsonObject.put("msg", "SUCCESS");
+			} else {
+				jsonObject.put("msg", "FAIL");
+			}
+		}else if(contactSearch.size() == 0){
+			
+			ContactManager contanctSaved = contactRepository.save(contact);
+			if (null != contanctSaved) {
+				jsonObject.put("msg", "SUCCESS");
+			} else {
+				jsonObject.put("msg", "FAIL");
+			}
+			
+		}else {
+			jsonObject.put("msg", "ALREADYTHERE");
+		}
+			
 		return jsonObject;
 	}
 

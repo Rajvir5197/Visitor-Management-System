@@ -88,6 +88,13 @@ public class EmployeeController {
 		return allContacts;
 	}
 
+	@RequestMapping(value = "/addNewContact", method = RequestMethod.POST)
+	@ResponseBody
+	public JSONObject EditContact(@RequestBody ContactManager contact) {
+
+		return service.EditContact(contact);
+	}
+	
 	@RequestMapping(value = "/addNewOrEditContact", method = RequestMethod.POST)
 	@ResponseBody
 	public JSONObject addNewOrEditContact(@RequestBody ContactManager contact) {

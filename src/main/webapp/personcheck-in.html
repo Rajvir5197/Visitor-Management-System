@@ -121,7 +121,7 @@
 </div>
 </div>
 <div class="row">
-	<button type="button" style=";margin-left: 85%;" ng-click="securityCheckin()" class="btn btn-primary">Gate Check-In</button>
+	<button type="button" style=";margin-left: 85%;" ng-disabled="!enableCheckIn" ng-click="securityCheckin()" class="btn btn-primary">Gate Check-In</button>
 </div>
 </div>
 
@@ -141,6 +141,7 @@
 <table class="table table-bordered">
 <thead>
 <tr>
+<th>Serial No.</th>
 <th>Asset Name</th>
 <th>Asset Count</th>
 <th>Asset Status</th>
@@ -150,6 +151,7 @@
 <tbody>
 
 <tr ng-repeat="asset in allAsset">
+<td>{{asset.assetSerialno}}</td>
 <td>{{asset.assetName}}</td>
 <td>{{asset.assetCount}}</td>
 <td><button ng-hide="asset.deliveredFlag" ng-disabled="!visitCheckin.empCheckout" ng-click="deliverAsset(asset)"  type="button" class="btn btn-danger btn-sm" >Checked</button>
@@ -158,6 +160,7 @@
 </tr>
 
 <tr ng-repeat="asset in addCoVisitorAssetArrayList">
+<td>{{asset.assetSerialno}}</td>
 <td>{{asset.assetName}}</td>
 <td>{{asset.assetCount}}</td>
 <td><button ng-disabled="true" type="button" class="btn btn-danger btn-sm" ><i class="fa fa-times fa-fw fa-lg"></i>Not Saved</button>
@@ -166,6 +169,7 @@
 </tr>
 
 <tr ng-if="showAddCovisitorAsset">
+<td><input type="text" ng-model="newAsset.assetSerialno" class="form-control" required /></td>
 <td><input type="text" ng-model="newAsset.assetName" class="form-control" required /></td>
 <td><input type="text" ng-model="newAsset.assetCount" class="form-control" required /></td>
 <td><!-- <button type="button" class="btn btn-danger btn-sm" ><i class="fa fa-times fa-fw fa-lg"></i> Not Delivered</button> -->
@@ -206,6 +210,7 @@
 <table class="table table-bordered">
 <thead>
 <tr>
+<th>Serial No.</th>
 <th>Asset Name</th>
 <th>Asset Count</th>
 <th>Asset Status</th>
@@ -215,6 +220,7 @@
 <tbody>
 
 <tr ng-repeat="asset in allAsset">
+<td>{{asset.assetSerialno}}</td>
 <td>{{asset.assetName}}</td>
 <td>{{asset.assetCount}}</td>
 <td><button ng-disabled="true" type="button" class="btn btn-danger btn-sm" >Checked<!-- {{asset.assetStatus}} --></button>
@@ -222,6 +228,7 @@
 </tr>
 
 <tr ng-repeat="asset in addAssetArrayList">
+<td>{{asset.assetSerialno}}</td>
 <td>{{asset.assetName}}</td>
 <td>{{asset.assetCount}}</td>
 <td><button ng-disabled="true" type="button" class="btn btn-danger btn-sm" ><i class="fa fa-times fa-fw fa-lg"></i>Not Saved</button>
@@ -230,6 +237,7 @@
 </tr>
 
 <tr ng-if="showAddAsset">
+<td><input type="text" ng-model="newVisitorAsset.assetSerialno" class="form-control" required /></td>
 <td><input type="text" ng-model="newVisitorAsset.assetName" class="form-control" required /></td>
 <td><input type="text" ng-model="newVisitorAsset.assetCount" class="form-control" required /></td>
 <td><!-- <button type="button" class="btn btn-danger btn-sm" ><i class="fa fa-times fa-fw fa-lg"></i> Not Delivered</button> -->
@@ -359,8 +367,8 @@
 	<p style="margin-bottom: 1%;">Do you have Aarogya Setu App installed?</p>
 	<input ng-model="appInstalled" value="true" type="radio">yes
 	<input ng-model="appInstalled" value="false" type="radio">no<br>
-	<p style="margin-bottom: 1%;margin-top:1%;margin-left: 16%;">Temperature:
-	<input type="number" ng-model="temperature">
+	<p style="margin-bottom: 1%;margin-top:1%;margin-left: 20%;">Temperature:
+	<input type="number" ng-model="temperature">&#8457;
 	</p>
 	<p style="margin-bottom: 1%;margin-top:1%">Batch number assigned:
 	<input type="text" ng-model="batchNo">
@@ -372,7 +380,7 @@
 <input class="btn btn-primary" type=button style="margin-left: 37%; margin-top: 2%;margin-bottom: 2%;" value="Take Snapshot" ng-click="take_snapshot()">
  
 <div id="results" style="margin-left: 15%;"></div>
-<button ng-hide="visitorImg == null || visitorImg == undefined" type="button" style="margin-left: 42%; margin-top: 2%;margin-bottom: 2%;" class="btn btn-primary" ng-click="saveVisitorImage()">Save</button>
+<button ng-hide="visitorImg == null || visitorImg == undefined"  type="button" style="margin-left: 42%; margin-top: 2%;margin-bottom: 2%;" class="btn btn-primary" ng-click="saveVisitorImage()">Save</button>
 
 </div>
 </div>
