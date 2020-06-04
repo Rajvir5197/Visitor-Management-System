@@ -91,6 +91,13 @@
 
 <div class="col-lg-12">
 <div class="form-group">
+<label>Employee Email</label>
+<input type="email" ng-model="newEmp.empEmail" class="form-control" required>
+</div>
+</div>
+
+<div class="col-lg-12">
+<div class="form-group">
 <label>Employee Password</label>
 <input type="password" ng-model="newEmp.empPass" class="form-control" required>
 </div>
@@ -210,6 +217,13 @@
 
 <div class="col-lg-12">
 <div class="form-group">
+<label>Employee Email</label>
+<input type="email" ng-model="editedEmp.empEmail" class="form-control" required>
+</div>
+</div>
+
+<div class="col-lg-12">
+<div class="form-group">
 <label>Employee Password</label>
 <input type="password" ng-model="editedEmp.empPass" class="form-control" required>
 </div>
@@ -307,6 +321,11 @@
 <div class="row">
 <div class="col-sm-5 mb-3">Employee Mobile</div>
 <div class="col-sm-7 BlackTxtColor mb-3">: {{viewEmp.empMobile}}</div>
+</div>
+
+<div class="row">
+<div class="col-sm-5 mb-3">Employee Email</div>
+<div class="col-sm-7 BlackTxtColor mb-3">: {{viewEmp.empEmail}}</div>
 </div>
 
 <div class="row">

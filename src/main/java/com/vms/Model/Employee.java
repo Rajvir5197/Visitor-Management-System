@@ -41,6 +41,9 @@ public class Employee implements Serializable {
 	@NotNull
 	private String empDesignation;
 	
+	@Column (name = "emp_email")
+	private String empEmail;
+	
 	@Column (name = "emp_role")
 	@NotNull
 	private String empRole;
@@ -187,6 +190,14 @@ public class Employee implements Serializable {
 
 	public void setActive(boolean active) {
 		this.active = active;
+	}
+
+	public String getEmpEmail() {
+		return empEmail;
+	}
+
+	public void setEmpEmail(String empEmail) {
+		this.empEmail = empEmail;
 	}
 	
 	

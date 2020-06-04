@@ -861,22 +861,24 @@ public class EmployeeService {
 		}
 	}
 	
-	public JSONObject sendEmail(MeetingStatus meeting) {
+	public JSONObject sendEmail(MeetingStatus meeting1) {
 		
 		JSONObject jsonObject = new JSONObject();
 		try {
 			// Construct data
-			//SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+			Optional<MeetingStatus> meeting2 = meetingStatusRepository.findById(meeting1.getMeetingId());
+			MeetingStatus meeting = meeting2.get();
+			SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 			String Greet = "Dear " + meeting.getMeetingBooked().getVisitor().getFirstName() + "\n\n\n";
 			
 			String CoVisitorList = "";
-			//String forEmpCoVisitorList = "";
+			String forEmpCoVisitorList = "";
 			List<CoVisitor> CoVisitorListdetails = coVisitorRepository.findByVisitor(meeting.getMeetingBooked().getVisitor());
 			int CoVisitorCount = 1;
 			int AssetCount = 1 ;
 			for (CoVisitor CV : CoVisitorListdetails) {
 				CoVisitorList = CoVisitorList + "Co-Visitor " + CoVisitorCount + ": " + CV.getCoVisitorName() + "\n";
-				//forEmpCoVisitorList = forEmpCoVisitorList + CoVisitorCount +". " + CV.getCoVisitorName() + " - " + CV.getCoVisitorContact()+ "\n";
+				forEmpCoVisitorList = forEmpCoVisitorList + CoVisitorCount +". " + CV.getCoVisitorName() + " - " + CV.getCoVisitorContact()+ "\n";
 				CoVisitorCount++;
 			}
 			String AssetMain;
@@ -887,19 +889,23 @@ public class EmployeeService {
 			}else {
 				subject="checkout Details";
 				AssetMain = "Below is the list of Asset details stored in Locker: \n";
-				/*
-				 * String msg = ""; msg = msg + "Dear " + meeting.getMeetingBooked().getEmpId()
-				 * +", \n" + "Mr. " + meeting.getMeetingBooked().getVisitor().getFirstName() +
-				 * " is successfully checked-in at the security gate on " +
-				 * sdf.format(meeting.getSecCheckinDate()) + " at " +
-				 * meeting.getSecCheckinTime() + ". \n" ;
-				 * 
-				 * if (!CoVisitorListdetails.isEmpty()){ msg = msg + "Co-Visitor list \n "; msg
-				 * = msg + CoVisitorList; }
-				 * 
-				 * msg = msg + "Thanks & Regards \n"; msg = msg + "Rucha Engineers Pvt. Ltd.";
-				 */
-				//sendmail(meeting.getMeetingBooked().getVisitor().getEmailId(),msg,"");
+				
+				  String msg = ""; msg = msg + "Dear " + meeting.getMeetingBooked().getEmpName()
+				  +", \n" + "Mr. " + meeting.getMeetingBooked().getVisitor().getFirstName() +
+				  " is successfully checked-in at the security gate on " +
+				  sdf.format(meeting.getSecCheckinDate()) + " at " +
+				  meeting.getSecCheckinTime() + ". \n" ;
+				  
+				  if (!CoVisitorListdetails.isEmpty()){ msg = msg + "Co-Visitor list \n "; msg
+				  = msg + CoVisitorList; }
+				  
+				  msg = msg + "Thanks & Regards \n"; msg = msg + "Rucha Engineers Pvt. Ltd.";
+				  
+				  String subjectToEmp = meeting.getMeetingBooked().getVisitor().getFirstName() + " "+meeting.getMeetingBooked().getVisitor().getLastName()+ " checked-in at security gate";
+				  
+				  Optional<Employee> emp = repository.findById(meeting.getMeetingBooked().getEmpId());
+				 
+				sendmail(emp.get().getEmpEmail(),msg,subjectToEmp);
 			}
 			 
 			String AssetDetailsM = "";
