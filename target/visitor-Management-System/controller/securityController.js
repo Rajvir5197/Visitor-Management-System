@@ -23,7 +23,7 @@ app.controller('securityController', function($scope, $rootScope, $http,$timeout
 	$scope.addCoVisitorAssetArrayList = [];
 	$scope.showAddAsset = false;
 	$scope.showAddCovisitorAsset = false;
-	Webcam.attach( '#my_camera' );
+	
 	$scope.viewAllCoVisitor = function(){
 		$scope.enableCheckIn = true;
 		$scope.showAddAsset = false;
@@ -165,7 +165,7 @@ app.controller('securityController', function($scope, $rootScope, $http,$timeout
 		$http.post("/visitor-Management-System/Security/addCoVisitorAsset", asset).then(function mySuccess(response){
 			if(response.data.msg == "SUCCESS"){
 				$scope.showAddAsset = false;
-				$scope.getVisitorAsset($scope.visitCheckin);
+				$scope.getVisitorAsset();
 				for(var i = 0; i < $scope.addAssetArrayList.length; i++){
 					if($scope.addAssetArrayList[i].assetName == asset.assetName){
 						$scope.addAssetArrayList.splice(i, 1);
@@ -215,7 +215,7 @@ app.controller('securityController', function($scope, $rootScope, $http,$timeout
 		asset.deliveredFlag = true;
 		$http.post("/visitor-Management-System/Security/addCoVisitorAsset", asset).then(function mySuccess(response){
 			if(response.data.msg == "SUCCESS"){
-				$scope.getVisitorAsset($scope.selectedCoVisitor);
+				$scope.getVisitorAsset();
 			}
 		}, function myError(data){
 			console.log("some internal error");
@@ -255,6 +255,11 @@ app.controller('securityController', function($scope, $rootScope, $http,$timeout
 		  '<img src="'+data_uri+'"/>';
 		  } );
 		};
+		
+		$scope.closeCaptureImage = function(){
+			$scope.checkBatch = "";
+			Webcam.reset();
+		};
 	
 	$scope.saveVisitorImage = function(){
 		
@@ -271,8 +276,12 @@ app.controller('securityController', function($scope, $rootScope, $http,$timeout
 				$rootScope.visitCheckin.meetingBooked.visitor.bodyTemperature = $scope.temperature;
 				$rootScope.visitCheckin.meetingBooked.visitor.visitorImage = $scope.image[1];
 				$http.post("/visitor-Management-System/Security/addVisitorImage", $rootScope.visitCheckin).then(function mySuccess(response){
-					$('#captureImageModal').modal('hide');
-					$scope.viewAllCoVisitor();
+					$scope.checkBatch = response.data.data;
+					if(response.data.data != "BatchPresent"){
+						$('#captureImageModal').modal('hide');
+						$scope.viewAllCoVisitor();
+						Webcam.reset();
+					}
 				}, function myError(data){
 					console.log("some internal error");
 					console.log(data);
@@ -284,8 +293,12 @@ app.controller('securityController', function($scope, $rootScope, $http,$timeout
 				$scope.captureCoVisitor.bodyTemperature = $scope.temperature;
 				$scope.captureCoVisitor.coVisitorImage = $scope.image[1];
 				$http.post("/visitor-Management-System/Security/addCoVisitorImage", $scope.captureCoVisitor).then(function mySuccess(response){
-					$('#captureImageModal').modal('hide');
-					$scope.viewAllCoVisitor();
+					$scope.checkBatch = response.data.data;
+					if(response.data.data != "BatchPresent"){
+						$('#captureImageModal').modal('hide');
+						$scope.viewAllCoVisitor();
+						Webcam.reset();
+					}
 				}, function myError(data){
 					console.log("some internal error");
 					console.log(data);
@@ -346,18 +359,24 @@ app.controller('securityController', function($scope, $rootScope, $http,$timeout
 	};
 	
 	$scope.captureCoVisitorMethod = function(coVisitor){
+		Webcam.attach( '#my_camera' );
 		$scope.picOf = "coVisitor";
 		$scope.batchNo = "";
 		$scope.appInstalled = "";
 		$scope.temperature = 0;
 		$scope.captureCoVisitor = coVisitor;
+		$scope.checkBatch = "";
+		$( "#captureImageModal" ).modal("show");
 	};
 	
 	$scope.captureVisitorMethod = function(){
+		Webcam.attach( '#my_camera' );
 		$scope.picOf = "visitor";
 		$scope.batchNo = "";
 		$scope.appInstalled = "";
 		$scope.temperature = 0;
+		$scope.checkBatch = "";
+		$( "#captureImageModal" ).modal("show");
 	};
 	
 	$scope.submitBatch = function(){
@@ -369,6 +388,28 @@ app.controller('securityController', function($scope, $rootScope, $http,$timeout
 			console.log("some internal error");
 			console.log(data);
 		});
-	}
+	};
+	
+	$scope.deleteVisitorAsset = function(asset){
+		$http.post("/visitor-Management-System/Security/deleteAsset", asset).then(function mySuccess(response){
+			if(response.data.msg == "SUCCESS"){
+				$scope.getVisitorAsset();
+			}
+		}, function myError(data){
+			console.log("some internal error");
+			console.log(data);
+		});
+	};
+	
+	$scope.deleteAsset = function(asset){
+		$http.post("/visitor-Management-System/Security/deleteAsset", asset).then(function mySuccess(response){
+			if(response.data.msg == "SUCCESS"){
+				$scope.getCovisitorAsset($scope.selectedCoVisitor);
+			}
+		}, function myError(data){
+			console.log("some internal error");
+			console.log(data);
+		});
+	};
 	
 });

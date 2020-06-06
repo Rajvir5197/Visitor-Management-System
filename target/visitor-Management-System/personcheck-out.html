@@ -17,7 +17,7 @@
 <div class="row">
 <div class="col-lg-6">
 <div class="row">
-<div class="col-sm-5 mb-3">Visit No.</div>
+<div class="col-sm-5 mb-3">Appointment Number</div>
 <div class="col-sm-7 BlackTxtColor mb-3">: {{visitCheckin.meetingBooked.visitNo}}</div>
 </div>
 
@@ -80,7 +80,7 @@
 <div class="col-lg-3 mb-3">
 <img ng-show="visitCheckin.meetingBooked.visitor.visitorImage != null" src="data:image/jpeg;base64,{{visitCheckin.meetingBooked.visitor.visitorImage}}" class="img-fluid border p-2" />
 <img ng-hide="visitCheckin.meetingBooked.visitor.visitorImage != null" src="images/profile-pic.jpg" class="img-fluid border p-2" />
-<button type="button" style="margin-top: 3%;margin-left: 23%;"style="margin-top: 3%;margin-left: 16%;" class="btn btn-primary" ng-click="getVisitorAsset()">Return Visitor Asset</button>
+<button type="button" style="margin-top: 3%;margin-left: 23%;"style="margin-top: 3%;margin-left: 16%;" class="btn btn-primary" ng-click="getVisitorAsset()">Verify Visitor Asset</button>
 </div>
 
 <div class="col-lg-9 mb-3">
@@ -107,7 +107,7 @@
 </td>
 <td>{{coVisitor.coVisitorName}}</td>
 <td>{{coVisitor.coVisitorContact}}</td>
-<td><button type="button" class="btn btn-secondary btn-sm" ng-click="getCovisitorAsset(coVisitor)" data-toggle="modal" data-target="#viewAssetModal"><i class="fa fa-eye fa-fw fa-lg"></i> View and return</button></td>
+<td><button type="button" class="btn btn-secondary btn-sm" ng-click="getCovisitorAsset(coVisitor)" data-toggle="modal" data-target="#viewAssetModal"><i class="fa fa-eye fa-fw fa-lg"></i> Verify Asset</button></td>
 <td><!-- <button type="button" class="btn btn-primary btn-sm" ng-disabled="!coVisitor.allowCheckOut || coVisitor.seccheckout" data-toggle="modal" data-target="#checkoutModal" ng-click="selectedCoVisitorForCheckout(coVisitor)" >Check Out</button> -->
 {{coVisitor.batchNo}}
 </td>

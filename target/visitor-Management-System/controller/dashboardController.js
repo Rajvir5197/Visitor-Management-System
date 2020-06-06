@@ -261,8 +261,11 @@ app.controller('dashboardController', function($scope, $http, $rootScope,$timeou
 				$scope.getCounts();
 			}else{
 				$timeout(function() {
+					$('#dataTable').DataTable();
+				   }, 200);
+				$timeout(function() {
 					$("#Loader").modal("hide");
-				   }, 3000);
+				   }, 500);
 				/*angular.forEach($scope.allVisits,function(visit){
 					$scope.viewAllCoVisitor(visit);
 				});*/
@@ -630,6 +633,19 @@ app.controller('dashboardController', function($scope, $http, $rootScope,$timeou
 	$scope.navToReport = function(){
 		$rootScope.reportFromDash = "emp";
 		window.location = "#!empReportVisitedReport";
+	};
+	
+	$scope.navToEmployee = function(){
+		window.location = "#!ViewAllEmployee";
+	};
+	
+	$scope.navToPlant = function(){
+		window.location = "#!ViewAllPlants";
+	};
+	
+	$scope.navToCancelReport = function(){
+		$rootScope.reportFromDash = "cancelEmp";
+		window.location = "#!empReportCancelReport";
 	}
 	
 });
