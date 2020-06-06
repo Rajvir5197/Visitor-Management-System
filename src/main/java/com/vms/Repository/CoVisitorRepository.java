@@ -14,5 +14,6 @@ public interface CoVisitorRepository extends JpaRepository<CoVisitor, Integer>{
 	
 	public List<CoVisitor> findByVisitor(@Param("visitor") Visitor visitor);
 	
-
+	public List<CoVisitor> findByBatchStatus(@Param("batchStatus") String status);
+	
 }

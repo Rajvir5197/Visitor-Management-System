@@ -408,6 +408,17 @@ app.controller('manageVisitController', function($scope, $rootScope, $http, $tim
 		});
 	};
 	
+	$scope.sendSmsAndEmail = function(){
+		$( "#Loader" ).modal("show");
+		$http.post("/visitor-Management-System/Employee/sendSmsAndEmail", $scope.addedVisitor).then(function mySuccess(data){
+			$( "#Loader" ).modal("hide");
+			$( "#notificationModalForVisit" ).modal("show");
+		}, function myError(data){
+			console.log("some internal error");
+			console.log(data);
+		});
+	}
+	
 	$scope.backToVisit = function(){
 		window.location.href  = "#!viewAllVisit";
 	};

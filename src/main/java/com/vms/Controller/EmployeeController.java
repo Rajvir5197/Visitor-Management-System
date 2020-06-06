@@ -241,6 +241,14 @@ public class EmployeeController {
 		
 		return service.sendEmail(meeting);
 	}
+	
+	@RequestMapping(value = "/sendSmsAndEmail", method = RequestMethod.POST)
+	@ResponseBody
+	public void sendSmsAndEmail(@RequestBody MeetingStatus meeting) {
+		
+		service.sendSmsAndEmail(meeting);
+		
+	}
 
 
 }

@@ -17,7 +17,7 @@
 <div class="row">
 <div class="col-lg-6">
 <div class="row">
-<div class="col-sm-5 mb-3">Visit No.</div>
+<div class="col-sm-5 mb-3">Appointment Number</div>
 <div class="col-sm-7 BlackTxtColor mb-3">: {{visitCheckin.meetingBooked.visitNo}}</div>
 </div>
 
@@ -80,7 +80,7 @@
 <div class="col-lg-3 mb-3">
 <img ng-show="visitCheckin.meetingBooked.visitor.visitorImage != null" src="data:image/jpeg;base64,{{visitCheckin.meetingBooked.visitor.visitorImage}}" class="img-fluid border p-2" />
 <img ng-hide="visitCheckin.meetingBooked.visitor.visitorImage != null" src="images/profile-pic.jpg" class="img-fluid border p-2" />
-<button type="button" style="margin-top: 3%;margin-left: 23%;"style="margin-top: 3%;margin-left: 23%;" class="btn btn-primary" data-toggle="modal" data-target="#captureImageModal" ng-click="captureVisitorMethod();">Capture Image</button>
+<button type="button" style="margin-top: 3%;margin-left: 23%;"style="margin-top: 3%;margin-left: 23%;" class="btn btn-primary" ng-click="captureVisitorMethod();">Capture Image</button>
 <button type="button" style="margin-top: 3%;margin-left: 23%;"style="margin-top: 3%;margin-left: 23%;" class="btn btn-primary" ng-click="getVisitorAsset()">Visitor Asset</button>
 </div>
 
@@ -105,7 +105,7 @@
 <tbody>
 <tr ng-repeat="coVisitor in allCoVisitor">
 <td><img ng-show="coVisitor.coVisitorImage != null" src="data:image/jpeg;base64,{{coVisitor.coVisitorImage}}" height="50px" />
-<button ng-hide="coVisitor.coVisitorImage != null" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#captureImageModal" ng-click="captureCoVisitorMethod(coVisitor);" >click</button>
+<button ng-hide="coVisitor.coVisitorImage != null" class="btn btn-primary btn-sm" ng-click="captureCoVisitorMethod(coVisitor);" >click</button>
 </td>
 <td>{{coVisitor.coVisitorName}}</td>
 <td>{{coVisitor.coVisitorContact}}</td>
@@ -154,8 +154,9 @@
 <td>{{asset.assetSerialno}}</td>
 <td>{{asset.assetName}}</td>
 <td>{{asset.assetCount}}</td>
-<td><button ng-hide="asset.deliveredFlag" ng-disabled="!visitCheckin.empCheckout" ng-click="deliverAsset(asset)"  type="button" class="btn btn-danger btn-sm" >Checked</button>
+<td><button ng-hide="asset.deliveredFlag" ng-disabled="!visitCheckin.empCheckout"  type="button" class="btn btn-danger btn-sm" >Checked</button>
 <button ng-show="asset.deliveredFlag" type="button" class="btn btn-success btn-sm" ><i class="fa fa-check fa-fw fa-lg"></i> {{asset.assetStatus}}</button>
+<button type="button" ng-click="deleteAsset(asset)" class="btn btn-primary btn-sm" >Delete</button>
 </td>
 </tr>
 
@@ -224,6 +225,7 @@
 <td>{{asset.assetName}}</td>
 <td>{{asset.assetCount}}</td>
 <td><button ng-disabled="true" type="button" class="btn btn-danger btn-sm" >Checked<!-- {{asset.assetStatus}} --></button>
+<button type="button" ng-click="deleteVisitorAsset(asset)" class="btn btn-primary btn-sm" >Delete</button>
 </td>
 </tr>
 
@@ -352,7 +354,7 @@
 <div class="modal-content">
 <div class="modal-header">
 <h5 class="modal-title BlackTxtColor" id="exampleModalLabel">Capture Image</h5>
-<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+<button type="button" class="close" ng-click="closeCaptureImage()" data-dismiss="modal" aria-label="Close">
 <span aria-hidden="true">&times;</span>
 </button>
 </div>
@@ -364,15 +366,16 @@
 
 <div>
 <form style="text-align: center;">
-	<p style="margin-bottom: 1%;">Do you have Aarogya Setu App installed?</p>
-	<input ng-model="appInstalled" value="true" type="radio">yes
-	<input ng-model="appInstalled" value="false" type="radio">no<br>
+	<p style="margin-bottom: 1%;">Do you have Aarogya Setu App Installed?</p>
+	<input ng-model="appInstalled" value="true" type="radio"> Yes &nbsp;&nbsp;
+	<input ng-model="appInstalled" value="false" type="radio"> No<br>
 	<p style="margin-bottom: 1%;margin-top:1%;margin-left: 20%;">Temperature:
 	<input type="number" ng-model="temperature">&#8457;
 	</p>
 	<p style="margin-bottom: 1%;margin-top:1%">Batch number assigned:
 	<input type="text" ng-model="batchNo">
 	</p>
+	<p ng-if="checkBatch == 'BatchPresent'" style="color: red;margin-left: 40%;">Batch number not available.</p>
 	
 </form>
 </div>

@@ -166,8 +166,8 @@
 <div class="col-lg-12>
 <div class="row">
 <div class="col-lg-12 align-self-center">
-<button type="submit" class="btn btn-primary mr-3" ng-disabled="enableAddVisitor" ng-click="addNewVisit()">Set Visit</button>
-<button type="button" class="btn btn-secondary mr-3" data-dismiss="modal" ng-click="backToVisit()">Cancel</button>
+<button type="submit" class="btn btn-primary mr-3" ng-disabled="enableAddVisitor" ng-click="addNewVisit()">Add Visitor</button>
+<button type="button" class="btn btn-secondary mr-3" ng-disabled="enableAddVisitor" data-dismiss="modal" ng-click="backToVisit()">Cancel</button>
 <!-- <button type="button" class="btn btn-warning mr-3">Future Ref.</button> -->
 </div>
 </div>
@@ -198,7 +198,7 @@
 </table>
 </div>
 
-<button  type="button" class="btn btn-primary mr-3" ng-click="backToVisit()" style="margin-top: 2%;margin-left: 2%;margin-bottom: 2%">Back</button>
+<button  type="button" class="btn btn-primary mr-3" ng-click="sendSmsAndEmail()" style="margin-top: 2%;margin-left: 2%;margin-bottom: 2%">Set Visit</button>
 
 </div>
 </div>
@@ -280,7 +280,7 @@ if (/mobile/i.test(navigator.userAgent)) {
 	          <span aria-hidden="true">&times;</span>
 	        </div>
 	        <div class="modal-body">
-	          <p>Visit Added Successfully.</p>
+	          <p>Visitor Added Successfully.</p>
 	          <p ng-if="addContactMsg">Do you want to add this visitor to your contact?</p>
 	        </div>
 	        <div class="modal-footer">
@@ -306,6 +306,26 @@ if (/mobile/i.test(navigator.userAgent)) {
 	        </div>
 	        <div class="modal-footer">
 	          <button type="button" class="btn btn-default" ng-click="notiClose()" data-dismiss="modal">Close</button>
+	        </div>
+      </div>
+ 	</div>
+ </div>
+<!-- notification modal -->
+
+<!-- notification modal -->
+<div class="modal fade" id="notificationModalForVisit" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-content">
+	        <div class="modal-header">
+	          <h5 class="modal-title BlackTxtColor" id="exampleModalLabel">Notification</h5>
+	          <button type="button" class="close" ng-click="backToVisit()" data-dismiss="modal" aria-label="Close"></button>
+	          <span aria-hidden="true">&times;</span>
+	        </div>
+	        <div class="modal-body">
+	          <p>Visit Set Successfully.</p>
+	        </div>
+	        <div class="modal-footer">
+	          <button type="button" class="btn btn-default" ng-click="backToVisit()" data-dismiss="modal">Close</button>
 	        </div>
       </div>
  	</div>

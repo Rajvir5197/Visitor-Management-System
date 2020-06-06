@@ -468,7 +468,6 @@ public class EmployeeService {
 			meeting.setStatus("Booked");
 
 			MeetingStatus meetingSaved = meetingStatusRepository.save(meeting);
-			String mailStatus = sendMessage(meeting);
 			List<ContactManager> contact = contactRepository.findByMobileNumbAndRegBy(meeting.getMeetingBooked().getVisitor().getContactNumber(), meeting.getCreatedBy());
 			if(contact.size() == 0) {
 				jsonObject.put("msg", "SUCCESSANDCONTACT");
@@ -622,8 +621,7 @@ public class EmployeeService {
 			logger.info("visit date of meeeting " + ms.getMeetingId() + " is " + ms.getMeetingBooked().getVisitDate());
 			logger.info("value of date compareTo current date is "
 					+ currentDate.compareTo(ms.getMeetingBooked().getVisitDate()));
-			if ((currentDate.compareTo(ms.getMeetingBooked().getVisitDate()) == 0)
-					&& (!"Cancel".equalsIgnoreCase(ms.getStatus()))) {
+			if ((currentDate.compareTo(ms.getMeetingBooked().getVisitDate()) == 0)) {
 				count++;
 			}
 		}
@@ -669,20 +667,74 @@ public class EmployeeService {
 	    String message1 = null;
 	    String subject = null;
 	    String message = null;
+	    
+	    String signature = "Thanks & Regards \n" +
+				   "Rucha Engineers Pvt. Ltd.";
 		
 	    if("cancel".equalsIgnoreCase(visitor.getStatus())) {
 	    	subject = "You scheduled visit is cancelled with Rucha Engineers Pvt Ltd.";
-	    	message1 = "Hello, " + visitor.getMeetingBooked().getVisitor().getFirstName()+", sorry to inform you that your scheduled visit on " +sdf.format(visitor.getMeetingBooked().getVisitDate()) + " at "
+	    	message1 = "Hello, " + visitor.getMeetingBooked().getVisitor().getSalutation() +  " " + visitor.getMeetingBooked().getVisitor().getFirstName() +  " " + visitor.getMeetingBooked().getVisitor().getLastName()+ ", sorry to inform you that your scheduled visit on " +sdf.format(visitor.getMeetingBooked().getVisitDate()) + " at "
 					+ visitor.getMeetingBooked().getVisitTime() +" is cancelled.";
 	    	message = message1.replaceAll(" ", "%20");
+	    	message1 = message1 + "\n\n\n" + signature;
 	    }else {
 	    	subject = "Your visit is scheduled at Rucha Engineers Pvt Ltd.";
-	    	message1 = "Hello, " + visitor.getMeetingBooked().getVisitor().getFirstName()+ " Your Visit is schedule with " + visitor.getMeetingBooked().getEmpName() +
-	    			" on " + sdf.format(visitor.getMeetingBooked().getVisitDate()) + " at " + visitor.getMeetingBooked().getVisitTime() 
-					+ " in " + visitor.getMeetingBooked().getVisitLocation().getPlantName() + ". And your Appointment Number is: "
-					+ visitor.getSecurityCode();
+	    	message1 = "Hello, " + visitor.getMeetingBooked().getVisitor().getSalutation() +  " " + visitor.getMeetingBooked().getVisitor().getFirstName() +  " " + visitor.getMeetingBooked().getVisitor().getLastName()+ " " + " Your Visit is schedule with " + visitor.getMeetingBooked().getEmpName() +
+	    			" "+(repository.findById(visitor.getMeetingBooked().getEmpId())).get().getEmpMobile()  +" on " + sdf.format(visitor.getMeetingBooked().getVisitDate()) + " at " + visitor.getMeetingBooked().getVisitTime() 
+					+ " in " + visitor.getMeetingBooked().getVisitLocation().getPlantName() + ". And your Appointment Number is: "+ visitor.getMeetingBooked().getVisitNo() + 
+					" AND OTP- "+ visitor.getSecurityCode();
 	    	message = message1.replaceAll(" ", "%20");
-	    	message1 = message1 + " \n Visit Location: "+visitor.getMeetingBooked().getVisitLocation().getPlantMapLink();
+	    	
+	    	
+	    	//for email
+	    	
+	    	//SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+			//StringBuilder msg = null;
+			String startLine = "Hello, " + visitor.getMeetingBooked().getVisitor().getSalutation() + " " +
+										visitor.getMeetingBooked().getVisitor().getFirstName() + " " +
+										visitor.getMeetingBooked().getVisitor().getLastName() + "\n\n" +
+										"Your visit is scheduled details are as below \n\n";
+			String details = "Appointment with:" + visitor.getMeetingBooked().getEmpName() + "\n" +
+							 "Mobile          :" + (repository.findById(visitor.getMeetingBooked().getEmpId())).get().getEmpMobile() + "\n" +
+							 "Appointment No. :" + visitor.getMeetingBooked().getVisitNo() + "\n" +
+							 "OTP             :" + visitor.getSecurityCode() + "\n" +
+							 "Date            :" + sdf.format(visitor.getMeetingBooked().getVisitDate()) + "\n" +
+							 "Time            :" + visitor.getMeetingBooked().getVisitTime() + "\n" +
+							 "Location        :" + visitor.getMeetingBooked().getVisitLocation().getPlantName() + "\n" +
+							 "Adddress        :" + visitor.getMeetingBooked().getVisitLocation().getPlantAddress() + "\n" +
+							 "Google Map      :" + visitor.getMeetingBooked().getVisitLocation().getPlantMapLink() + "\n" ;
+			
+			List<CoVisitor> CoVisitorListdetails = coVisitorRepository.findByVisitor(visitor.getMeetingBooked().getVisitor());
+			int CoVisitorCount = 1;
+			String CoVisitorList = "";
+			if (!CoVisitorListdetails.isEmpty()){
+				for (CoVisitor CV : CoVisitorListdetails) {
+					CoVisitorList = CoVisitorList + CoVisitorCount +". " + CV.getCoVisitorName() + " - " + CV.getCoVisitorContact()+ "\n";
+					CoVisitorCount++;
+				}
+			}
+			
+			String instruction = "Instructions - \n \n" +
+								 "1) In your own interest, your car vehicle/handbag can be checked by Security. Kindly declare your belongings (any Drawings/ Laptops/ CDs/ Memory sticks, Tools,  Equipment etc. while entering the premises. \n"+
+								 "2) Smoking, drinking of liquor & carrying tobacco products inside the premises is strictly prohibited.\n" +
+								 "3) In case of emergency, please go to the nearest assembly point for further instruction, during an emergency.\n" +
+								 "4) Do not visit any area of the Premises which is not concerned with your visit.\n" +
+								 "5) Photography & video shooting in the Factory premises is subject to permission from HCM.\n" +
+								 "6) Valid Driving License, PUC, and Registration Papers must be in your possession.\n" +
+								 "7) Do not touch/operate any machine/ equipment unless it is officially allowed.\n"+
+								 "8) Return this card while leaving the premises.\n"+
+								 "9) You are entering in the Factory at your own risk\n";
+			
+			
+			
+			String finalMessage = startLine + "\n" + details + "\n" ;
+								if (!CoVisitorListdetails.isEmpty()) {
+									finalMessage = finalMessage + "Covisitor List : \n";
+									finalMessage = finalMessage + CoVisitorList + "\n";
+								}
+			finalMessage = finalMessage + instruction + signature;
+			
+			message1 = finalMessage;
 	    }
 	    
 	    //String message = "hello";
@@ -881,25 +933,44 @@ public class EmployeeService {
 				forEmpCoVisitorList = forEmpCoVisitorList + CoVisitorCount +". " + CV.getCoVisitorName() + " - " + CV.getCoVisitorContact()+ "\n";
 				CoVisitorCount++;
 			}
-			String AssetMain;
 			String subject;
 			if(meeting.isEmpCheckout() || "cancel".equalsIgnoreCase(meeting.getStatus())) {
-				subject="checkin Details";
-				AssetMain = "Below is the list of Asset details at the time of check-out: \n";
-			}else {
-				subject="checkout Details";
-				AssetMain = "Below is the list of Asset details stored in Locker: \n";
+				subject="Thanks for visit with Rucha Engineers Pvt. Ltd.";
+				//String msg = "";
+				String startLine = "Dear, " + meeting.getMeetingBooked().getVisitor().getSalutation() + " " +
+						meeting.getMeetingBooked().getVisitor().getFirstName() + " " +
+						meeting.getMeetingBooked().getVisitor().getLastName() + "\n\n" ;	
 				
-				  String msg = ""; msg = msg + "Dear " + meeting.getMeetingBooked().getEmpName()
-				  +", \n" + "Mr. " + meeting.getMeetingBooked().getVisitor().getFirstName() +
+				String body = meeting.getMeetingBooked().getVisitor().getSalutation() + " " +
+							  meeting.getMeetingBooked().getVisitor().getFirstName() + " " +
+							  meeting.getMeetingBooked().getVisitor().getLastName() + " " +
+							  "Thanks for visiting to Rucha Engineering Pvt. Ltd. you are successfully checked-out at security gate on" +
+							  sdf.format(meeting.getSecCheckoutDate()) + "at" +
+							  meeting.getSecCheckoutTime() + ".\n\n" ;
+				
+				String signature = "Thanks & Regards \n" +
+						   "Rucha Engineers Pvt. Ltd.";
+				
+				String msg = startLine + body + signature;
+				sendmail(meeting.getMeetingBooked().getVisitor().getEmailId(),msg,subject);
+			}else {
+				
+				  String msg = "";
+				  msg = msg + "Dear " + meeting.getMeetingBooked().getEmpName()+", \n" + 
+						  meeting.getMeetingBooked().getVisitor().getSalutation() +  " " + 
+						  meeting.getMeetingBooked().getVisitor().getFirstName() +  " " + 
+						  meeting.getMeetingBooked().getVisitor().getLastName() +
 				  " is successfully checked-in at the security gate on " +
 				  sdf.format(meeting.getSecCheckinDate()) + " at " +
-				  meeting.getSecCheckinTime() + ". \n" ;
+				  meeting.getSecCheckinTime() + ". \n\n" ;
 				  
-				  if (!CoVisitorListdetails.isEmpty()){ msg = msg + "Co-Visitor list \n "; msg
-				  = msg + CoVisitorList; }
-				  
-				  msg = msg + "Thanks & Regards \n"; msg = msg + "Rucha Engineers Pvt. Ltd.";
+				if (!CoVisitorListdetails.isEmpty()) {
+					msg = msg + "Co-Visitor list \n ";
+					msg = msg + CoVisitorList;
+				}
+
+				msg = msg + "\nThanks & Regards \n"; 
+				msg = msg + "Rucha Engineers Pvt. Ltd.";
 				  
 				  String subjectToEmp = meeting.getMeetingBooked().getVisitor().getFirstName() + " "+meeting.getMeetingBooked().getVisitor().getLastName()+ " checked-in at security gate";
 				  
@@ -908,29 +979,7 @@ public class EmployeeService {
 				sendmail(emp.get().getEmpEmail(),msg,subjectToEmp);
 			}
 			 
-			String AssetDetailsM = "";
-			List<Asset> assetDetailsMAin = assetRepository.findByMainVisitor(meeting.getMeetingBooked().getVisitor());
-			for (Asset as : assetDetailsMAin) {
-				AssetDetailsM = AssetDetailsM + "Asset " + AssetCount  + ": " + as.getAssetName() +" "+ as.getAssetCount() + " Nos.\n";
-				if(meeting.isEmpCheckout() || "cancel".equalsIgnoreCase(meeting.getStatus())) {
-					AssetDetailsM = AssetDetailsM + as.getAssetStatus() + "\n";
-				}
-				AssetCount++;
-			}
-			for (CoVisitor CV : CoVisitorListdetails) {
-				List<Asset> assetDetails = assetRepository.findByVisitor(CV);
-				for (Asset as : assetDetails) {
-					AssetDetailsM = AssetDetailsM + "Asset " + AssetCount + ": " + as.getAssetName() +" "+ as.getAssetCount() + " Nos.\n";
-					if(meeting.isEmpCheckout() || "cancel".equalsIgnoreCase(meeting.getStatus())) {
-						AssetDetailsM = AssetDetailsM + as.getAssetStatus() + "\n";
-					}
-					AssetCount++;
-				}
-			}
 			
-			String message = Greet + CoVisitorList + AssetMain + AssetDetailsM + "\n\n" +meeting.getSecCheckinBy() + "\n" + meeting.getMeetingBooked().getVisitLocation().getPlantAddress() +"\n";
-			
-			sendmail(meeting.getMeetingBooked().getVisitor().getEmailId(),message,subject);
 		     
 	    } catch (Exception e) {
 			System.out.println("Error SMS "+e);
@@ -938,6 +987,11 @@ public class EmployeeService {
 		}
 		jsonObject.put("msg", "SUCCESS");
 		return jsonObject;
+	}
+
+	public void sendSmsAndEmail(MeetingStatus meeting) {
+		sendMessage(meeting);
+		//return null;
 	}
 
 }

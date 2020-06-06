@@ -204,6 +204,30 @@ public class SecurityService {
 
 		// logger.info("start of addOrEditEmployee method");
 		JSONObject jsonObject = new JSONObject();
+		List<Visitor> visitorForBatch = visitorRepository.findByBatchStatus("assigned");
+		List<CoVisitor> coVisitorForBatch = coVisitorRepository.findByBatchStatus("assigned");
+		boolean batchPresent = false;
+		if(visitorForBatch.size() > 0) {
+			for(Visitor v : visitorForBatch) {
+				if(v.getBatchNo() == visitor.getMeetingBooked().getVisitor().getBatchNo()) {
+					batchPresent = true;
+				}
+			}
+		}
+		
+		if(coVisitorForBatch.size() > 0) {
+			for(CoVisitor v : coVisitorForBatch) {
+				if(v.getBatchNo() == visitor.getMeetingBooked().getVisitor().getBatchNo()) {
+					batchPresent = true;
+				}
+			}
+		}
+		
+		if(batchPresent) {
+			jsonObject.put("data", "BatchPresent");
+			return jsonObject;
+		}
+		
 		Optional<MeetingStatus> meet = meetingStatusRepository.findById(visitor.getMeetingId());
 		meet.get().getMeetingBooked().getVisitor()
 				.setVisitorImage(compressBytes(visitor.getMeetingBooked().getVisitor().getVisitorImage()));
@@ -224,6 +248,31 @@ public class SecurityService {
 	public JSONObject addCoVisitorImage(CoVisitor coVisitor) {
 
 		JSONObject jsonObject = new JSONObject();
+		
+		List<Visitor> visitorForBatch = visitorRepository.findByBatchStatus("assigned");
+		List<CoVisitor> coVisitorForBatch = coVisitorRepository.findByBatchStatus("assigned");
+		boolean batchPresent = false;
+		if(visitorForBatch.size() > 0) {
+			for(Visitor v : visitorForBatch) {
+				if(v.getBatchNo() == coVisitor.getBatchNo()) {
+					batchPresent = true;
+				}
+			}
+		}
+		
+		if(coVisitorForBatch.size() > 0) {
+			for(CoVisitor v : coVisitorForBatch) {
+				if(v.getBatchNo() == coVisitor.getBatchNo()) {
+					batchPresent = true;
+				}
+			}
+		}
+		
+		if(batchPresent) {
+			jsonObject.put("data", "BatchPresent");
+			return jsonObject;
+		}
+		
 		coVisitor.setCoVisitorImage(compressBytes(coVisitor.getCoVisitorImage()));
 
 		CoVisitor savedCoVisitor = coVisitorRepository.save(coVisitor);
@@ -386,6 +435,19 @@ public class SecurityService {
 			covisitor.setBatchStatus("submited");
 			coVisitorRepository.save(covisitor);
 		}
+		jsonObject.put("msg", "SUCCESS");
+		return jsonObject;
+	}
+
+	public JSONObject deleteAsset(Asset asset) {
+		JSONObject jsonObject = new JSONObject();
+		/*
+		 * if (asset.getMainVisitor() != null) { int v =
+		 * asset.getMainVisitor().getVisitorId(); Optional<Visitor> vis =
+		 * visitorRepository.findById(v); asset.setMainVisitor(vis.get()); }
+		 */
+
+		assetRepository.delete(asset);
 		jsonObject.put("msg", "SUCCESS");
 		return jsonObject;
 	}

@@ -8,7 +8,7 @@ app.controller('reportController', function($scope, $rootScope, $http, $timeout)
 	}
 	
 	if($rootScope.reportFromDash != undefined && $rootScope.reportFromDash != ""){
-		$scope.reportType = $rootScope.reportFromDash;
+		$scope.reportType = angular.copy($rootScope.reportFromDash);
 		$rootScope.reportFromDash = "";
 	}
 	

@@ -100,5 +100,13 @@ public class SecurityController {
 		return service.submitBatch(meeting);
 	}
 	
+	@RequestMapping(value = "/deleteAsset", method = RequestMethod.POST)
+	@ResponseBody
+	public JSONObject deleteAsset(@RequestBody Asset asset) {
+
+		return service.deleteAsset(asset);
+
+	}
+	
 
 }
