@@ -145,21 +145,21 @@
 		</a>
 		<div id="ReportsMenu" class="collapse" aria-labelledby="ReportsMenu" data-parent="#accordionSidebar">
 		<div class="collapse-inner" style="background-color:#3482ae;">
-		<a class="collapse-item" ng-click="reportType = 'emp'" href="#!empReportVisitedReport">Employee Report for <br />Visited Visit</a>
-		<a class="collapse-item" ng-click="reportType = 'cancelEmp'" href="#!empReportCancelReport">Employee Report for <br />cancelled Visit</a>
-		<a class="collapse-item" ng-click="reportType = 'plant'" href="#!empReportVisitedReport">Plants wise Report for <br />Visited Visit</a>
-		<a class="collapse-item" ng-click="reportType = 'cancelPlant'" href="#!empReportCancelReport">Plants wise Report for <br />cancelled Visit</a>
-		<a class="collapse-item" ng-click="reportType = 'plantHr'" href="#!empReportVisitedReport">Plants wise HR Report for <br />Visited Visit</a>
-		<a class="collapse-item" ng-click="reportType = 'cancelPlantHr'" href="#!empReportCancelReport">Plants wise HR Report for <br />cancelled Visit</a>
+		<a class="collapse-item" ng-click="reportType = 'emp';navToVisitedReport();" href="">Employee Report for <br />Visited Visit</a>
+		<a class="collapse-item" ng-click="reportType = 'cancelEmp';navToCancelReport();" href="">Employee Report for <br />cancelled Visit</a>
+		<a class="collapse-item" ng-click="reportType = 'plant';navToVisitedReport();" href="">Plants wise Report for <br />Visited Visit</a>
+		<a class="collapse-item" ng-click="reportType = 'cancelPlant';navToCancelReport();" href="">Plants wise Report for <br />cancelled Visit</a>
+		<a class="collapse-item" ng-click="reportType = 'plantHr';navToVisitedReport();" href="">Plants wise HR Report for <br />Visited Visit</a>
+		<a class="collapse-item" ng-click="reportType = 'cancelPlantHr';navToCancelReport();" href="">Plants wise HR Report for <br />cancelled Visit</a>
 		</div>
 		</div>
 		</li>
 		
-		<li ng-show="role == 'Super Admin'" class="nav-item">
+		<!-- <li ng-show="role == 'Super Admin'" class="nav-item">
 		<a class="nav-link" href="#">
 		<i class="fas fa-fw fa-tools"></i>
 		<span>Authorization</span></a>
-		</li>
+		</li> -->
 		<!-- End Super Admin Menu -->
 		
 		

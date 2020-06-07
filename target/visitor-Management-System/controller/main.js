@@ -122,4 +122,12 @@ app.controller('indexController', function($scope, $rootScope, $http) {
 		}
 	};
 	
+	$scope.navToVisitedReport = function(){
+		window.location = "#!empReportVisitedReport";
+	};
+	
+	$scope.navToCancelReport = function(){
+		window.location = "#!empReportCancelReport";
+	};
+	
 });

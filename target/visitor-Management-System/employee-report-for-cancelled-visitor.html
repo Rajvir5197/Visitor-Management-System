@@ -159,6 +159,8 @@
 <th>Visitor Phone</th>
 <th>Visit Date</th>
 <th>Visit Time</th>
+<th ng-if="reportType == 'cancelPlant' || reportType == 'cancelPlantHr'">Visit To</th>
+<th ng-if="reportType == 'cancelPlant' || reportType == 'cancelPlantHr'">Visit To Department</th>
 </tr>
 </thead>
 <tbody>
@@ -169,6 +171,8 @@
 <td>{{visit.meetingBooked.visitor.contactNumber}}</td>
 <td>{{visit.meetingBooked.visitDate}}</td>
 <td>{{visit.meetingBooked.visitTime}}</td>
+<td ng-if="reportType == 'cancelPlant' || reportType == 'cancelPlantHr'">{{visit.meetingBooked.empName}}</td>
+<td ng-if="reportType == 'cancelPlant' || reportType == 'cancelPlantHr'">{{visit.meetingBooked.visitDepartment.deptName}}</td>
 </tr>
 
 </tbody>
