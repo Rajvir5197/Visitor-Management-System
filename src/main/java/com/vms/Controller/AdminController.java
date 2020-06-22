@@ -18,7 +18,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.vms.Model.MeetingStatus;
+import com.vms.Model.Meetings;
 import com.vms.Sevices.EmployeeService;
+import com.vms.Sevices.MeetingsService;
+
+import net.minidev.json.JSONObject;
 
 @RestController
 @RequestMapping("/Admin")
@@ -26,6 +30,10 @@ public class AdminController {
 
 	@Autowired
 	EmployeeService service;
+	
+	@Autowired
+	MeetingsService meetingService;
+
 	
 	@RequestMapping(value = "/viewAllVisitsReport", method = RequestMethod.POST)
 	@ResponseBody
@@ -97,5 +105,33 @@ public class AdminController {
 	                  .headers(headers)
 	                  .body(new InputStreamResource(in));
 		
+	}
+	
+	@RequestMapping(value="/addMeeting", method=RequestMethod.POST)
+	@ResponseBody
+	public JSONObject addMeeting(@RequestBody Meetings meeting) {
+		
+		return meetingService.addMeeting(meeting);
+	}
+	
+	@RequestMapping(value="/updateMeeting", method=RequestMethod.POST)
+	@ResponseBody
+	public JSONObject updateMeeting(@RequestBody Meetings meeting) {
+		
+		return meetingService.updateMeeting(meeting);
+	}
+	
+	@RequestMapping(value="/deleteMeeting", method=RequestMethod.POST)
+	@ResponseBody
+	public JSONObject deleteMeeting(@RequestBody Meetings meeting) {
+		
+		return meetingService.deleteMeeting(meeting);
+	}
+	
+	@RequestMapping(value="/viewAllMeeting", method=RequestMethod.POST)
+	@ResponseBody
+	public List<Meetings> viewAllMeetings() {
+		
+		return meetingService.viewAllMeetings();
 	}
 }

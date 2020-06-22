@@ -1,0 +1,255 @@
+
+
+<!-- Begin Page Content -->
+<div class="container-fluid mt-3">
+
+<!-- Page Heading -->
+<div class="row mb-2">
+<div class="col-sm-8 align-self-center">
+<h1 class="h4 text-gray-800">Meeting Type Master</h1>
+</div>
+<div class="col-sm-4 text-right">
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addNewMeetingTypeModal" ng-click="newMeetingType={};">Add Meeting Type</button>
+</div>
+</div>
+<!-- End Page Heading -->
+
+
+<!--Add New Meeting Type Popup-->
+<div class="modal fade" id="addNewMeetingTypeModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal-dialog modal-md" role="document">
+<div class="modal-content">
+<form name="addForm">
+<div class="modal-header">
+<h5 class="modal-title BlackTxtColor" id="exampleModalLabel">Add New Meeting Type</h5>
+<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+<span aria-hidden="true">&times;</span>
+</button>
+</div>
+<div class="modal-body">
+
+
+<!-- <div class="row">
+<div class="col-lg-6 border-right"> -->
+<div class="row">
+
+<!-- <div class="col-lg-12">
+<div class="form-group">
+<label>Dept Code</label><div class="tooltip"><i class="fa fa-question-circle fa-fw" style="color: deepskyblue;"></i>
+<span class="tooltiptext">Only numbers allowed</span></div>
+<input type="number" ng-model="newDept.deptCode" class="form-control" required />
+</div>
+</div> -->
+
+<div class="col-lg-12">
+<div class="form-group">
+<label>Meeting Type</label>
+<input ng-model="newMeetingType.meetingType" class="form-control" required />
+</div>
+</div>
+
+<!-- <div class="col-lg-12">
+<div class="form-group">
+<label>Dept Plant Code</label>
+<select ng-model="newDept.deptPlantCode" ng-options="plant.plantCode for plant in allPlants track by plant.plantCode" class="form-control" name="deptPlantCode" multiple required>
+</select>
+</div>
+</div> -->
+
+</div>
+</div>
+<div class="modal-footer">
+	<button type="submit" class="btn btn-primary" ng-click="addNewMeetingType()">Submit</button>
+	<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+</div>
+</form>
+</div>
+</div>
+</div>
+<!--//Add New Dept Popup-->
+
+
+<!--Edit Dept Popup-->
+<div class="modal fade" id="editMeetingTypeModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal-dialog modal-md" role="document">
+<div class="modal-content">
+<form name="editForm">
+<div class="modal-header">
+<h5 class="modal-title BlackTxtColor" id="exampleModalLabel">Edit Meeting Type</h5>
+<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+<span aria-hidden="true">&times;</span>
+</button>
+</div>
+<div class="modal-body">
+
+<!-- <div class="row">
+ <div class="col-lg-6 border-right"> -->
+<div class="row">
+
+<!-- <div class="col-lg-12">
+<div class="form-group">
+<label>Dept Code</label>
+<input type="number" ng-model="editedDept.deptCode" class="form-control" ng-disabled="true" required>
+</div>
+</div> -->
+
+<div class="col-lg-12">
+<div class="form-group">
+<label>Meeting Type</label>
+<input ng-model="editedMeetingType.meetingType" class="form-control" required>
+</div>
+</div>
+
+<!-- <div class="col-lg-12">
+<div class="form-group">
+<label>Dept Plant Code</label>
+<select id="deptPlantCode" ng-model="editedDept.deptPlantCode" ng-options="plant.plantCode for plant in allPlants track by plant.plantCode" class="form-control" name="deptPlantCode" multiple required>
+</select>
+</div>
+</div> -->
+
+</div>
+
+</div>
+<div class="modal-footer">
+<button type="submit" class="btn btn-primary" ng-click="editMeetingType()">Update</button>
+<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+</div>
+</form>
+</div>
+</div>
+</div>
+<!--//Edit Dept Popup-->
+
+<!--View Details Popup-->
+<div class="modal fade" id="viewMeetingTypeDetails" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal-dialog modal-md" role="document">
+<div class="modal-content">
+<div class="modal-header">
+<h5 class="modal-title BlackTxtColor" id="exampleModalLabel">View Meeting Type Details</h5>
+<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+<span aria-hidden="true">&times;</span>
+</button>
+</div>
+<div class="modal-body">
+
+<div class="row">
+<div class="col-sm-5 mb-3">Meeting Type</div>
+<div class="col-sm-7 BlackTxtColor mb-3">: {{viewMeetingType.meetingType}}</div>
+</div>
+
+<div class="row">
+<div class="col-sm-5 mb-3">Reg by</div>
+<div class="col-sm-7 BlackTxtColor mb-3">: {{viewMeetingType.regBy}}</div>
+</div>
+
+<div class="row">
+<div class="col-sm-5 mb-3">Reg Date</div>
+<div class="col-sm-7 BlackTxtColor mb-3">: {{viewMeetingType.regDate}}</div>
+</div>
+
+<div class="row">
+<div class="col-sm-5 mb-3">Reg Time</div>
+<div class="col-sm-7 BlackTxtColor mb-3">: {{viewMeetingType.regTime}}</div>
+</div>
+
+<!-- <div class="row">
+<div class="col-sm-5 mb-3">Department Plant Code</div>
+<div class="col-sm-7 BlackTxtColor mb-3">: {{viewDept.plantCode}}</div>
+</div> 
+</div> -->
+
+</div>
+<div class="modal-footer">
+<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+</div>
+</div>
+</div>
+</div>
+<!--View Details Popup-->
+
+<!-- delete department popup -->
+<div class="modal fade" id="deleteMeetingTypeModal" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-content">
+	        <div class="modal-header">
+	          <h5 class="modal-title BlackTxtColor" id="exampleModalLabel">Delete Meeting Type</h5>
+	          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	          <span aria-hidden="true">&times;</span>
+	        </div>
+	        <div class="modal-body">
+	          <p>Are you sure, you want to delete the Meeting?</p>
+	        </div>
+	        <div class="modal-footer">
+	        	<button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="deleteMeetingType()">Delete</button>
+	          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	        </div>
+      </div>
+ 	</div>
+ </div>
+<!-- delete department popup ends -->
+
+<!-- notification modal -->
+<div class="modal fade" id="notificationModal" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-content">
+	        <div class="modal-header">
+	          <h5 class="modal-title BlackTxtColor" id="exampleModalLabel">Notification</h5>
+	          <button type="button" class="close" ng-click="notiClose()" data-dismiss="modal" aria-label="Close"></button>
+	          <span aria-hidden="true">&times;</span>
+	        </div>
+	        <div class="modal-body">
+	          <p ng-if="!dataExist && !deleteData && !updateData">Meeting Type Submitted Successfully</p>
+	          <p ng-if="dataExist && !deleteData && !updateData">Meeting Type Already Present</p>
+	           <p ng-if="deleteData">Meeting Type Deleted Successfully</p>
+	          <p ng-if="updateData">Meeting Type Updated Successfully</p>
+	        </div>
+	        <div class="modal-footer">
+	          <button type="button" class="btn btn-default" ng-click="notiClose()" data-dismiss="modal">Close</button>
+	        </div>
+      </div>
+ 	</div>
+ </div>
+<!-- notification modal -->
+
+<div class="bg-white p-3 mb-3">
+<div class="table-responsive my-3 px-3">
+<table class="table table" id="dataTable" width="100%" cellspacing="0">
+<thead>
+<tr>
+<th>sr No.</th>
+<th>Meeting Type</th>
+<th>Reg by</th>
+<th>Reg Date</th>
+<th>Reg Time</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr ng-repeat="MeetingType in allMeetingType">
+<td>{{$index + 1}}</td>
+<td>{{MeetingType.meetingType}}</td>
+<td>{{MeetingType.regBy}}</td>
+<td>{{MeetingType.regDate}}</td>
+<td>{{MeetingType.regTime}}</td>
+<td><span data-toggle="modal" ng-click="viewSelectedMeetingType(MeetingType)" data-target="#viewMeetingTypeDetails"><i class="fa fa-eye fa-lg fa-fw Pointer text-dark" data-toggle="tooltip" data-placement="top" title="View"></i></span> 
+<span data-toggle="modal" ng-click="editSelectedMeetingType(MeetingType)" data-target="#editMeetingTypeModal"><i class="fa fa-edit fa-lg fa-fw Pointer text-primary" data-toggle="tooltip" data-placement="top" title="Edit"></i></span> 
+<span data-toggle="modal" ng-click="dtlSelectedMeetingType(MeetingType)" data-target="#deleteMeetingTypeModal"><i class="fa fa-trash-alt fa-lg fa-fw Pointer text-danger" data-toggle="tooltip" data-placement="top" title="Delete"></i></span></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<div class="modal fade" id="Loader" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal-dialog modal-md" role="document">
+<div class="modal-content" style="display: contents;">
+
+	<img src="images/Spinner.gif" style="margin: 51%;" height="22%"/>
+
+</div>
+</div>
+</div>
+
+</div>
+<!-- /End Page Content -->

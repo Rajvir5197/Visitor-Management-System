@@ -3,6 +3,7 @@ import java.sql.Date;
 import java.sql.Time;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -67,13 +68,18 @@ public class Plant {
 	@Column (name = "reg_time")
 	private Time regTime;
 	
+	@Column (name = "active")
+	private boolean active;
+	
 	@ManyToMany(mappedBy = "empPlantCode")
 	@Column (name = "empPlantCode")
 	private Set<Employee> employeeMaster;
 	
-	@ManyToMany(mappedBy = "deptPlantCode")
-	@Column 
-	private Set<Department> department;
+	/*
+	 * @ManyToMany(mappedBy = "deptPlantCode")
+	 * 
+	 * @Column private Set<Department> department;
+	 */
 
 	public int getPlantCode() {
 		return plantCode;
@@ -186,5 +192,14 @@ public class Plant {
 	public void setRegTime(Time regTime) {
 		this.regTime = regTime;
 	}
+
+	public boolean isActive() {
+		return active;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
+	}
+	
 	
 }

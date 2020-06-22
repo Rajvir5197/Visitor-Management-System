@@ -1,6 +1,6 @@
 
 <!-- Begin Page Content -->
-<div ng-controller="manageContactEditController" class="container-fluid mt-3">
+<div class="container-fluid mt-3">
 
 <!-- Page Heading -->
 <div class="row mb-2">
@@ -102,6 +102,28 @@
 </div>
 </form>
 </div>
+
+
+<!-- notification modal -->
+<div class="modal fade" id="notificationModal" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-content">
+	        <div class="modal-header">
+	          <h5 class="modal-title BlackTxtColor" id="exampleModalLabel">Notification</h5>
+	          <button type="button" class="close" data-dismiss="modal" ng-click="closeNoti()" aria-label="Close"></button>
+	          <span aria-hidden="true">&times;</span>
+	        </div>
+	        <div class="modal-body">
+	          <p ng-if="msg == 'SUCCESS'">Contact Updated successfully</p>
+	          <p ng-if="msg == 'ALREADYTHERE'">Contact Number Already Present</p>
+	        </div>
+	        <div class="modal-footer">
+	          <button type="button" class="btn btn-default" ng-click="closeNoti()" data-dismiss="modal">Close</button>
+	        </div>
+      </div>
+ 	</div>
+ </div>
+<!-- notification modal -->
 
 
 

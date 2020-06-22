@@ -1,6 +1,6 @@
 
 <!-- Begin Page Content -->
-<div ng-controller="securityController" class="container-fluid mt-3">
+<div class="container-fluid mt-3">
 
 <!-- Page Heading -->
 <div class="row mb-2">
@@ -17,13 +17,13 @@
 <div class="row">
 <div class="col-lg-6">
 <div class="row">
-<div class="col-sm-5 mb-3">Visit No.</div>
-<div class="col-sm-7 BlackTxtColor mb-3">: 1234567890</div>
+<div class="col-sm-5 mb-3">Appointment Number</div>
+<div class="col-sm-7 BlackTxtColor mb-3">: {{visitCheckin.meetingBooked.visitNo}}</div>
 </div>
 
 <div class="row">
 <div class="col-sm-5 mb-3">Visitor Name</div>
-<div class="col-sm-7 BlackTxtColor mb-3">: {{visitCheckin.meetingBooked.visitor.visitorName}}</div>
+<div class="col-sm-7 BlackTxtColor mb-3">: {{visitCheckin.meetingBooked.visitor.firstName}} {{visitCheckin.meetingBooked.visitor.middleName}} {{visitCheckin.meetingBooked.visitor.lastName}}</div>
 </div>
 
 <div class="row">
@@ -56,21 +56,21 @@
 <div class="col-lg-4">
 <div class="row">
 <div class="col-sm-5 mb-3">Meeting with</div>
-<div class="col-sm-7 BlackTxtColor mb-3">: {{visitCheckin.meetingBooked.empId}}</div>
+<div class="col-sm-7 BlackTxtColor mb-3">: {{visitCheckin.meetingBooked.empName}}</div>
 </div>
 </div>
 
 <div class="col-lg-4">
 <div class="row">
 <div class="col-sm-5 mb-3">Check Out Time</div>
-<div class="col-sm-7 BlackTxtColor mb-3">: {{visitCheckin.empCheckinAt}}</div>
+<div class="col-sm-7 BlackTxtColor mb-3">: {{visitCheckin.empCheckoutTime}}</div>
 </div>
 </div>
 
 <div class="col-lg-4">
 <div class="row">
-<div class="col-sm-5 mb-3">Remark</div>
-<div class="col-sm-7 BlackTxtColor mb-3">: {{visitCheckin.meetingBooked.remarks}}</div>
+<div class="col-sm-5 mb-3">Batch Number</div>
+<div class="col-sm-7 BlackTxtColor mb-3">: {{visitCheckin.meetingBooked.visitor.batchNo}}</div>
 </div>
 </div>
 </div>
@@ -80,39 +80,48 @@
 <div class="col-lg-3 mb-3">
 <img ng-show="visitCheckin.meetingBooked.visitor.visitorImage != null" src="data:image/jpeg;base64,{{visitCheckin.meetingBooked.visitor.visitorImage}}" class="img-fluid border p-2" />
 <img ng-hide="visitCheckin.meetingBooked.visitor.visitorImage != null" src="images/profile-pic.jpg" class="img-fluid border p-2" />
-<button type="button" style="margin-top: 3%;margin-left: 23%;"style="margin-top: 3%;margin-left: 23%;" class="btn btn-primary" data-toggle="modal" data-target="#captureImageModal">Capture Image</button>
-<button type="button" style="margin-top: 3%;margin-left: 23%;"style="margin-top: 3%;margin-left: 23%;" class="btn btn-primary" ng-click="getVisitorAsset()">Visitor Asset</button>
+<button type="button" style="margin-top: 3%;margin-left: 23%;"style="margin-top: 3%;margin-left: 16%;" class="btn btn-primary" ng-click="getVisitorAsset()">Verify Visitor Asset</button>
 </div>
 
 <div class="col-lg-9 mb-3">
 <h2 class="m-0 FontSize22 p-3 bg-light BlackTxtColor border border-bottom-0">Co-Visitor Information
-<button type="button" style="margin-left: 33%;" ng-disabled="visitCheckin.empCheckin" class="btn btn-primary" data-toggle="modal" data-target="#addCoVisitorModal" ng-click="newVisitor = {};">Add Co-Visitor</button>
-<button type="button" class="btn btn-primary" ng-disabled="visitCheckin.empCheckin" ng-click="sendMail()">send Email</button>
+<!-- <button type="button" class="btn btn-primary" style="margin-left: 54%;" ng-click="sendMail()">send Email</button> -->
 </h2>
 
 <div class="table-responsive">
 <table class="table table-bordered">
 <thead>
 <tr>
+<th>Visitor Image</th>
 <th>Visitor Name</th>
 <th>Phone No.</th>
 <th>Asset</th>
-<th>Check Out</th>
+<th>Batch No.</th>
 </tr>
 </thead>
 
 <tbody>
 <tr ng-repeat="coVisitor in allCoVisitor">
+<td><img ng-show="coVisitor.coVisitorImage != null" src="data:image/jpeg;base64,{{coVisitor.coVisitorImage}}" height="50px" />
+<img ng-hide="coVisitor.coVisitorImage != null" src="images/profile-pic.jpg" height="50px"  />
+</td>
 <td>{{coVisitor.coVisitorName}}</td>
 <td>{{coVisitor.coVisitorContact}}</td>
-<td><button type="button" class="btn btn-secondary btn-sm" ng-click="getCovisitorAsset(coVisitor)" data-toggle="modal" data-target="#viewAssetModal"><i class="fa fa-eye fa-fw fa-lg"></i> View</button></td>
-<td><button type="button" class="btn btn-primary btn-sm" ng-disabled="!coVisitor.allowCheckOut || !visitCheckin.empCheckout || coVisitor.seccheckout" data-toggle="modal" data-target="#checkoutModal" ng-click="selectedCoVisitorForCheckout(coVisitor)" >Check Out</button></td>
+<td><button type="button" class="btn btn-secondary btn-sm" ng-click="getCovisitorAsset(coVisitor)" data-toggle="modal" data-target="#viewAssetModal"><i class="fa fa-eye fa-fw fa-lg"></i> Verify Asset</button></td>
+<td><!-- <button type="button" class="btn btn-primary btn-sm" ng-disabled="!coVisitor.allowCheckOut || coVisitor.seccheckout" data-toggle="modal" data-target="#checkoutModal" ng-click="selectedCoVisitorForCheckout(coVisitor)" >Check Out</button> -->
+{{coVisitor.batchNo}}
+</td>
 </tr>
 
 </tbody>
 </table>
 </div>
 </div>
+</div>
+<div class="row">
+		<button ng-if="!enableCheckOut" type="button" style="margin-left: 55%;margin-right: 1%;" ng-click="submitBatch()" class="btn btn-primary">Submit Batch</button>
+		<button ng-if="enableCheckOut" ng-disabled="enableCheckOut" type="button" style="margin-left: 55%;margin-right: 1%;" class="btn btn-primary">Batch Submited</button>
+	<button type="button" ng-disabled="!enableCheckOut" ng-click="securityCheckout()" class="btn btn-primary">Gate Check-Out</button>
 </div>
 </div>
 
@@ -132,6 +141,7 @@
 <table class="table table-bordered">
 <thead>
 <tr>
+<th>Serial No.</th>
 <th>Asset Name</th>
 <th>Asset Count</th>
 <th>Asset Status</th>
@@ -141,17 +151,13 @@
 <tbody>
 
 <tr ng-repeat="asset in allAsset">
+<td>{{asset.assetSerialno}}</td>
 <td>{{asset.assetName}}</td>
 <td>{{asset.assetCount}}</td>
-<td><button ng-hide="asset.deliveredFlag" ng-disabled="!visitCheckin.empCheckout" ng-click="deliverAsset(asset)"  type="button" class="btn btn-danger btn-sm" ><i class="fa fa-times fa-fw fa-lg"></i> {{asset.assetStatus}}</button>
+<td><button ng-hide="asset.deliveredFlag" ng-disabled="!visitCheckin.empCheckout" type="button" class="btn btn-danger btn-sm" ><i class="fa fa-times fa-fw fa-lg"></i> {{asset.assetStatus}}</button>
 <button ng-show="asset.deliveredFlag" type="button" class="btn btn-success btn-sm" ><i class="fa fa-check fa-fw fa-lg"></i> {{asset.assetStatus}}</button>
+<button ng-click="deliverAsset(asset)" ng-hide="asset.deliveredFlag"  type="button" class="btn btn-primary btn-sm" > Verify</button>
 </td>
-</tr>
-
-<tr>
-<td><input type="text" ng-model="newAsset.assetName" class="form-control" required /></td>
-<td><input type="text" ng-model="newAsset.assetCount" class="form-control" required /></td>
-<td><button type="button" class="btn btn-danger btn-sm" ><i class="fa fa-times fa-fw fa-lg"></i> Not Delivered</button></td>
 </tr>
 <!-- <tr>
 <td>Pen Drive</td>
@@ -163,7 +169,8 @@
 </div>
 </div>
 <div class="modal-footer">
-<button type="button" ng-click="addAsset()" ng-disabled="visitCheckin.empCheckin" class="btn btn-primary">Add</button>
+<button type="button" class="btn btn-danger btn-sm">Checked</button> - Assets are checked.
+<button type="button" class="btn btn-success btn-sm"><i class="fa fa-check fa-fw fa-lg"></i> Verified</button><span style="margin-right: 10%;"> - Assets are verified.</span>
 <button type="button" class="btn btn-secondary" ng-click="viewAllCoVisitor()" data-dismiss="modal">Close</button>
 </div>
 </div>
@@ -185,6 +192,7 @@
 <table class="table table-bordered">
 <thead>
 <tr>
+<th>Serial No.</th>
 <th>Asset Name</th>
 <th>Asset Count</th>
 <th>Asset Status</th>
@@ -194,29 +202,22 @@
 <tbody>
 
 <tr ng-repeat="asset in allAsset">
+<td>{{asset.assetSerialno}}</td>
 <td>{{asset.assetName}}</td>
 <td>{{asset.assetCount}}</td>
-<td><button ng-hide="asset.deliveredFlag" ng-disabled="!visitCheckin.empCheckout" ng-click="deliverVisitorAsset(asset)"  type="button" class="btn btn-danger btn-sm" ><i class="fa fa-times fa-fw fa-lg"></i> {{asset.assetStatus}}</button>
+<td><button ng-hide="asset.deliveredFlag" ng-disabled="!visitCheckin.empCheckout" type="button" class="btn btn-danger btn-sm" ><i class="fa fa-times fa-fw fa-lg"></i> {{asset.assetStatus}}</button>
 <button ng-show="asset.deliveredFlag" type="button" class="btn btn-success btn-sm" ><i class="fa fa-check fa-fw fa-lg"></i> {{asset.assetStatus}}</button>
+<button ng-click="deliverVisitorAsset(asset)" ng-hide="asset.deliveredFlag"  type="button" class="btn btn-primary btn-sm" > Verify</button>
 </td>
 </tr>
 
-<tr>
-<td><input type="text" ng-model="newVisitorAsset.assetName" class="form-control" required /></td>
-<td><input type="text" ng-model="newVisitorAsset.assetCount" class="form-control" required /></td>
-<td><button type="button" class="btn btn-danger btn-sm" ><i class="fa fa-times fa-fw fa-lg"></i> Not Delivered</button></td>
-</tr>
-<!-- <tr>
-<td>Pen Drive</td>
-<td>1</td>
-<td><button type="button" class="btn btn-danger btn-sm"><i class="fa fa-times fa-fw fa-lg"></i> Not Delivered</button></td>
-</tr> -->
 </tbody>
 </table>
 </div>
 </div>
 <div class="modal-footer">
-<button type="button" ng-click="addVisitorAsset()" ng-disabled="visitCheckin.empCheckin" class="btn btn-primary">Add</button>
+<button type="button" class="btn btn-danger btn-sm">Checked</button> - Assets are checked.
+<button type="button" class="btn btn-success btn-sm"><i class="fa fa-check fa-fw fa-lg"></i> Verified</button><span style="margin-right: 10%;"> - Assets are verified.</span>
 <button type="button" class="btn btn-secondary" ng-click="viewAllCoVisitor()" data-dismiss="modal">Close</button>
 </div>
 </div>
@@ -362,6 +363,16 @@ Email sent
 <button type="button" class="btn btn-primary" ng-click="checkoutCoVisitor()">Check Out</button>
 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
 </div> -->
+</div>
+</div>
+</div>
+
+<div class="modal fade" id="Loader" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal-dialog modal-md" role="document">
+<div class="modal-content" style="display: contents;">
+
+	<img src="images/Spinner.gif" style="margin: 51%;" height="22%"/>
+
 </div>
 </div>
 </div>

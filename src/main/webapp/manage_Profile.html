@@ -1,0 +1,71 @@
+<div ng-controller="settingController" class="container-fluid mt-3">
+
+<!-- Page Heading -->
+<div class="row mb-2">
+<div class="col-sm-8 align-self-center">
+<h1 class="h4 text-gray-800">Profile</h1>
+</div>
+</div>
+<!-- End Page Heading -->
+
+<div class="bg-white p-3 mb-3">
+<div class="table-responsive my-3 px-3" style="border-style: double;max-width: 50%;text-align: center;margin-left: 20%;">
+<br>
+<img ng-show="emp.image != null" src="data:image/jpeg;base64,{{emp.image}}" class="img-fluid border p-2" />
+<img ng-hide="emp.image != null" src="images/profile-pic.jpg" class="img-fluid border p-2" />
+<br><br>
+<div class="row" style="margin-left: 21%;">
+<div style="margin-left: 1%;">Employee Code</div>
+<div class="BlackTxtColor" style="margin-left: 1%;">:  {{emp.empCode}}</div>
+</div>
+
+<div class="row" style="margin-left: 21%;">
+<div style="margin-left: 1%;">Plant Code</div>
+<div class="BlackTxtColor" style="margin-left: 1%;">:  {{emp.plantCode}}</div>
+</div>
+
+<div class="row" style="margin-left: 21%;">
+<div style="margin-left: 1%;">Grade ID</div>
+<div class="BlackTxtColor" style="margin-left: 1%;">:  {{emp.gradeId}}</div>
+</div>
+
+<div class="row" style="margin-left: 21%;">
+<div style="margin-left: 1%;">Employee Name</div>
+<div class="BlackTxtColor" style="margin-left: 1%;">:  {{emp.empName}}</div>
+</div>
+
+<div class="row" style="margin-left: 21%;">
+<div style="margin-left: 1%;">Employee Designation</div>
+<div class="BlackTxtColor" style="margin-left: 1%;">:  {{emp.empDesignation}}</div>
+</div>
+
+<div class="row" style="margin-left: 21%;">
+<div style="margin-left: 1%;">Employee Department</div>
+<div class="BlackTxtColor" style="margin-left: 1%;">: {{emp.empDept.deptName}}</div>
+</div>
+
+<div class="row" style="margin-left: 21%;">
+<div style="margin-left: 1%;">Employee Mobile</div>
+<div class="BlackTxtColor" style="margin-left: 1%;">: {{emp.empMobile}}</div>
+</div>
+
+
+<div class="row" style="margin-left: 21%;">
+<div style="margin-left: 1%;">Reg by</div>
+<div class="BlackTxtColor" style="margin-left: 1%;">:  {{emp.regBy}}</div>
+</div>
+
+<div class="row" style="margin-left: 21%;">
+<div style="margin-left: 1%;">Reg Date</div>
+<div class="BlackTxtColor" style="margin-left: 1%;">:  {{emp.regDate}}</div>
+</div>
+
+<div class="row" style="margin-left: 21%;">
+<div style="margin-left: 1%;">Reg Time</div>
+<div class="BlackTxtColor" style="margin-left: 1%;">:  {{emp.regTime}}</div>
+<br><br>
+</div>
+	
+</div>
+</div>
+</div>

@@ -1,0 +1,523 @@
+
+<!-- Begin Page Content -->
+<div class="container-fluid mt-3">
+
+<!-- Page Heading -->
+<div class="row mb-2">
+<div class="col-sm-8 align-self-center">
+<h1 class="h4 text-gray-800">Dashboard</h1>
+</div>
+
+<div class="col-sm-4 text-right">
+<!--<button type="button" class="btn btn-primary">Set Visit</button>-->
+</div>
+</div>
+<!-- End Page Heading -->
+
+
+<div class="row">
+<div ng-click="navToReport()" class="col-lg-4 col-sm-7 mb-4">
+<div class="w-100 bg-success text-white p-3">
+<div><span class="fa fa-users fa-2x"></span></div>
+
+<div class="row">
+<div class="col-sm-8 align-self-center FontSize18">Total Visits</div>
+<div class="col-sm-4 text-right FontSize28">{{totalVisitCount}}</div>
+</div>
+</div>
+</div>
+
+<div ng-click="navToEmployee()" class="col-lg-4 col-sm-7 mb-4">
+<div class="w-100 bg-warning text-white p-3">
+<div><span class="fa fa-id-card fa-2x"></span></div>
+
+<div class="row">
+<div class="col-sm-8 align-self-center FontSize18">Total Employee</div>
+<div class="col-sm-4 text-right FontSize28">{{totalEmployeeCount}}</div>
+</div>
+</div>
+</div>
+
+<div ng-click="navToPlant()" class="col-lg-4 col-sm-7 mb-4">
+<div class="w-100 bg-danger text-white p-3">
+<div><span class="fa fa-industry fa-2x"></span></div>
+
+<div class="row">
+<div class="col-sm-8 align-self-center FontSize18">Total Plant</div>
+<div class="col-sm-4 text-right FontSize28">{{totalPlantCount}}</div>
+</div>
+</div>
+</div>
+
+<!-- <div class="col-lg-3 col-sm-6 mb-3">
+<div class="w-100 bg-info text-white p-3">
+<div><span class="fa fa-address-card fa-2x"></span></div>
+
+<div class="row">
+<div class="col-sm-8 align-self-center FontSize18">Attended Visit</div>
+<div class="col-sm-4 text-right FontSize28">{{attendedVisitCount}}</div>
+</div>
+</div>
+</div> -->
+</div>
+
+
+<div class="row">
+<div class="col-lg-8">
+
+
+<div class="row mb-3">
+<div class="col-lg-12">
+<div class="w-100 bg-white">
+<h2 class="m-0 FontSize22 p-3 TopBarBgColor text-white border-bottom">
+<i class="fa fa-sliders-h fa-fw"></i> Controls
+</h2>
+<div class="p-2 text-center">
+<ul class="list-inline">
+<li class="list-inline-item mr-4" data-toggle="modal" data-target="#addPopUpModal" ng-click="visit = {};"><div class="Circle80 bg-warning m-auto"><i class="fa fa-file-medical fa-2x text-white"></i></div></li>
+
+<li class="list-inline-item mr-4" ng-click="navToReport()"><div class="Circle80 bg-danger m-auto"><i class="fa fa-chart-pie fa-2x text-white"></i></div></li>
+
+<li class="list-inline-item"><a target="_blank" href="pdf/UserManual.pdf"><div class="Circle80 bg-info m-auto"><i class="fa fa-info fa-2x text-white"></i></div></a></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="col-lg-4 mb-3">
+<div class="row">
+<div class="col-lg-12">
+<div class="w-100 bg-white">
+<h2 class="m-0 FontSize22 p-3 TopBarBgColor text-white border-bottom">
+<div class="row">
+	<div class="col-lg-8">
+		<i class="fa fa-file-alt fa-fw"></i> To do list
+	</div>
+	<div class="col-lg-4">
+		<button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#addNewTask" ng-click="newTask = {};">Add Task</button>
+	</div>
+</div>
+</h2>
+<div class="p-2" style="max-height:360px; overflow-y:scroll; overflow-x:hidden;">
+<span ng-hide="allTask.length > 0">No Task added</span>
+<ul class="listNew">
+<li ng-repeat="task in allTask" class="Rel"><i class="fa fa-file-alt fa-fw"></i>
+<div class="tooltip"> {{task.taskName}}
+<span class="tooltiptext">{{task.taskDescription}}</span></div>
+<button class="btn btn-primary btn-sm ContFloatingBtn" ng-click="updateTask(task)">Pending</button>
+</li>
+
+</ul> 
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="modal fade" id="addNewTask" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal-dialog modal-md" role="document">
+<div class="modal-content">
+<form name="addForm">
+<div class="modal-header">
+<h5 class="modal-title BlackTxtColor" id="exampleModalLabel">Add Task</h5>
+<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+<span aria-hidden="true">&times;</span>
+</button>
+</div>
+<div class="modal-body">
+
+
+<!-- <div class="row">
+<div class="col-lg-6 border-right"> -->
+<div class="row">
+
+<div class="col-lg-12">
+<div class="form-group">
+<label>Task Name</label>
+<input type="text" ng-model="newTask.taskName" class="form-control" required />
+</div>
+</div>
+
+<div class="col-lg-12">
+<div class="form-group">
+<label>Task Description</label>
+<textarea ng-model="newTask.taskDescription" class="form-control" required ></textarea>
+</div>
+</div>
+
+</div>
+</div>
+<div class="modal-footer">
+	<button type="submit" class="btn btn-primary" ng-click="addTask()">Add</button>
+	<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+</div>
+</form>
+</div>
+</div>
+</div>
+
+<!-- notification modal -->
+<div class="modal fade" id="notificationModal" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-content">
+	        <div class="modal-header">
+	          <h5 class="modal-title BlackTxtColor" id="exampleModalLabel">Notification</h5>
+	          <button type="button" class="close" ng-click="notiClose()" data-dismiss="modal" aria-label="Close"></button>
+	          <span aria-hidden="true">&times;</span>
+	        </div>
+	        <div class="modal-body">
+	        <div ng-if="modalType == 'plant'">
+	        	<p ng-if="!dataExist">Plant Added Successfully</p>
+	        	<p ng-if="dataExist">Plant Already Exist with Plant Code</p>
+	        </div>
+	        <div ng-if="modalType == 'emp'">
+	        	<p ng-if="!dataExist">Employee Added Successfully</p>
+	        	<p ng-if="dataExist">Employee Already Exist with Employee Code</p>
+	        </div>
+	        <div ng-if="modalType == 'dept'">
+	        	<p ng-if="!dataExist">Department Added Successfully</p>
+	        	<p ng-if="dataExist">Department Already Exist with Department Code</p>
+	        </div>
+	        </div>
+	        <div class="modal-footer">
+	          <button type="button" class="btn btn-default" ng-click="notiClose()" data-dismiss="modal">Close</button>
+	        </div>
+      </div>
+ 	</div>
+ </div>
+<!-- notification modal -->
+
+<!-- Add popUp modal -->
+<div class="modal fade" id="addPopUpModal" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-content">
+	        <div class="modal-header">
+	          <h5 class="modal-title BlackTxtColor" id="exampleModalLabel">Add</h5>
+	          <button type="button" class="close" data-dismiss="modal" aria-label="Close"></button>
+	          <span aria-hidden="true">&times;</span>
+	        </div>
+	        <div class="modal-body">
+	          <button type="button" class="btn btn-primary" ng-click="openAddModal('emp')" data-dismiss="modal">Add Employee</button><br><br>
+	          <button type="button" class="btn btn-primary" ng-click="openAddModal('plant')" data-dismiss="modal">Add Plant</button><br><br>
+	          <button type="button" class="btn btn-primary" ng-click="openAddModal('dept')" data-dismiss="modal">Add Department</button><br>
+	        </div>
+	        <div class="modal-footer">
+	          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	        </div>
+      </div>
+ 	</div>
+ </div>
+<!-- Add popUp modal -->
+
+<!--Add New Dept Popup-->
+<div class="modal fade" id="addNewDeptModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal-dialog modal-md" role="document">
+<div class="modal-content">
+<form name="addDeptForm">
+<div class="modal-header">
+<h5 class="modal-title BlackTxtColor" id="exampleModalLabel">Add New Department</h5>
+<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+<span aria-hidden="true">&times;</span>
+</button>
+</div>
+<div class="modal-body">
+
+
+<!-- <div class="row">
+<div class="col-lg-6 border-right"> -->
+<div class="row">
+
+<div class="col-lg-12">
+<div class="form-group">
+<label>Dept Code</label><div class="tooltip"><i class="fa fa-question-circle fa-fw" style="color: deepskyblue;"></i>
+<span class="tooltiptext">Only numbers allowed</span></div>
+<input type="number" ng-model="newDept.deptCode" class="form-control" required />
+</div>
+</div>
+
+<div class="col-lg-12">
+<div class="form-group">
+<label>Dept Name</label>
+<input ng-model="newDept.deptName" class="form-control" required />
+</div>
+</div>
+
+<div class="col-lg-12">
+<div class="form-group">
+<label>Dept Plant Code</label>
+<select ng-model="newDept.deptPlantCode" ng-options="plant.plantCode for plant in allPlants track by plant.plantCode" class="form-control" name="deptPlantCode" multiple required>
+</select>
+</div>
+</div>
+
+</div>
+</div>
+<div class="modal-footer">
+	<button type="submit" class="btn btn-primary" ng-click="addNewDept()">Submit</button>
+	<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+</div>
+</form>
+</div>
+</div>
+</div>
+<!--//Add New Dept Popup-->
+
+<!--Add New Emp Popup-->
+<div class="modal fade" id="addNewEmpModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal-dialog modal-lg" role="document">
+<div class="modal-content">
+<form name="addEmpForm">
+<div class="modal-header">
+<h5 class="modal-title BlackTxtColor" id="exampleModalLabel">Add New Employee</h5>
+<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+<span aria-hidden="true">&times;</span>
+</button>
+</div>
+<div class="modal-body">
+
+<div class="row">
+<div class="col-lg-6 border-right">
+<div class="row">
+
+<div class="col-lg-12">
+<div class="form-group">
+<label>Employee Code</label>
+<input type="number" ng-model="newEmp.empCode" class="form-control" required>
+</div>
+</div>
+
+<div ng-hide="newEmp.empDept == undefined" class="col-lg-12">
+<div class="form-group">
+<label>Plant Code</label>
+<select id="plantCode1" ng-model="newEmp.empPlantCode" ng-options="plant.plantCode for plant in newEmp.empDept.deptPlantCode track by plant.plantCode" class="form-control" name="plantCode1" multiple required>
+</select>
+</div>
+</div>
+
+<div class="col-lg-12">
+<div class="form-group">
+<label>Grade ID</label>
+<input type="number" ng-model="newEmp.gradeId" class="form-control" required>
+</div>
+</div>
+
+<div class="col-lg-12">
+<div class="form-group">
+<label>Employee Name</label>
+<input ng-model="newEmp.empName" class="form-control" required>
+</div>
+</div>
+
+<div class="col-lg-12">
+<div class="form-group">
+<label>Employee Designation</label>
+<input ng-model="newEmp.empDesignation" class="form-control" required>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="col-lg-6">
+<div class="row">
+
+<div class="col-lg-12">
+<div class="form-group">
+<label>Employee Department</label>
+<select ng-model="newEmp.empDept" ng-change="getPlantsOfDept()" ng-options="dept.deptName for dept in allDept track by dept.deptCode" class="form-control" required>
+</select>
+</div>
+</div>
+
+<div class="col-lg-12">
+<div class="form-group">
+<label>Employee Mobile</label>
+<input type="text" ng-model="newEmp.empMobile" class="form-control" maxlength="10" minlength="10" required>
+<span ng-show="invalidMobile" style="color: red;">Please enter valid mobile Number</span>
+</div>
+</div>
+
+<div class="col-lg-12">
+<div class="form-group">
+<label>Employee Password</label>
+<input type="password" ng-model="newEmp.empPass" class="form-control" required>
+</div>
+</div>
+
+<div class="col-lg-12">
+<div class="form-group">
+<label>Profile Attachment</label>
+<div class="custom-file">
+<input type="file" name="myFile" file-model="myFile" class="custom-file-input" id="customFile">
+<label class="custom-file-label" for="customFile"><span ng-show="myFile != null">{{myFile.name}}</span><span ng-hide="myFile != null">Choose file</span></label>
+<span ng-if="myFile.size > 900484" style="color: red;">image maximum size allowed is 800Kb</span>
+</div>
+</div>
+</div>
+
+<div class="col-lg-12">
+<div class="form-group">
+<label>Employee Role</label>
+<select ng-model="newEmp.empRole" class="form-control" required>
+	<option>Super Admin</option>
+	<option>Employee</option>
+	<option>Security</option>
+</select>
+</div>
+</div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="modal-footer">
+<button type="submit" class="btn btn-primary" ng-click="addNewEmp()">Submit</button>
+<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+</div>
+</form>
+</div>
+</div>
+</div>
+<!--//Add New Emp Popup-->
+
+<!-- add plant modal -->
+<div class="modal fade" id="addNewPlantModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal-dialog modal-lg" role="document">
+<div class="modal-content">
+<form name="addPlantForm">
+<div class="modal-header">
+<h5 class="modal-title BlackTxtColor" id="exampleModalLabel">Add New Plant</h5>
+<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+<span aria-hidden="true">&times;</span>
+</button>
+</div>
+
+<div class="modal-body" style="overflow-y: auto; max-height: calc(100vh - 200px);">
+
+
+<div class="row">
+<div class="col-lg-6 border-right">
+<div class="row">
+
+<div class="col-lg-12">
+<div class="form-group">
+<label>Plant Code</label>
+<input type="number" class="form-control" ng-model="newPlant.plantCode" required>
+</div>
+</div>
+
+<div class="col-lg-12">
+<div class="form-group">
+<label>Plant Name</label>
+<input class="form-control" ng-model="newPlant.plantName" required>
+</div>
+</div>
+
+<div class="col-lg-12">
+<div class="form-group">
+<label>Plant Address</label>
+<textarea class="form-control" rows="1" ng-model="newPlant.plantAddress" required></textarea>
+</div>
+</div>
+
+<div class="col-lg-12">
+<div class="form-group">
+<label>Plant City</label>
+<select class="form-control" ng-model="newPlant.plantCity" required>
+<option selected>Aurangabad</option>
+</select>
+</div>
+</div>
+
+<div class="col-lg-12">
+<div class="form-group">
+<label>Plant Pincode</label>
+<input type="number" class="form-control" ng-model="newPlant.plantPincode" required>
+</div>
+</div>
+
+<div class="col-lg-12">
+<div class="form-group">
+<label>Plant State</label>
+<select class="form-control" ng-model="newPlant.plantState" required>
+<option selected>Maharashtra</option>
+</select>
+</div>
+</div>
+
+</div>
+</div>
+
+<div class="col-lg-6">
+<div class="row">
+
+<div class="col-lg-12">
+<div class="form-group">
+<label>Plant Country</label>
+<select class="form-control" ng-model="newPlant.plantCountry" required>
+<option selected>India</option>
+</select>
+</div>
+</div>
+
+<div class="col-lg-12">
+<div class="form-group">
+<label>Plant GST</label>
+<input class="form-control" ng-model="newPlant.plantGst" required>
+</div>
+</div>
+
+<div class="col-lg-12">
+<div class="form-group">
+<label>Plant Pan</label>
+<input class="form-control" ng-model="newPlant.plantPan" required>
+</div>
+</div>
+
+<div class="col-lg-12">
+<div class="form-group">
+<label>Plant Maplink</label>
+<input class="form-control" ng-model="newPlant.plantMapLink" required>
+</div>
+</div>
+
+<div class="col-lg-12">
+<div class="form-group">
+<label>Plant CIN</label>
+<input class="form-control" ng-model="newPlant.plantCin" required>
+</div>
+</div>
+
+</div>
+</div>
+</div>
+
+
+</div>
+<div class="modal-footer">
+<button type="submit" class="btn btn-primary" ng-click="addNewPlant()">Submit</button>
+<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+</div>
+</form>
+</div>
+</div>
+</div>
+<!-- add plant modal -->
+
+<div class="modal fade" id="Loader" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal-dialog modal-md" role="document">
+<div class="modal-content" style="display: contents;">
+
+	<img src="images/Spinner.gif" style="margin: 51%;" height="22%"/>
+
+</div>
+</div>
+</div>
+
+
+</div>
+<!-- /End Page Content-->

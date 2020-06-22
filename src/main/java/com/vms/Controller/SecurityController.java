@@ -78,12 +78,13 @@ public class SecurityController {
 		return service.addVisitorImage(meeting);
 	}
 	
-	@RequestMapping(value = "/sendEmail", method = RequestMethod.POST)
+	@RequestMapping(value = "/addCoVisitorImage", method = RequestMethod.POST)
 	@ResponseBody
-	public JSONObject sendEmail(@RequestBody MeetingStatus meeting) {
+	public JSONObject addCoVisitorImage(@RequestBody CoVisitor coVisitor) {
 		
-		return service.sendEmail(meeting);
+		return service.addCoVisitorImage(coVisitor);
 	}
+	
 	
 	@RequestMapping(value = "/getVisitAllAsset", method = RequestMethod.POST)
 	@ResponseBody
@@ -91,5 +92,21 @@ public class SecurityController {
 
 		return service.getVisitAllAsset(Visitor);
 	}
+	
+	@RequestMapping(value = "/submitBatch", method = RequestMethod.POST)
+	@ResponseBody
+	public JSONObject submitBatch(@RequestBody MeetingStatus meeting) {
+
+		return service.submitBatch(meeting);
+	}
+	
+	@RequestMapping(value = "/deleteAsset", method = RequestMethod.POST)
+	@ResponseBody
+	public JSONObject deleteAsset(@RequestBody Asset asset) {
+
+		return service.deleteAsset(asset);
+
+	}
+	
 
 }

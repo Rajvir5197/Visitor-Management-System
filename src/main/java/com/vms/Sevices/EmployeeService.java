@@ -9,7 +9,9 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.sql.Blob;
 import java.sql.Date;
+import java.sql.SQLException;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
@@ -25,6 +27,8 @@ import java.util.zip.Inflater;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.AddressException;
+import javax.sql.rowset.serial.SerialBlob;
+import javax.sql.rowset.serial.SerialException;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -35,6 +39,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,14 +48,19 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-
+import com.vms.Model.Asset;
+import com.vms.Model.CoVisitor;
 import com.vms.Model.ContactManager;
 import com.vms.Model.Employee;
 import com.vms.Model.MeetingStatus;
+import com.vms.Model.Plant;
 import com.vms.Model.Task;
+import com.vms.Repository.AssetRepository;
+import com.vms.Repository.CoVisitorRepository;
 import com.vms.Repository.ContactRepository;
 import com.vms.Repository.EmployeeRepository;
 import com.vms.Repository.MeetingStatusRepository;
@@ -75,17 +85,28 @@ public class EmployeeService {
 
 	@Autowired
 	TaskRepository taskRepository;
+	
+	@Autowired
+	CoVisitorRepository coVisitorRepository;
+
+	@Autowired
+	AssetRepository assetRepository;
+	/*
+	 * @Autowired SessionFactory sessionFactory;
+	 */
 
 	Logger logger = LoggerFactory.getLogger(EmployeeService.class);
 
 	public List<Employee> allEmployee() {
 
 		logger.info("start of allEmployee method");
-		List<Employee> E = repository.findAll();
+		List<Employee> E = repository.findByActive(true);
+		logger.info("after fetching data:"+E.size());
 		for (Employee emp : E) {
 			if (emp.getImage() != null) {
-
+				logger.info("before decompressing");
 				emp.setImage(decompressBytes(emp.getImage()));
+				logger.info("after decompressing");
 			}
 		}
 
@@ -98,8 +119,39 @@ public class EmployeeService {
 
 		logger.info("start of addNewEmp method");
 		JSONObject jsonObject = new JSONObject();
+		if(isExists(employee)) {
+			jsonObject.put("data", "Exist");
+			return jsonObject;
+		}
 		employee.setRegDate(Date.valueOf(LocalDate.now()));
 		employee.setRegTime(Time.valueOf(LocalTime.now()));
+		if(employee.getImage() != null) {
+			employee.setImage(compressBytes(employee.getImage()));
+		}
+		//employee.setImage(compressBytes(employee.getImage()));
+		employee.setActive(true);
+		Employee employeeSaved = repository.save(employee);
+		if (null != employeeSaved) {
+			jsonObject.put("data", "SUCCESS");
+			logger.info("employee added: " + employeeSaved.getEmpCode());
+		} else {
+			jsonObject.put("data", "FAIL");
+		}
+		logger.info("end of addNewEmp method");
+		return jsonObject;
+	}
+	
+	public JSONObject EditNewEmp(Employee employee) {
+
+		logger.info("start of addNewEmp method");
+		JSONObject jsonObject = new JSONObject();
+		employee.setRegDate(Date.valueOf(LocalDate.now()));
+		employee.setRegTime(Time.valueOf(LocalTime.now()));
+		if(employee.getImage() != null) {
+			employee.setImage(compressBytes(employee.getImage()));
+		}
+		//employee.setImage(compressBytes(employee.getImage()));
+		
 		Employee employeeSaved = repository.save(employee);
 		if (null != employeeSaved) {
 			jsonObject.put("data", "SUCCESS");
@@ -111,7 +163,65 @@ public class EmployeeService {
 		return jsonObject;
 	}
 
-	public JSONObject addOrEditEmployee(String jsonEmployee, MultipartFile file) {
+	public JSONObject changePassword(Employee employee) {
+
+		logger.info("start of addNewEmp method");
+		JSONObject jsonObject = new JSONObject();
+		employee.setRegDate(Date.valueOf(LocalDate.now()));
+		employee.setRegTime(Time.valueOf(LocalTime.now()));
+		if(employee.getImage() != null) {
+			employee.setImage(compressBytes(employee.getImage()));
+		}
+		
+		Employee employeeSaved = repository.save(employee);
+		if (null != employeeSaved) {
+			jsonObject.put("data", "SUCCESS");
+			logger.info("employee added: " + employeeSaved.getEmpCode());
+		} else {
+			jsonObject.put("data", "FAIL");
+		}
+		logger.info("end of addNewEmp method");
+		return jsonObject;
+	}
+	public JSONObject addEmployee(String jsonEmployee, MultipartFile file) {
+
+		logger.info("start of addOrEditEmployee method");
+		ObjectMapper mapper = new ObjectMapper();
+		JSONObject jsonObject = new JSONObject();
+		String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+		try {
+			Employee employee = mapper.readValue(jsonEmployee, Employee.class);
+			// employee.setProfileAttachment(new SerialBlob(file.getBytes()));
+			if(isExists(employee)) {
+				jsonObject.put("data", "Exist");
+				return jsonObject;
+			}
+			employee.setImage(compressBytes(file.getBytes()));
+			//Blob blob = Hibernate.getLobCreator(sessionFactory.getCurrentSession()).createBlob(file.getInputStream(), file.getSize());
+			//employee.setProfileAttachment(blob);
+			employee.setRegDate(Date.valueOf(LocalDate.now()));
+			employee.setRegTime(Time.valueOf(LocalTime.now()));
+			employee.setActive(true);
+			Employee employeeSaved = repository.save(employee);
+			if (null != employeeSaved) {
+				jsonObject.put("data", "SUCCESS");
+			} else {
+				jsonObject.put("data", "FAIL");
+			}
+		} /*
+			 * catch (SQLException e) {
+			 * 
+			 * e.printStackTrace();
+			 * 
+			 * }
+			 */
+		catch (IOException e) {
+			e.printStackTrace();
+		}
+		return jsonObject;
+	}
+	
+	public JSONObject editEmployee(String jsonEmployee, MultipartFile file) {
 
 		logger.info("start of addOrEditEmployee method");
 		ObjectMapper mapper = new ObjectMapper();
@@ -141,6 +251,14 @@ public class EmployeeService {
 		}
 		return jsonObject;
 	}
+	
+	public boolean isExists(Employee employee) {
+		Optional<Employee> l = repository.findById(employee.getEmpCode());
+		if(l.isPresent()) {
+			return true;
+		}
+			return false;
+	}
 
 	// compress the image bytes before storing it in the database
 	public static byte[] compressBytes(byte[] data) {
@@ -164,6 +282,7 @@ public class EmployeeService {
 
 	// uncompress the image bytes before returning it to the angular application
 	public static byte[] decompressBytes(byte[] data) {
+		//logger.info("before decompressing");
 		Inflater inflater = new Inflater();
 		inflater.setInput(data);
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream(data.length);
@@ -184,8 +303,14 @@ public class EmployeeService {
 	public JSONObject deleteEmployee(Employee employee) {
 
 		JSONObject jsonObject = new JSONObject();
+		employee.setEmpPlantCode(null);
+		if(employee.getImage() != null) {
+			employee.setImage(compressBytes(employee.getImage()));
+		}
+		employee.setActive(false);
+		repository.save(employee);
 
-		repository.delete(employee);
+		//repository.delete(employee);
 
 		jsonObject.put("data", "SUCCESS");
 		return jsonObject;
@@ -203,16 +328,50 @@ public class EmployeeService {
 	}
 
 	public JSONObject addNewOrEditContact(ContactManager contact) {
-
 		JSONObject jsonObject = new JSONObject();
-		contact.setRegDate(Date.valueOf(LocalDate.now()));
-		contact.setRegTime(Time.valueOf(LocalTime.now()));
-		ContactManager contanctSaved = contactRepository.save(contact);
-		if (null != contanctSaved) {
-			jsonObject.put("msg", "SUCCESS");
-		} else {
-			jsonObject.put("msg", "FAIL");
+		List<ContactManager> contactSearch = contactRepository.findByMobileNumbAndRegBy(contact.getMobileNumb(), contact.getRegBy());
+		if(contactSearch.size() == 0) {
+			//jsonObject.put("msg", "SUCCESS");
+			contact.setRegDate(Date.valueOf(LocalDate.now()));
+			contact.setRegTime(Time.valueOf(LocalTime.now()));
+			ContactManager contanctSaved = contactRepository.save(contact);
+			if (null != contanctSaved) {
+				jsonObject.put("msg", "SUCCESS");
+			} else {
+				jsonObject.put("msg", "FAIL");
+			}
 		}
+		else {
+			jsonObject.put("msg", "ALREADYTHERE");
+		}
+			
+		return jsonObject;
+	}
+	
+	public JSONObject EditContact(ContactManager contact) {
+		JSONObject jsonObject = new JSONObject();
+		List<ContactManager> contactSearch = contactRepository.findByMobileNumbAndRegBy(contact.getMobileNumb(), contact.getRegBy());
+		if(contactSearch.size() == 1 && contactSearch.get(0).getContactId() == contact.getContactId()) {
+			//jsonObject.put("msg", "SUCCESS");
+			ContactManager contanctSaved = contactRepository.save(contact);
+			if (null != contanctSaved) {
+				jsonObject.put("msg", "SUCCESS");
+			} else {
+				jsonObject.put("msg", "FAIL");
+			}
+		}else if(contactSearch.size() == 0){
+			
+			ContactManager contanctSaved = contactRepository.save(contact);
+			if (null != contanctSaved) {
+				jsonObject.put("msg", "SUCCESS");
+			} else {
+				jsonObject.put("msg", "FAIL");
+			}
+			
+		}else {
+			jsonObject.put("msg", "ALREADYTHERE");
+		}
+			
 		return jsonObject;
 	}
 
@@ -226,17 +385,28 @@ public class EmployeeService {
 		return jsonObject;
 	}
 
-	public List<MeetingStatus> viewAllVisit() {
+	public List<MeetingStatus> viewAllVisit(Employee employee) {
 
 		logger.info("start of viewAllVisit method");
 		List<String> statusNotIn = new ArrayList<String>();
 		statusNotIn.add("Cancel");
 		statusNotIn.add("Sec Checked Out");
+		
+		Optional<Employee> loginEmployee = repository.findById(employee.getEmpCode());
+		
+		List<Plant> plantsIn = new ArrayList<Plant>();
+		if(null != loginEmployee.get().getEmpPlantCode()) {
+			for(Plant plant: loginEmployee.get().getEmpPlantCode()) {
+				plantsIn.add(plant);
+			}
+		}
 		logger.info("visitDate: " + Date.valueOf(LocalDate.now()));
 		List<MeetingStatus> allMeetings = meetingStatusRepository
-				.findByMeetingBookedVisitDateAndStatusIsNotIn(Date.valueOf(LocalDate.now()), statusNotIn);
+				.findByMeetingBookedVisitDateAndStatusIsNotInAndMeetingBookedVisitLocationIn(Date.valueOf(LocalDate.now()), statusNotIn, plantsIn);
+		
 
 		for (MeetingStatus meetings : allMeetings) {
+			
 			if (meetings.getMeetingBooked().getVisitor().getVisitorImage() != null) {
 
 				meetings.getMeetingBooked().getVisitor()
@@ -252,9 +422,25 @@ public class EmployeeService {
 
 		List<String> statusNotIn = new ArrayList<String>();
 		statusNotIn.add("Cancel");
+		statusNotIn.add("Sec Checked Out");
 		List<MeetingStatus> allMeetings = meetingStatusRepository
 				.findByCreatedByAndMeetingBookedVisitDateAndStatusIsNotInAndEmpCheckout(empCode,
 						Date.valueOf(LocalDate.now()), statusNotIn, false);
+		/*
+		 * for(MeetingStatus ms : allMeetings) {
+		 * ms.getMeetingBooked().setVisitDate(Date.valueOf(LocalDate.now())); }
+		 */
+		return allMeetings;
+	}
+	
+	public List<MeetingStatus> viewAllUpcomingVisit(int empCode) {
+
+		List<String> statusNotIn = new ArrayList<String>();
+		statusNotIn.add("Cancel");
+		statusNotIn.add("Sec Checked Out");
+		List<MeetingStatus> allMeetings = meetingStatusRepository
+				.findByCreatedByAndMeetingBookedVisitDateIsAfterAndStatusIsNotInAndEmpCheckout(empCode,
+						Date.valueOf(LocalDate.now().minusDays(1)), statusNotIn, false);
 		/*
 		 * for(MeetingStatus ms : allMeetings) {
 		 * ms.getMeetingBooked().setVisitDate(Date.valueOf(LocalDate.now())); }
@@ -269,10 +455,12 @@ public class EmployeeService {
 			// Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 			// SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			/// java.util.Date d = sdf.parse(sdf.format(timestamp));
+			Optional<Employee> employee = repository.findById(meeting.getMeetingBooked().getEmpId());
 			Random rnd = new Random();
 			// int number = Integer.valueOf(String.format("%06d", rnd.nextInt(999999)));
 			int number = rnd.nextInt(900000) + 100000;
 			meeting.setSecurityCode(number);
+			meeting.getMeetingBooked().setVisitDepartment(employee.get().getEmpDept());
 			meeting.setCreatedDate(Date.valueOf(LocalDate.now()));
 			meeting.setCreatedTime(Time.valueOf(LocalTime.now()));
 			meeting.setLastUpdatedDate(Date.valueOf(LocalDate.now()));
@@ -280,12 +468,17 @@ public class EmployeeService {
 			meeting.setStatus("Booked");
 
 			MeetingStatus meetingSaved = meetingStatusRepository.save(meeting);
-			String mailStatus = sendMessage(meeting);
-			if (null != meetingSaved /* && "SUCCESS".equalsIgnoreCase(mailStatus) */ ) {
-				jsonObject.put("msg", "SUCCESS");
+			List<ContactManager> contact = contactRepository.findByMobileNumbAndRegBy(meeting.getMeetingBooked().getVisitor().getContactNumber(), meeting.getCreatedBy());
+			if(contact.size() == 0) {
+				jsonObject.put("msg", "SUCCESSANDCONTACT");
 				jsonObject.put("meetingData", meetingSaved);
-			} else {
-				jsonObject.put("msg", "FAIL");
+			}else {
+				if (null != meetingSaved /* && "SUCCESS".equalsIgnoreCase(mailStatus) */ ) {
+					jsonObject.put("msg", "SUCCESS");
+					jsonObject.put("meetingData", meetingSaved);
+				} else {
+					jsonObject.put("msg", "FAIL");
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -405,6 +598,16 @@ public class EmployeeService {
 
 		return count;
 	}
+	
+	public long getAllVisitCount() {
+		
+		return meetingStatusRepository.count();		
+	}
+	
+	public long getAllEmployeeCount() {
+		
+		return repository.count();		
+	}
 
 	public int getTodaysVisitCount(int loginId) {
 
@@ -418,8 +621,7 @@ public class EmployeeService {
 			logger.info("visit date of meeeting " + ms.getMeetingId() + " is " + ms.getMeetingBooked().getVisitDate());
 			logger.info("value of date compareTo current date is "
 					+ currentDate.compareTo(ms.getMeetingBooked().getVisitDate()));
-			if ((currentDate.compareTo(ms.getMeetingBooked().getVisitDate()) == 0)
-					&& (!"Cancel".equalsIgnoreCase(ms.getStatus()))) {
+			if ((currentDate.compareTo(ms.getMeetingBooked().getVisitDate()) == 0)) {
 				count++;
 			}
 		}
@@ -457,112 +659,124 @@ public class EmployeeService {
 		return count;
 	}
 
-	public String sendMessage(@RequestBody MeetingStatus visitor) {
+	public String sendMessage(MeetingStatus visitor) {
+		URL url = null;
+	    BufferedReader reader = null;
+	    StringBuilder stringBuilder = new StringBuilder();
+	    SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+	    String message1 = null;
+	    String subject = null;
+	    String message = null;
+	    
+	    String signature = "Thanks & Regards \n" +
+				   "Rucha Engineers Pvt. Ltd.";
 		
-		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-		try {
-			// Construct data
-			String apiKey = "apikey=" + "SLNDsGimV1s-MQPRtuGHKqeF6V8MkQY2mYVw2DriO1";
-			String message = "Your Meeting is schedule on " + sdf.format(visitor.getMeetingBooked().getVisitDate())
-					+ " " + visitor.getMeetingBooked().getVisitTime() + " with "
-					+ visitor.getMeetingBooked().getEmpName() + " at "
-					+ visitor.getMeetingBooked().getVisitLocation().getPlantName() + " and your checkin code is: "
-					+ visitor.getSecurityCode();
-
-			String numbers = "&numbers=" + visitor.getMeetingBooked().getVisitor().getContactNumber();
-
-			// Send data
-			HttpURLConnection conn = (HttpURLConnection) new URL("https://api.textlocal.in/send/?").openConnection();
-			String data = apiKey + numbers + "&message=" + message;
-			System.out.println("data: " + data);
-			conn.setDoOutput(true);
-			conn.setRequestMethod("POST");
-			conn.setRequestProperty("Content-Length", Integer.toString(data.length()));
-			conn.getOutputStream().write(data.getBytes("UTF-8"));
-
-			final BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-
-			final StringBuffer stringBuffer = new StringBuffer();
-
-			String line;
-			while ((line = rd.readLine()) != null) {
-				stringBuffer.append(line);
+	    if("cancel".equalsIgnoreCase(visitor.getStatus())) {
+	    	subject = "You scheduled visit is cancelled with Rucha Engineers Pvt Ltd.";
+	    	message1 = "Hello, " + visitor.getMeetingBooked().getVisitor().getSalutation() +  " " + visitor.getMeetingBooked().getVisitor().getFirstName() +  " " + visitor.getMeetingBooked().getVisitor().getLastName()+ ", sorry to inform you that your scheduled visit on " +sdf.format(visitor.getMeetingBooked().getVisitDate()) + " at "
+					+ visitor.getMeetingBooked().getVisitTime() +" is cancelled.";
+	    	message = message1.replaceAll(" ", "%20");
+	    	message1 = message1 + "\n\n\n" + signature;
+	    }else {
+	    	subject = "Your visit is scheduled at Rucha Engineers Pvt Ltd.";
+	    	message1 = "Hello, " + visitor.getMeetingBooked().getVisitor().getSalutation() +  " " + visitor.getMeetingBooked().getVisitor().getFirstName() +  " " + visitor.getMeetingBooked().getVisitor().getLastName()+ " " + " Your Visit is schedule with " + visitor.getMeetingBooked().getEmpName() +
+	    			" "+(repository.findById(visitor.getMeetingBooked().getEmpId())).get().getEmpMobile()  +" on " + sdf.format(visitor.getMeetingBooked().getVisitDate()) + " at " + visitor.getMeetingBooked().getVisitTime() 
+					+ " in " + visitor.getMeetingBooked().getVisitLocation().getPlantName() + ". And your Appointment Number is: "+ visitor.getMeetingBooked().getVisitNo() + 
+					" AND OTP- "+ visitor.getSecurityCode();
+	    	message = message1.replaceAll(" ", "%20");
+	    	
+	    	
+	    	//for email
+	    	
+	    	//SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+			//StringBuilder msg = null;
+			String startLine = "Hello, " + visitor.getMeetingBooked().getVisitor().getSalutation() + " " +
+										visitor.getMeetingBooked().getVisitor().getFirstName() + " " +
+										visitor.getMeetingBooked().getVisitor().getLastName() + "\n\n" +
+										"Your visit is scheduled details are as below \n\n";
+			String details = "Appointment with:" + visitor.getMeetingBooked().getEmpName() + "\n" +
+							 "Mobile          :" + (repository.findById(visitor.getMeetingBooked().getEmpId())).get().getEmpMobile() + "\n" +
+							 "Appointment No. :" + visitor.getMeetingBooked().getVisitNo() + "\n" +
+							 "OTP             :" + visitor.getSecurityCode() + "\n" +
+							 "Date            :" + sdf.format(visitor.getMeetingBooked().getVisitDate()) + "\n" +
+							 "Time            :" + visitor.getMeetingBooked().getVisitTime() + "\n" +
+							 "Location        :" + visitor.getMeetingBooked().getVisitLocation().getPlantName() + "\n" +
+							 "Adddress        :" + visitor.getMeetingBooked().getVisitLocation().getPlantAddress() + "\n" +
+							 "Google Map      :" + visitor.getMeetingBooked().getVisitLocation().getPlantMapLink() + "\n" ;
+			
+			List<CoVisitor> CoVisitorListdetails = coVisitorRepository.findByVisitor(visitor.getMeetingBooked().getVisitor());
+			int CoVisitorCount = 1;
+			String CoVisitorList = "";
+			if (!CoVisitorListdetails.isEmpty()){
+				for (CoVisitor CV : CoVisitorListdetails) {
+					CoVisitorList = CoVisitorList + CoVisitorCount +". " + CV.getCoVisitorName() + " - " + CV.getCoVisitorContact()+ "\n";
+					CoVisitorCount++;
+				}
 			}
-			rd.close();
-			 
 			
-			sendmail(visitor.getMeetingBooked().getVisitor().getEmailId(),message);
+			String instruction = "Instructions - \n \n" +
+								 "1) In your own interest, your car vehicle/handbag can be checked by Security. Kindly declare your belongings (any Drawings/ Laptops/ CDs/ Memory sticks, Tools,  Equipment etc. while entering the premises. \n"+
+								 "2) Smoking, drinking of liquor & carrying tobacco products inside the premises is strictly prohibited.\n" +
+								 "3) In case of emergency, please go to the nearest assembly point for further instruction, during an emergency.\n" +
+								 "4) Do not visit any area of the Premises which is not concerned with your visit.\n" +
+								 "5) Photography & video shooting in the Factory premises is subject to permission from HCM.\n" +
+								 "6) Valid Driving License, PUC, and Registration Papers must be in your possession.\n" +
+								 "7) Do not touch/operate any machine/ equipment unless it is officially allowed.\n"+
+								 "8) Return this card while leaving the premises.\n"+
+								 "9) You are entering in the Factory at your own risk\n";
 			
-			return stringBuffer.toString();
-		} catch (Exception e) {
-			System.out.println("Error SMS "+e);
-			return "Error "+e;
-		}
+			
+			
+			String finalMessage = startLine + "\n" + details + "\n" ;
+								if (!CoVisitorListdetails.isEmpty()) {
+									finalMessage = finalMessage + "Covisitor List : \n";
+									finalMessage = finalMessage + CoVisitorList + "\n";
+								}
+			finalMessage = finalMessage + instruction + signature;
+			
+			message1 = finalMessage;
+	    }
+	    
+	    //String message = "hello";
+		 try
+		    {
+		      // create the HttpURLConnection
+			 String urlStr = "http://bulksms.vrudheesolutions.com/api/mt/SendSMS?APIKey=R8ntvc8nnU26zeAGiN0U0A&senderid=ERUCHA&channel=2&DCS=0&flashsms=0&number="+visitor.getMeetingBooked().getVisitor().getContactNumber()+"&text="+message+"&route=1";
+			 logger.info(urlStr);
+		      url = new URL(urlStr);
+		      HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+		      connection.addRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:25.0) Gecko/20100101 Firefox/25.0");
+		      
+		      // give it 15 seconds to respond
+		      connection.setReadTimeout(15*1000);
+		      connection.connect();
+		
+		      // read the output from the server
+		      reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+		      
+		
+		      String line = null;
+		      while ((line = reader.readLine()) != null)
+		      {
+		        stringBuilder.append(line + "\n");
+		      }
+		      sendmail(visitor.getMeetingBooked().getVisitor().getEmailId(),message1,subject);
+		     
+		    }
+		    catch (Exception e)
+		    {
+		      e.printStackTrace();
+		    }
+		 return (stringBuilder.toString());
 	}
 
-	public String sendMessage1(@RequestBody MeetingStatus visitor) {
-		HttpURLConnection conn = null;
-
-		try {
-			// Construct data
-			// APIKey=R8ntvc8nnU26zeAGiN0U0A&senderid=ERUCHA&channel=2&DCS=0&
-			// flashsms=0&number=919028xxxxxx&text=test%20message&route=1
-			SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-			String apiKey = "APIKey=" + URLEncoder.encode("R8ntvc8nnU26zeAGiN0U0A", "UTF-8") + "&senderid="
-					+ URLEncoder.encode("ERUCHA", "UTF-8") + "&channel=" + URLEncoder.encode("2", "UTF-8") + "&DCS="
-					+ URLEncoder.encode("0", "UTF-8") + "&flashsms=" + URLEncoder.encode("0", "UTF-8");
-
-			/*
-			 * String message = "Your Meeting is schedule on "+
-			 * sdf.format(visitor.getMeetingBooked().getVisitDate()) +
-			 * " "+visitor.getMeetingBooked().getVisitTime()
-			 * +" with "+visitor.getMeetingBooked().getEmpId()+" at"+
-			 * visitor.getMeetingBooked().getVisitLocation().getPlantName()
-			 */;
-
-			String message = "hello";
-			String numbers = "&number="
-					+ URLEncoder.encode("" + visitor.getMeetingBooked().getVisitor().getContactNumber(), "UTF-8");
-
-			// Send data
-			String data = apiKey + numbers + "&text=" + message
-			// URLEncoder.encode(message,"UTF-8")
-					+ "&route=1";
-			conn = (HttpURLConnection) new URL("http://bulksms.vrudheesolutions.com/api/mt/SendSMS").openConnection();
-			conn.setRequestProperty("Content-Type", "application/json");
-
-			/*
-			 * String data1 ="{APIKey: \"R8ntvc8nnU26zeAGiN0U0A\", senderid: \"ERUCHA\",
-			 * channel: \"2\", DCS: \"0\", flashsms: \"0\", numbers:
-			 * \""+visitor.getMeetingBooked().getVisitor().getContactNumber()+
-			 * "\" , text: \"testMessage\" }";
-			 */
-			System.out.println("data: " + data + conn.getResponseCode());
-			conn.setDoOutput(true);
-			OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
-			wr.write(data);
-			wr.flush();
-			BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-			String result = rd.readLine();
-			wr.close();
-			rd.close();
-
-			sendmail(visitor.getMeetingBooked().getVisitor().getEmailId(), message);
-
-			// return result;
-			return "SUCCESS";
-		} catch (Exception e) {
-			System.out.println("Error SMS " + e);
-			return "Error " + e;
-		}
-	}
-
-	public void sendmail(String MailTo, String message) throws AddressException, MessagingException, IOException {
+	public void sendmail(String MailTo, String message, String subject) throws AddressException, MessagingException, IOException {
 		SimpleMailMessage msg = new SimpleMailMessage();
-		msg.setFrom("raj.viradiya@syscort.com");
+		//msg.setFrom("raj.viradiya@syscort.com");no-reply@rucha.co.in
+		msg.setFrom("no-reply@rucha.co.in");
 		msg.setTo(MailTo);
 
-		msg.setSubject("Meeting Details");
+		msg.setSubject(subject);
 		msg.setText(message);
 
 		System.out.println("sending msg");
@@ -587,6 +801,7 @@ public class EmployeeService {
 			meeting.setStatus("Cancel");
 
 			MeetingStatus meetingSaved = meetingStatusRepository.save(meeting);
+			sendMessage(meetingSaved);
 			if (null != meetingSaved) {
 				jsonObject.put("msg", "SUCCESS");
 			} else {
@@ -602,17 +817,21 @@ public class EmployeeService {
 
 	public Employee getLoggedInDetails(int loginId) {
 
+		logger.info("start of getLoggedInDetails method with loginId:"+loginId);
 		Employee empDetails = new Employee();
 		Optional<Employee> l = repository.findById(loginId);
+		logger.info("after hiting repository:"+l.get().getEmpName());
 		if (l.isPresent()) {
 			empDetails = l.get();
+			logger.info("before compressing image");
 			if (empDetails.getImage() != null) {
 
 				empDetails.setImage(decompressBytes(empDetails.getImage()));
+				logger.info("after compressing image"+empDetails.getImage().length);
 			}
 
 		}
-
+		logger.info("end of getLoggedInDetails method with loginId:"+loginId);
 		return empDetails;
 	}
 
@@ -621,7 +840,12 @@ public class EmployeeService {
 		List<String> statusNotIn = new ArrayList<String>();
 		statusNotIn.add("Cancel");
 		List<MeetingStatus> allMeetings = meetingStatusRepository.findByStatusIsNotIn(statusNotIn);
-
+		
+		for(MeetingStatus meeting : allMeetings) {
+			if(meeting.getMeetingBooked().getVisitor().getVisitorImage() != null) {
+				meeting.getMeetingBooked().getVisitor().setVisitorImage(decompressBytes(meeting.getMeetingBooked().getVisitor().getVisitorImage()));
+			}
+		}
 		return allMeetings;
 	}
 
@@ -675,7 +899,7 @@ public class EmployeeService {
 			for (MeetingStatus visit : visits) {
 				Row row = sheet.createRow(rowIdx++);
 
-				row.createCell(0).setCellValue(visit.getMeetingBooked().getVisitor().getVisitorName());
+				row.createCell(0).setCellValue(visit.getMeetingBooked().getVisitor().getFirstName());
 				row.createCell(1).setCellValue(visit.getMeetingBooked().getVisitor().getOrganisation());
 				row.createCell(2).setCellValue(visit.getMeetingBooked().getVisitor().getContactNumber());
 				row.createCell(3).setCellValue(visit.getMeetingBooked().getVisitDate().toString());
@@ -687,6 +911,87 @@ public class EmployeeService {
 			logger.info("end of customersToExcel method");
 			return new ByteArrayInputStream(out.toByteArray());
 		}
+	}
+	
+	public JSONObject sendEmail(MeetingStatus meeting1) {
+		
+		JSONObject jsonObject = new JSONObject();
+		try {
+			// Construct data
+			Optional<MeetingStatus> meeting2 = meetingStatusRepository.findById(meeting1.getMeetingId());
+			MeetingStatus meeting = meeting2.get();
+			SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+			String Greet = "Dear " + meeting.getMeetingBooked().getVisitor().getFirstName() + "\n\n\n";
+			
+			String CoVisitorList = "";
+			String forEmpCoVisitorList = "";
+			List<CoVisitor> CoVisitorListdetails = coVisitorRepository.findByVisitor(meeting.getMeetingBooked().getVisitor());
+			int CoVisitorCount = 1;
+			int AssetCount = 1 ;
+			for (CoVisitor CV : CoVisitorListdetails) {
+				CoVisitorList = CoVisitorList + "Co-Visitor " + CoVisitorCount + ": " + CV.getCoVisitorName() + "\n";
+				forEmpCoVisitorList = forEmpCoVisitorList + CoVisitorCount +". " + CV.getCoVisitorName() + " - " + CV.getCoVisitorContact()+ "\n";
+				CoVisitorCount++;
+			}
+			String subject;
+			if(meeting.isEmpCheckout() || "cancel".equalsIgnoreCase(meeting.getStatus())) {
+				subject="Thanks for visit with Rucha Engineers Pvt. Ltd.";
+				//String msg = "";
+				String startLine = "Dear, " + meeting.getMeetingBooked().getVisitor().getSalutation() + " " +
+						meeting.getMeetingBooked().getVisitor().getFirstName() + " " +
+						meeting.getMeetingBooked().getVisitor().getLastName() + "\n\n" ;	
+				
+				String body = meeting.getMeetingBooked().getVisitor().getSalutation() + " " +
+							  meeting.getMeetingBooked().getVisitor().getFirstName() + " " +
+							  meeting.getMeetingBooked().getVisitor().getLastName() + " " +
+							  "Thanks for visiting to Rucha Engineering Pvt. Ltd. you are successfully checked-out at security gate on" +
+							  sdf.format(meeting.getSecCheckoutDate()) + "at" +
+							  meeting.getSecCheckoutTime() + ".\n\n" ;
+				
+				String signature = "Thanks & Regards \n" +
+						   "Rucha Engineers Pvt. Ltd.";
+				
+				String msg = startLine + body + signature;
+				sendmail(meeting.getMeetingBooked().getVisitor().getEmailId(),msg,subject);
+			}else {
+				
+				  String msg = "";
+				  msg = msg + "Dear " + meeting.getMeetingBooked().getEmpName()+", \n" + 
+						  meeting.getMeetingBooked().getVisitor().getSalutation() +  " " + 
+						  meeting.getMeetingBooked().getVisitor().getFirstName() +  " " + 
+						  meeting.getMeetingBooked().getVisitor().getLastName() +
+				  " is successfully checked-in at the security gate on " +
+				  sdf.format(meeting.getSecCheckinDate()) + " at " +
+				  meeting.getSecCheckinTime() + ". \n\n" ;
+				  
+				if (!CoVisitorListdetails.isEmpty()) {
+					msg = msg + "Co-Visitor list \n ";
+					msg = msg + CoVisitorList;
+				}
+
+				msg = msg + "\nThanks & Regards \n"; 
+				msg = msg + "Rucha Engineers Pvt. Ltd.";
+				  
+				  String subjectToEmp = meeting.getMeetingBooked().getVisitor().getFirstName() + " "+meeting.getMeetingBooked().getVisitor().getLastName()+ " checked-in at security gate";
+				  
+				  Optional<Employee> emp = repository.findById(meeting.getMeetingBooked().getEmpId());
+				 
+				sendmail(emp.get().getEmpEmail(),msg,subjectToEmp);
+			}
+			 
+			
+		     
+	    } catch (Exception e) {
+			System.out.println("Error SMS "+e);
+			logger.info("Error "+e);
+		}
+		jsonObject.put("msg", "SUCCESS");
+		return jsonObject;
+	}
+
+	public void sendSmsAndEmail(MeetingStatus meeting) {
+		sendMessage(meeting);
+		//return null;
 	}
 
 }

@@ -24,6 +24,9 @@ public class Asset implements Serializable {
 	@NotNull
 	private String assetName;
 	
+	@Column (name = "asset_serialno")
+	private String assetSerialno;
+	
 	@Column (name = "asset_count")
 	@NotNull
 	private int assetCount;
@@ -98,6 +101,14 @@ public class Asset implements Serializable {
 
 	public void setMainVisitor(Visitor mainVisitor) {
 		this.mainVisitor = mainVisitor;
+	}
+
+	public String getAssetSerialno() {
+		return assetSerialno;
+	}
+
+	public void setAssetSerialno(String assetSerialno) {
+		this.assetSerialno = assetSerialno;
 	}
 	
 	

@@ -1,6 +1,7 @@
 package com.vms.Repository;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.query.Param;
@@ -14,4 +15,7 @@ import com.vms.Model.Plant;
 public interface EmployeeRepository extends JpaRepository<Employee, Integer>{
 
 	public List<Employee> findByEmpDept(@Param("empDept") Department department);
+	
+	public List<Employee> findByActive(@Param("active") boolean active);
+	
 }

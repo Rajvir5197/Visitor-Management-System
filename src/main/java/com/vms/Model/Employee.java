@@ -12,6 +12,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -40,6 +41,9 @@ public class Employee implements Serializable {
 	@NotNull
 	private String empDesignation;
 	
+	@Column (name = "emp_email")
+	private String empEmail;
+	
 	@Column (name = "emp_role")
 	@NotNull
 	private String empRole;
@@ -56,10 +60,8 @@ public class Employee implements Serializable {
 	@NotNull
 	private String empPass;
 	
-	@Column (name = "profile_attachment")
-	private Blob profileAttachment;
-	
-	@Column (name = "image", length = 20000)
+	@Lob
+	@Column (name = "image", length = 100000)
 	private byte[] image;
 	
 	@Column (name = "reg_by")
@@ -73,8 +75,10 @@ public class Employee implements Serializable {
 	
 	@ManyToMany
 	@JoinColumn(name = "EMP_PLANT")
-	@NotNull
 	private Set<Plant> empPlantCode;
+	
+	@Column(name= "active")
+	private boolean active;
 
 	public int getEmpCode() {
 		return empCode;
@@ -140,14 +144,6 @@ public class Employee implements Serializable {
 		this.empPass = empPass;
 	}
 
-	public Blob getProfileAttachment() {
-		return profileAttachment;
-	}
-
-	public void setProfileAttachment(Blob profileAttachment) {
-		this.profileAttachment = profileAttachment;
-	}
-
 	public byte[] getImage() {
 		return image;
 	}
@@ -186,6 +182,22 @@ public class Employee implements Serializable {
 
 	public void setEmpPlantCode(Set<Plant> empPlantCode) {
 		this.empPlantCode = empPlantCode;
+	}
+
+	public boolean isActive() {
+		return active;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
+	}
+
+	public String getEmpEmail() {
+		return empEmail;
+	}
+
+	public void setEmpEmail(String empEmail) {
+		this.empEmail = empEmail;
 	}
 	
 	

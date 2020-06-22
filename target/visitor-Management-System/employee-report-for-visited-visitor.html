@@ -1,6 +1,6 @@
 
 <!-- Begin Page Content -->
-<div ng-controller="reportController" class="container-fluid mt-3">
+<div class="container-fluid mt-3">
 
 <!-- Page Heading -->
 <div class="row mb-2">
@@ -42,8 +42,8 @@
 </div>
 
 <div class="col-lg-4 mb-3">
-<button type="button" class="btn btn-primary" ng-click="getVisitsbetweenDates()">Submit</button>
-<a href="https://54.196.47.108:8443/visitor-Management-System/Admin/downloadReport/reports.xlsx" class="btn btn-primary">Download</a>
+<button type="button" class="btn btn-primary" ng-click="filterData(reportType)">Submit</button>
+<a href="/visitor-Management-System/Admin/downloadReport/reports.xlsx" class="btn btn-primary">Download</a>
 </div>
 </div>
 
@@ -55,7 +55,7 @@
 <div class="col-sm-8">
 <div class="FaIcon">
 <i class="fa fa-calendar-alt FloatIcon"></i>
-<input type="date" ng-model="selectedFromDate" class="form-control">
+<input type="date" id="selectedFromDateEmp" ng-model="selectedFromDate" class="form-control">
 </div>
 </div>
 </div>
@@ -67,7 +67,7 @@
 <div class="col-sm-8">
 <div class="FaIcon">
 <i class="fa fa-calendar-alt FloatIcon"></i>
-<input type="date" ng-model="selectedToDate" class="form-control">
+<input type="date" id="selectedToDate" ng-model="selectedToDate" class="form-control">
 </div>
 </div>
 </div>
@@ -77,9 +77,9 @@
 <div class="row">
 <div class="col-sm-4 align-self-center">Select Plant</div>
 <div class="col-sm-8">
-<select class="form-control" ng-model="selectedPlant" >
+<select class="form-control" id="selectedPlant" ng-model="selectedPlant" >
 <option>All Plant</option>
-<option ng-repeat="plant in allPlants">{{plant.plantName}}</option>
+<option ng-repeat="plant in allPlants" value="{{plant.plantCode}}">{{plant.plantName}}</option>
 </select>
 </div>
 </div>
@@ -89,17 +89,17 @@
 <div class="row">
 <div class="col-sm-4 align-self-center">Select Dept.</div>
 <div class="col-sm-8">
-<select class="form-control" ng-model="selectedDept">
+<select class="form-control" id="selectedDept" ng-model="selectedDept">
 <option>All Dept</option>
-<option ng-repeat="dept in allDept">{{dept.deptName}}</option>
+<option ng-repeat="dept in allDept" value="{{dept.deptCode}}">{{dept.deptName}}</option>
 </select>
 </div>
 </div>
 </div>
 
 <div class="col-lg-12 mb-3 text-right">
-<button type="button" class="btn btn-primary">Submit</button>
-<a href="https://54.196.47.108:8443/visitor-Management-System/Admin/downloadReport/reports.xlsx" class="btn btn-primary">Download</a>
+<button type="button" class="btn btn-primary" ng-click="filterDataForPlant(reportType)">Submit</button>
+<a href="/visitor-Management-System/Admin/downloadReport/reports.xlsx" class="btn btn-primary">Download</a>
 </div>
 </div>
 
@@ -110,7 +110,7 @@
 <div class="col-sm-8">
 <div class="FaIcon">
 <i class="fa fa-calendar-alt FloatIcon"></i>
-<input type="date" class="form-control">
+<input type="date" id="selectedFromDateEmp" ng-model="selectedFromDate" class="form-control">
 </div>
 </div>
 </div>
@@ -122,7 +122,7 @@
 <div class="col-sm-8">
 <div class="FaIcon">
 <i class="fa fa-calendar-alt FloatIcon"></i>
-<input type="date" class="form-control">
+<input type="date" id="selectedToDate" ng-model="selectedToDate" class="form-control">
 </div>
 </div>
 </div>
@@ -132,17 +132,17 @@
 <div class="row">
 <div class="col-sm-4 align-self-center">Department</div>
 <div class="col-sm-8">
-<select class="form-control" ng-model="selectedDept">
+<select class="form-control" id="selectedDept" ng-model="selectedDept">
 <option>All Dept</option>
-<option ng-repeat="dept in allDept">{{dept.deptName}}</option>
+<option ng-repeat="dept in allDept" value="{{dept.deptCode}}">{{dept.deptName}}</option>
 </select>
 </div>
 </div>
 </div>
 
 <div class="col-lg-2 mb-3">
-<button type="button" class="btn btn-primary">Submit</button>
-<a href="https://54.196.47.108:8443/visitor-Management-System/Admin/downloadReport/reports.xlsx" class="btn btn-primary">Download</a>
+<button type="button" class="btn btn-primary" ng-click="filterDataHr(reportType)">Submit</button>
+<a href="/visitor-Management-System/Admin/downloadReport/reports.xlsx" class="btn btn-primary">Download</a>
 </div>
 </div>
 
@@ -162,17 +162,21 @@
 <th>Visitor Phone</th>
 <th>Visit Date</th>
 <th>Visit Time</th>
+<th ng-if="reportType == 'plant' || reportType == 'plantHr'">Visit To</th>
+<th ng-if="reportType == 'plant' || reportType == 'plantHr'">Visit To Department</th>
 <th>View Details</th>
 </tr>
 </thead>
 <tbody id="visitData">
 <tr ng-repeat="visit in allVisits">
 <td>{{$index + 1}}</td>
-<td>{{visit.meetingBooked.visitor.visitorName}}</td>
+<td>{{visit.meetingBooked.visitor.firstName}} {{visit.meetingBooked.visitor.middleName}} {{visit.meetingBooked.visitor.lastName}}</td>
 <td>{{visit.meetingBooked.visitor.organisation}}</td>
 <td>{{visit.meetingBooked.visitor.contactNumber}}</td>
 <td>{{visit.meetingBooked.visitDate}}</td>
 <td>{{visit.meetingBooked.visitTime}}</td>
+<td ng-if="reportType == 'plant' || reportType == 'plantHr'">{{visit.meetingBooked.empName}}</td>
+<td ng-if="reportType == 'plant' || reportType == 'plantHr'">{{visit.meetingBooked.visitDepartment.deptName}}</td>
 <td>
 <span data-toggle="modal" data-target="#viewDetailsModal" ng-click="getCoVisitor(visit)"><i class="fa fa-eye fa-lg fa-fw Pointer text-dark" data-toggle="tooltip" data-placement="top" title="" data-original-title="View"></i></span>
 </td>
@@ -194,6 +198,56 @@
 </div>
 <div class="modal-body">
 
+
+<div ng-if="reportType == 'plant' || reportType == 'plantHr'" class="row mb-3">
+<div class="col-lg-12">
+<h5 class="BlackTxtColor border-bottom pb-2 text-info">Visit To Details</h5>
+</div>
+</div>
+
+
+<div ng-if="reportType == 'plant' || reportType == 'plantHr'" class="row">
+<div class="col-lg-6 border-right">
+<div class="row">
+<div class="col-sm-4 mb-3">Employee Name</div>
+<div class="col-sm-8 mb-3 BlackTxtColor">: {{selectedVisitor.meetingBooked.empName}}</div>
+</div>
+
+<div class="row">
+<div class="col-sm-4 mb-3">Employee Code</div>
+<div class="col-sm-8 mb-3 BlackTxtColor">: {{selectedVisitor.meetingBooked.empId}}</div>
+</div>
+
+<!-- <div class="row">
+<div class="col-sm-4 mb-3">Phone No.</div>
+<div class="col-sm-8 mb-3 BlackTxtColor">: {{ }}</div>
+</div> -->
+
+<div class="row">
+<div class="col-sm-4 mb-3">Department</div>
+<div class="col-sm-8 mb-3 BlackTxtColor">: {{selectedVisitor.meetingBooked.visitDepartment.deptName}}</div>
+</div>
+</div>
+
+<div class="col-lg-6">
+<div class="row">
+<div class="col-sm-4 mb-3">Plant</div>
+<div class="col-sm-8 mb-3 BlackTxtColor">: {{selectedVisitor.meetingBooked.visitLocation.plantName}}</div>
+</div>
+
+<div class="row">
+<div class="col-sm-4 mb-3">Visit Set Date</div>
+<div class="col-sm-8 mb-3 BlackTxtColor">: {{selectedVisitor.meetingBooked.visitDate}}</div>
+</div>
+
+<div class="row">
+<div class="col-sm-4 mb-3">Visit Set Time</div>
+<div class="col-sm-8 mb-3 BlackTxtColor">: {{selectedVisitor.meetingBooked.visitTime}}</div>
+</div>
+</div>
+</div>
+
+
 <div class="row mb-3">
 <div class="col-lg-12">
 <h5 class="BlackTxtColor border-bottom pb-2 text-info">Visitor Details</h5>
@@ -205,7 +259,7 @@
 <div class="col-lg-6 border-right">
 <div class="row">
 <div class="col-sm-4 mb-3">Visitor Name</div>
-<div class="col-sm-8 mb-3 BlackTxtColor">: {{selectedVisitor.meetingBooked.visitor.visitorName}}</div>
+<div class="col-sm-8 mb-3 BlackTxtColor">: {{selectedVisitor.meetingBooked.visitor.firstName}} {{selectedVisitor.meetingBooked.visitor.middleName}} {{selectedVisitor.meetingBooked.visitor.lastName}}</div>
 </div>
 
 <div class="row">
@@ -227,7 +281,10 @@
 <div class="col-lg-6">
 <div class="row">
 <div class="col-sm-4 mb-3">Photo</div>
-<div class="col-sm-8 mb-3 BlackTxtColor">: <img src="images/profile-pic.jpg" width="80px" class="border p-1" /></div>
+<div class="col-sm-8 mb-3 BlackTxtColor">: <img ng-show="selectedVisitor.meetingBooked.visitor.visitorImage != null" src="data:image/jpeg;base64,{{selectedVisitor.meetingBooked.visitor.visitorImage}}" width="80px" class="border p-1" />
+<img ng-hide="selectedVisitor.meetingBooked.visitor.visitorImage != null" src="images/profile-pic.jpg" width="80px" class="border p-1" />
+
+</div>
 </div>
 
 <div class="row">

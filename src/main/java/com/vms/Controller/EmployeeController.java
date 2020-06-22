@@ -1,9 +1,11 @@
 package com.vms.Controller;
 
+import java.sql.Blob;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -39,9 +41,17 @@ public class EmployeeController {
 
 	@RequestMapping(value = "/addNewOrEditEmp", method = RequestMethod.POST)
 	@ResponseBody
-	public JSONObject addNewOrEditEmp(@RequestParam("file") MultipartFile file,
+	public JSONObject addNewEmp(@RequestParam("file") MultipartFile file,
 			@RequestParam("empDetails") String jsonEmployee) {
-		return service.addOrEditEmployee(jsonEmployee, file);
+		
+		return service.addEmployee(jsonEmployee, file);
+	}
+	
+	@RequestMapping(value = "/editNewOrEditEmp", method = RequestMethod.POST)
+	@ResponseBody
+	public JSONObject editNewEmp(@RequestParam("file") MultipartFile file,
+			@RequestParam("empDetails") String jsonEmployee) {
+		return service.editEmployee(jsonEmployee, file);
 	}
 	
 	@RequestMapping(value = "/addNewEmp", method = RequestMethod.POST)
@@ -50,10 +60,16 @@ public class EmployeeController {
 		return service.addNewEmp(employee);
 	}
 	
+	@RequestMapping(value = "/changePassword", method = RequestMethod.POST)
+	@ResponseBody
+	public JSONObject changePassword(@RequestBody Employee employee) {
+		return service.changePassword(employee);
+	}
+	
 	@RequestMapping(value = "/editEmp", method = RequestMethod.POST)
 	@ResponseBody
 	public JSONObject editEmp(@RequestBody Employee employee) {
-		return service.addNewEmp(employee);
+		return service.EditNewEmp(employee);
 	}
 
 	@RequestMapping(value = "/deleteEmp", method = RequestMethod.POST)
@@ -72,6 +88,13 @@ public class EmployeeController {
 		return allContacts;
 	}
 
+	@RequestMapping(value = "/addNewContact", method = RequestMethod.POST)
+	@ResponseBody
+	public JSONObject EditContact(@RequestBody ContactManager contact) {
+
+		return service.EditContact(contact);
+	}
+	
 	@RequestMapping(value = "/addNewOrEditContact", method = RequestMethod.POST)
 	@ResponseBody
 	public JSONObject addNewOrEditContact(@RequestBody ContactManager contact) {
@@ -91,13 +114,20 @@ public class EmployeeController {
 	public List<MeetingStatus> viewAllVisits(@RequestBody Employee employee) {
 
 		if("Security".equalsIgnoreCase(employee.getEmpRole())) {
-			return service.viewAllVisit();
+			return service.viewAllVisit(employee);
 		}else {
 			return service.viewAllVisitOfEmployee(employee.getEmpCode());
 		}
 		
 	}
 
+	@RequestMapping(value = "/viewAllUpcomingVisit", method = RequestMethod.POST)
+	@ResponseBody
+	public List<MeetingStatus> viewAllUpcomingVisit(@RequestBody Employee employee) {
+
+			return service.viewAllUpcomingVisit(employee.getEmpCode());
+	}
+	
 	@RequestMapping(value = "/addNewVisit", method = RequestMethod.POST)
 	@ResponseBody
 	public JSONObject addNewVisit(@RequestBody MeetingStatus meeting) {
@@ -167,6 +197,18 @@ public class EmployeeController {
 	public int getTotalVisitCount(@RequestBody int loginId) {
 		return service.getTotalVisitCount(loginId);
 	}
+	
+	@RequestMapping(value = "/getAllVisitCount", method = RequestMethod.POST)
+	@ResponseBody
+	public long getAllVisitCount(@RequestBody int loginId) {
+		return service.getAllVisitCount();
+	}
+	
+	@RequestMapping(value = "/getAllEmployeeCount", method = RequestMethod.POST)
+	@ResponseBody
+	public long getAllEmployeeCount(@RequestBody int loginId) {
+		return service.getAllEmployeeCount();
+	}
 
 	@RequestMapping(value = "/TodaysVisitCount", method = RequestMethod.POST)
 	@ResponseBody
@@ -191,6 +233,21 @@ public class EmployeeController {
 	@ResponseBody
 	public Employee getLoggedInDetails(@RequestBody int loginId) {
 		return service.getLoggedInDetails(loginId);
+	}
+	
+	@RequestMapping(value = "/sendEmail", method = RequestMethod.POST)
+	@ResponseBody
+	public JSONObject sendEmail(@RequestBody MeetingStatus meeting) {
+		
+		return service.sendEmail(meeting);
+	}
+	
+	@RequestMapping(value = "/sendSmsAndEmail", method = RequestMethod.POST)
+	@ResponseBody
+	public void sendSmsAndEmail(@RequestBody MeetingStatus meeting) {
+		
+		service.sendSmsAndEmail(meeting);
+		
 	}
 
 

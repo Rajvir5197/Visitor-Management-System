@@ -2,6 +2,11 @@ app.controller('loginController', function($scope, $rootScope, $http) {
 	
 	console.log("in js");
 	$scope.invalidUser = false;
+	$scope.UserName = window.localStorage.getItem("userName");
+	window.localStorage.setItem("pagePosition", "FromLoginPage");
+	if($scope.UserName != undefined || $scope.UserName != null ){
+		window.location.href  = "index1.html";
+	}
 	$scope.login = function(){
 		$scope.param={
 				empCode: $scope.empId,
@@ -15,7 +20,7 @@ app.controller('loginController', function($scope, $rootScope, $http) {
 				window.localStorage.setItem("loginDetails", response.data.empDetails.empCode);
 				window.localStorage.setItem("loginRole", response.data.empDetails.empRole);
 				window.localStorage.setItem("userName", response.data.empDetails.empName);
-				window.location.href  = "index1.html"
+				window.location.href  = "index1.html";
 			}else{
 				$scope.invalidUser = true;
 				console.log("not authorized");

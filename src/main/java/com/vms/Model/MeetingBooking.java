@@ -55,6 +55,10 @@ public class MeetingBooking {
 	@Column (name = "remarks")
 	private String remarks;
 	
+	@OneToOne
+	@JoinColumn (name = "visit_department")
+	private Department visitDepartment;
+	
 	@OneToOne(mappedBy = "meetingBooked")
 	private MeetingStatus meetingStatus;
 
@@ -128,6 +132,14 @@ public class MeetingBooking {
 
 	public void setEmpName(String empName) {
 		this.empName = empName;
+	}
+
+	public Department getVisitDepartment() {
+		return visitDepartment;
+	}
+
+	public void setVisitDepartment(Department visitDepartment) {
+		this.visitDepartment = visitDepartment;
 	}
 	
 	

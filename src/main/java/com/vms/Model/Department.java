@@ -25,9 +25,11 @@ public class Department{
 	@NotNull
 	private String deptName;
 
-	@ManyToMany
-	@JoinColumn (name = "dept_plant_code")
-	private Set<Plant> deptPlantCode;
+	/*
+	 * @ManyToMany
+	 * 
+	 * @JoinColumn (name = "dept_plant_code") private Set<Plant> deptPlantCode;
+	 */
 	
 	@Column (name = "reg_by")
 	private int regBy;
@@ -40,6 +42,9 @@ public class Department{
 	
 	@OneToMany(mappedBy = "empDept")
 	private Set<Employee> employeeMaster;
+
+	@Column (name = "active")
+	private boolean active;
 	
 	public int getDeptCode() {
 		return deptCode;
@@ -57,13 +62,12 @@ public class Department{
 		this.deptName = deptName;
 	}
 	
-	public Set<Plant> getDeptPlantCode() {
-		return deptPlantCode;
-	}
-
-	public void setDeptPlantCode(Set<Plant> deptPlantCode) {
-		this.deptPlantCode = deptPlantCode;
-	}
+	/*
+	 * public Set<Plant> getDeptPlantCode() { return deptPlantCode; }
+	 * 
+	 * public void setDeptPlantCode(Set<Plant> deptPlantCode) { this.deptPlantCode =
+	 * deptPlantCode; }
+	 */
 
 	public int getRegBy() {
 		return regBy;
@@ -87,6 +91,14 @@ public class Department{
 
 	public void setRegTime(Time regTime) {
 		this.regTime = regTime;
+	}
+
+	public boolean isActive() {
+		return active;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
 	}
 
 	

@@ -1,6 +1,6 @@
 
 <!-- Begin Page Content -->
-<div ng-controller="dashboardController" class="container-fluid mt-3">
+<div class="container-fluid mt-3">
 
 <!-- Page Heading -->
 <div class="row mb-2">
@@ -16,7 +16,7 @@
 
 
 <div class="row">
-<div class="col-lg-3 col-sm-6 mb-3">
+<div ng-click="navToReport()" class="col-lg-3 col-sm-6 mb-3">
 <div class="w-100 bg-success text-white p-3">
 <div><span class="fa fa-users fa-2x"></span></div>
 
@@ -27,7 +27,7 @@
 </div>
 </div>
 
-<div class="col-lg-3 col-sm-6 mb-3">
+<div ng-click="navToReport()" class="col-lg-3 col-sm-6 mb-3">
 <div class="w-100 bg-warning text-white p-3">
 <div><span class="fa fa-calendar-alt fa-2x"></span></div>
 
@@ -38,7 +38,7 @@
 </div>
 </div>
 
-<div class="col-lg-3 col-sm-6 mb-3">
+<div ng-click="navToCancelReport()" class="col-lg-3 col-sm-6 mb-3">
 <div class="w-100 bg-danger text-white p-3">
 <div><span class="fa fa-user-times fa-2x"></span></div>
 
@@ -49,7 +49,7 @@
 </div>
 </div>
 
-<div class="col-lg-3 col-sm-6 mb-3">
+<div ng-click="navToReport()" class="col-lg-3 col-sm-6 mb-3">
 <div class="w-100 bg-info text-white p-3">
 <div><span class="fa fa-address-card fa-2x"></span></div>
 
@@ -86,8 +86,8 @@
 </thead>
 
 <tbody>
-<tr ng-repeat="visit in allVisits">
-<td>{{visit.meetingBooked.visitor.visitorName}}</td>
+<tr ng-repeat="visit in allVisits | orderBy : 'meetingBooked.visitDate'">
+<td><a href="" ng-click="towardMeeting(visit)">{{visit.meetingBooked.visitor.firstName}} {{visit.meetingBooked.visitor.middleName}} {{visit.meetingBooked.visitor.lastName}}</a></td>
 <td>{{visit.meetingBooked.visitDate}}</td>
 <td>{{visit.meetingBooked.visitTime}}</td>
 </tr>
@@ -133,11 +133,11 @@
 </h2>
 <div class="p-2 text-center">
 <ul class="list-inline">
-<li class="list-inline-item mr-4" data-toggle="modal" data-target="#VisitScheduleModal" ng-click="visit = {};"><div class="Circle80 bg-warning m-auto"><i class="fa fa-file-medical fa-2x text-white"></i></div></li>
+<li class="list-inline-item mr-4"  ng-click="addNewVisit()"><div class="Circle80 bg-warning m-auto"><i class="fa fa-file-medical fa-2x text-white"></i></div></li>
 
-<li class="list-inline-item mr-4"><div class="Circle80 bg-danger m-auto"><i class="fa fa-chart-pie fa-2x text-white"></i></div></li>
+<li class="list-inline-item mr-4" ng-click="navToReport()"><div class="Circle80 bg-danger m-auto"><i class="fa fa-chart-pie fa-2x text-white"></i></div></li>
 
-<li class="list-inline-item"><div class="Circle80 bg-info m-auto"><i class="fa fa-info fa-2x text-white"></i></div></li>
+<li class="list-inline-item"><a target="_blank" href="pdf/UserManual.pdf"><div class="Circle80 bg-info m-auto"><i class="fa fa-info fa-2x text-white"></i></div></a></li>
 </ul>
 </div>
 </div>
@@ -166,7 +166,7 @@
 <span ng-hide="allContacts.length > 0">No Contacts</span>
 <ul class="listNew">
 <li ng-repeat="contact in allContacts | filter: query" class="Rel"><i class="fa fa-user fa-fw"></i><a href="tel:{{contact.mobileNumb}}">{{contact.firstName}} {{contact.lastName}} </a>
-<button class="btn btn-primary btn-sm ContFloatingBtn" data-toggle="modal" data-target="#VisitScheduleModal" ng-click="setVisit(contact)">Set Visit</button></li>
+<button class="btn btn-primary btn-sm ContFloatingBtn"  ng-click="setVisit(contact)">Set Visit</button></li>
 </ul> 
 </div>
 
@@ -184,10 +184,58 @@
 <div class="modal-body">
 <div class="row">
 
-<div class="col-lg-6">
+<!-- <div class="col-lg-6">
 <div class="form-group">
 <label>Name</label>
 <input type="text" ng-model="visit.meetingBooked.visitor.visitorName" type="text" class="form-control" required>
+</div>
+</div> -->
+<div class="col-lg-6">
+<div class="form-group">
+<label>Salutation</label>
+<select ng-model="visit.meetingBooked.visitor.salutation" class="form-control" required>
+<option>Mr.</option>
+<option>Mrs.</option>
+<option>Smt.</option>
+</select>
+</div>
+</div>
+
+<div class="col-lg-6">
+<div class="form-group">
+<label>First Name<span class="text-danger">*</span></label>
+<input ng-model="visit.meetingBooked.visitor.firstName" class="form-control" required />
+</div>
+</div>
+
+<div class="col-lg-6">
+<div class="form-group">
+<label>Middle Name<span class="text-danger">*</span></label>
+<input ng-model="visit.meetingBooked.visitor.middleName" class="form-control" />
+</div>
+</div>
+
+<div class="col-lg-6">
+<div class="form-group">
+<label>Last Name<span class="text-danger">*</span></label>
+<input ng-model="visit.meetingBooked.visitor.lastName" class="form-control" required/>
+</div>
+</div>
+
+<div class="col-lg-6">
+<div class="form-group">
+<label>Designation<span class="text-danger">*</span></label>
+<input ng-model="visit.meetingBooked.visitor.designation" class="form-control" required />
+</div>
+</div>
+
+<div class="col-lg-6">
+<div class="form-group">
+<label>Gender</label>
+<select ng-model="visit.meetingBooked.visitor.gender" class="form-control" required">
+<option>Male</option>
+<option>Female</option>
+</select>
 </div>
 </div>
 
@@ -216,8 +264,9 @@
 <div class="form-group">
 <label>Meeting type<span class="text-danger">*</span></label>
 <select ng-model="visit.meetingBooked.meetingType" class="form-control" required>
-<option>Meeting Type 1</option>
-<option>Meeting Type 2</option>
+<!-- <option>Meeting Type 1</option>
+<option>Meeting Type 2</option> -->
+<option ng-repeat="meetingType in allMeetingType">{{meetingType.meetingType}}</option>
 </select>
 </div>
 </div>
@@ -260,7 +309,7 @@
 <div class="FaIcon">
 <i class="fa fa-clock FloatIcon"></i>
 <input type="text" class="form-control" placeholder="select Time" required>
-<span ng-show="invalidTime" style="color: red;">Please enter valid date</span>
+<span ng-show="invalidTime" style="color: red;">Please enter valid Time</span>
 </div>
 </div>
 </div>
@@ -268,7 +317,7 @@
 <div class="col-lg-6">
 <div class="form-group">
 <label>Location<span class="text-danger">*</span></label>
-<select id="plantCode" ng-model="visit.meetingBooked.visitLocation" ng-options="plant.plantName for plant in EmpPlants track by plant.plantCode" class="form-control" name="plantCode" required>
+<select id="plantCode" ng-model="visit.meetingBooked.visitLocation" ng-options="plant.plantName for plant in allPlants track by plant.plantCode" class="form-control" name="plantCode" required>
 </select>
 </div>
 </div>
@@ -278,7 +327,7 @@
 <div class="modal-footer">
 <button type="submit" class="btn btn-primary" ng-click="addNewVisit()">Set Visit</button>
 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-<button type="button" class="btn btn-warning">Future Ref.</button>
+<!-- <button type="button" class="btn btn-warning">Future Ref.</button> -->
 </div>
 </form>
 </div>
@@ -336,10 +385,20 @@
 </div>
 
 
-<div class="modal fade" id="Loader" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" 
-style="margin-top: 22%;margin-left: 48%;">
-<img src="images/Spinner.gif" height="22%"/>
+<div class="modal fade" id="Loader" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal-dialog modal-md" role="document">
+<div class="modal-content" style="display: contents;">
+
+	<img src="images/Spinner.gif" style="margin: 51%;" height="22%"/>
+
 </div>
+</div>
+</div>
+
+<!-- <div class="modal fade" id="Loader" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" 
+style="margin-top: 22%;margin-left: 48%;">
+<img ng-if="notLoaded" src="images/Spinner.gif" height="22%"/>
+</div> -->
 
 </div>
 <!-- /End Page Content-->

@@ -1,0 +1,437 @@
+
+<!-- Begin Page Content -->
+<div class="container-fluid mt-3">
+
+<!-- Page Heading -->
+<div class="row mb-2">
+<div class="col-sm-12">
+<h1 class="h4 text-gray-800">Person Check-out</h1>
+</div>
+</div>
+<!-- End Page Heading -->
+
+
+
+<div class="bg-white p-3 mb-3">
+<div class="border px-3 pt-3 mb-3">
+<div class="row">
+<div class="col-lg-6">
+<div class="row">
+<div class="col-sm-5 mb-3">Appointment Number</div>
+<div class="col-sm-7 BlackTxtColor mb-3">: {{visitCheckin.meetingBooked.visitNo}}</div>
+</div>
+
+<div class="row">
+<div class="col-sm-5 mb-3">Visitor Name</div>
+<div class="col-sm-7 BlackTxtColor mb-3">: {{visitCheckin.meetingBooked.visitor.firstName}} {{visitCheckin.meetingBooked.visitor.middleName}} {{visitCheckin.meetingBooked.visitor.lastName}}</div>
+</div>
+
+<div class="row">
+<div class="col-sm-5 mb-3">Visitor From</div>
+<div class="col-sm-7 BlackTxtColor mb-3">: {{visitCheckin.meetingBooked.visitor.organisation}}</div>
+</div>
+</div>
+
+<div class="col-lg-6">
+<div class="row">
+<div class="col-sm-5 mb-3">Meeting Type</div>
+<div class="col-sm-7 BlackTxtColor mb-3">: {{visitCheckin.meetingBooked.meetingType}}</div>
+</div>
+
+<div class="row">
+<div class="col-sm-5 mb-3">Visit Time</div>
+<div class="col-sm-7 BlackTxtColor mb-3">: {{visitCheckin.meetingBooked.visitTime}}</div>
+</div>
+
+<div class="row">
+<div class="col-sm-5 mb-3">Visitor Phone</div>
+<div class="col-sm-7 BlackTxtColor mb-3">: {{visitCheckin.meetingBooked.visitor.contactNumber}}</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="border bg-light px-3 pt-3 mb-3">
+<div class="row">
+<div class="col-lg-4">
+<div class="row">
+<div class="col-sm-5 mb-3">Meeting with</div>
+<div class="col-sm-7 BlackTxtColor mb-3">: {{visitCheckin.meetingBooked.empName}}</div>
+</div>
+</div>
+
+<div class="col-lg-4">
+<div class="row">
+<div class="col-sm-5 mb-3">Check Out Time</div>
+<div class="col-sm-7 BlackTxtColor mb-3">: {{visitCheckin.empCheckoutTime}}</div>
+</div>
+</div>
+
+<div class="col-lg-4">
+<div class="row">
+<div class="col-sm-5 mb-3">Batch number:</div>
+<div class="col-sm-7 BlackTxtColor mb-3">: {{visitCheckin.meetingBooked.visitor.batchNo}}</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="row">
+<div class="col-lg-3 mb-3">
+<img ng-show="visitCheckin.meetingBooked.visitor.visitorImage != null" src="data:image/jpeg;base64,{{visitCheckin.meetingBooked.visitor.visitorImage}}" class="img-fluid border p-2" />
+<img ng-hide="visitCheckin.meetingBooked.visitor.visitorImage != null" src="images/profile-pic.jpg" class="img-fluid border p-2" />
+<button type="button" style="margin-top: 3%;margin-left: 23%;"style="margin-top: 3%;margin-left: 23%;" class="btn btn-primary" ng-click="captureVisitorMethod();">Capture Image</button>
+<button type="button" style="margin-top: 3%;margin-left: 23%;"style="margin-top: 3%;margin-left: 23%;" class="btn btn-primary" ng-click="getVisitorAsset()">Visitor Asset</button>
+</div>
+
+<div class="col-lg-9 mb-3">
+<h2 class="m-0 FontSize22 p-3 bg-light BlackTxtColor border border-bottom-0">Co-Visitor Information
+<!-- <button type="button" style="margin-left: 33%;" ng-disabled="visitCheckin.empCheckin" class="btn btn-primary" data-toggle="modal" data-target="#addCoVisitorModal" ng-click="newVisitor = {};">Add Co-Visitor</button> -->
+<!-- <button type="button" class="btn btn-primary" style="margin-left: 54%;" ng-disabled="visitCheckin.empCheckin" ng-click="sendMail()">send Email</button> -->
+</h2>
+
+<div class="table-responsive">
+<table class="table table-bordered">
+<thead>
+<tr>
+<th>Visitor Image</th>
+<th>Visitor Name</th>
+<th>Phone No.</th>
+<th>Asset</th>
+<th>Batch No.</th>
+</tr>
+</thead>
+
+<tbody>
+<tr ng-repeat="coVisitor in allCoVisitor">
+<td><img ng-show="coVisitor.coVisitorImage != null" src="data:image/jpeg;base64,{{coVisitor.coVisitorImage}}" height="50px" />
+<button ng-hide="coVisitor.coVisitorImage != null" class="btn btn-primary btn-sm" ng-click="captureCoVisitorMethod(coVisitor);" >click</button>
+</td>
+<td>{{coVisitor.coVisitorName}}</td>
+<td>{{coVisitor.coVisitorContact}}</td>
+<td><button type="button" class="btn btn-secondary btn-sm" ng-click="getCovisitorAsset(coVisitor)" data-toggle="modal" data-target="#viewAssetModal"><i class="fa fa-eye fa-fw fa-lg"></i>View and Add</button></td>
+<td><!-- <button type="button" class="btn btn-primary btn-sm" ng-disabled="!coVisitor.allowCheckOut || !visitCheckin.empCheckout || coVisitor.seccheckout" data-toggle="modal" data-target="#checkoutModal" ng-click="selectedCoVisitorForCheckout(coVisitor)" >Check Out</button> -->
+{{coVisitor.batchNo}}
+</td>
+</tr>
+
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="row">
+	<button type="button" style=";margin-left: 85%;" ng-disabled="!enableCheckIn" ng-click="securityCheckin()" class="btn btn-primary">Gate Check-In</button>
+</div>
+</div>
+
+
+<!--Assets List Check Out-->
+<div class="modal fade" id="viewAssetModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal-dialog modal-lg" role="document">
+<div class="modal-content">
+<div class="modal-header">
+<h5 class="modal-title BlackTxtColor" id="exampleModalLabel">Assets List</h5>
+<button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="viewAllCoVisitor()">
+<span aria-hidden="true">&times;</span>
+</button>
+</div>
+<div class="modal-body">
+<div class="table-responsive">
+<table class="table table-bordered">
+<thead>
+<tr>
+<th>Serial No.</th>
+<th>Asset Name</th>
+<th>Asset Count</th>
+<th>Asset Status</th>
+</tr>
+</thead>
+
+<tbody>
+
+<tr ng-repeat="asset in allAsset">
+<td>{{asset.assetSerialno}}</td>
+<td>{{asset.assetName}}</td>
+<td>{{asset.assetCount}}</td>
+<td><button ng-hide="asset.deliveredFlag" ng-disabled="!visitCheckin.empCheckout"  type="button" class="btn btn-danger btn-sm" >Checked</button>
+<button ng-show="asset.deliveredFlag" type="button" class="btn btn-success btn-sm" ><i class="fa fa-check fa-fw fa-lg"></i> {{asset.assetStatus}}</button>
+<button type="button" ng-click="deleteAsset(asset)" class="btn btn-primary btn-sm" >Delete</button>
+</td>
+</tr>
+
+<tr ng-repeat="asset in addCoVisitorAssetArrayList">
+<td>{{asset.assetSerialno}}</td>
+<td>{{asset.assetName}}</td>
+<td>{{asset.assetCount}}</td>
+<td><button ng-disabled="true" type="button" class="btn btn-danger btn-sm" ><i class="fa fa-times fa-fw fa-lg"></i>Not Saved</button>
+<button type="button" class="btn btn-primary btn-sm" ng-click="addAsset(asset)">save</button>
+</td>
+</tr>
+
+<tr ng-if="showAddCovisitorAsset">
+<td><input type="text" ng-model="newAsset.assetSerialno" class="form-control" required /></td>
+<td><input type="text" ng-model="newAsset.assetName" class="form-control" required /></td>
+<td><input type="text" ng-model="newAsset.assetCount" class="form-control" required /></td>
+<td><!-- <button type="button" class="btn btn-danger btn-sm" ><i class="fa fa-times fa-fw fa-lg"></i> Not Delivered</button> -->
+<button type="button" class="btn btn-primary btn-sm" ng-click="addAsset(newAsset)" >save</button>
+</td>
+</tr>
+<!-- <tr>
+<td>Pen Drive</td>
+<td>1</td>
+<td><button type="button" class="btn btn-danger btn-sm"><i class="fa fa-times fa-fw fa-lg"></i> Not Delivered</button></td>
+</tr> -->
+</tbody>
+</table>
+</div>
+<button type="button" ng-click="addCovisitorAssetArray()" style="margin-left: 93%;" ng-disabled="visitCheckin.empCheckin" class="btn btn-primary">Add</button>
+</div>
+<div class="modal-footer">
+<button type="button" class="btn btn-danger btn-sm">Checked</button> - Assets are Checked.
+<button type="button" class="btn btn-success btn-sm"><i class="fa fa-check fa-fw fa-lg"></i> Verified</button><span style="margin-right: 10%;"> - Assets are verified.</span>
+<button type="button" class="btn btn-secondary" ng-click="viewAllCoVisitor()" data-dismiss="modal">Close</button>
+</div>
+</div>
+</div>
+</div>
+
+
+<div class="modal fade" id="viewVisitorAssetModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal-dialog modal-lg" role="document">
+<div class="modal-content">
+<div class="modal-header">
+<h5 class="modal-title BlackTxtColor" id="exampleModalLabel">Assets List</h5>
+<button type="button" class="close" data-dismiss="modal" aria-label="Close" ng-click="viewAllCoVisitor()">
+<span aria-hidden="true">&times;</span>
+</button>
+</div>
+<div class="modal-body">
+<div class="table-responsive">
+<table class="table table-bordered">
+<thead>
+<tr>
+<th>Serial No.</th>
+<th>Asset Name</th>
+<th>Asset Count</th>
+<th>Asset Status</th>
+</tr>
+</thead>
+
+<tbody>
+
+<tr ng-repeat="asset in allAsset">
+<td>{{asset.assetSerialno}}</td>
+<td>{{asset.assetName}}</td>
+<td>{{asset.assetCount}}</td>
+<td><button ng-disabled="true" type="button" class="btn btn-danger btn-sm" >Checked<!-- {{asset.assetStatus}} --></button>
+<button type="button" ng-click="deleteVisitorAsset(asset)" class="btn btn-primary btn-sm" >Delete</button>
+</td>
+</tr>
+
+<tr ng-repeat="asset in addAssetArrayList">
+<td>{{asset.assetSerialno}}</td>
+<td>{{asset.assetName}}</td>
+<td>{{asset.assetCount}}</td>
+<td><button ng-disabled="true" type="button" class="btn btn-danger btn-sm" ><i class="fa fa-times fa-fw fa-lg"></i>Not Saved</button>
+<button type="button" class="btn btn-primary btn-sm" ng-click="addVisitorAsset(asset)">save</button>
+</td>
+</tr>
+
+<tr ng-if="showAddAsset">
+<td><input type="text" ng-model="newVisitorAsset.assetSerialno" class="form-control" required /></td>
+<td><input type="text" ng-model="newVisitorAsset.assetName" class="form-control" required /></td>
+<td><input type="text" ng-model="newVisitorAsset.assetCount" class="form-control" required /></td>
+<td><!-- <button type="button" class="btn btn-danger btn-sm" ><i class="fa fa-times fa-fw fa-lg"></i> Not Delivered</button> -->
+<button type="button" class="btn btn-primary btn-sm" ng-click="addVisitorAsset(newVisitorAsset)" >save</button>
+</td>
+</tr>
+<!-- <tr>
+<td>Pen Drive</td>
+<td>1</td>
+<td><button type="button" class="btn btn-danger btn-sm"><i class="fa fa-times fa-fw fa-lg"></i> Not Delivered</button></td>
+</tr> -->
+</tbody>
+</table>
+</div>
+<button type="button" ng-click="addAssetArray()" style="margin-left: 93%;" ng-disabled="visitCheckin.empCheckin" class="btn btn-primary">Add</button>
+</div>
+<div class="modal-footer">
+<button type="button" class="btn btn-danger btn-sm">Checked</button> - Assets are Checked.
+<button type="button" class="btn btn-success btn-sm"><i class="fa fa-check fa-fw fa-lg"></i> Verified</button><span style="margin-right: 10%;"> - Assets are verified.</span>
+<button type="button" class="btn btn-secondary" ng-click="viewAllCoVisitor()" data-dismiss="modal">Close</button>
+</div>
+</div>
+</div>
+</div>
+<!--//Assets List Check Out-->
+
+
+<!--CheckOut-->
+<div class="modal fade" id="checkoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal-dialog" role="document">
+<div class="modal-content">
+<div class="modal-header">
+<h5 class="modal-title BlackTxtColor" id="exampleModalLabel">Check Out</h5>
+<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+<span aria-hidden="true">&times;</span>
+</button>
+</div>
+<div class="modal-body">
+<div class="row">
+<div class="col-lg-12">
+<div class="form-group">
+<label>Remarks if any</label>
+<textarea ng-model="selectedCoVisitor.checkOutRemarks" class="form-control" rows="3"></textarea>
+</div>
+</div>
+</div>
+</div>
+<div class="modal-footer">
+<button type="button" class="btn btn-primary" ng-click="checkoutCoVisitor()">Check Out</button>
+<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+</div>
+</div>
+</div>
+</div>
+<!--//CheckOut-->
+
+<!-- add co visitor -->
+<div class="modal fade" id="addCoVisitorModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal-dialog modal-md" role="document">
+<div class="modal-content">
+<form name="addForm">
+<div class="modal-header">
+<h5 class="modal-title BlackTxtColor" id="exampleModalLabel">Add Co-Visitor</h5>
+<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+<span aria-hidden="true">&times;</span>
+</button>
+</div>
+<div class="modal-body">
+
+
+<!-- <div class="row">
+<div class="col-lg-6 border-right"> -->
+<div class="row">
+
+<div class="col-lg-12">
+<div class="form-group">
+<label>Co-Visitor Name</label>
+<input type="text" ng-model="newVisitor.coVisitorName" class="form-control" required />
+</div>
+</div>
+
+<div class="col-lg-12">
+<div class="form-group">
+<label>Phone No.</label>
+<input type="text" maxlength="10" minlength="10" ng-model="newVisitor.coVisitorContact" class="form-control" required />
+<span ng-show="invalidMobile" style="color: red;">Please enter valid mobile Number</span>
+</div>
+</div>
+
+<div class="col-lg-12">
+<div class="form-group">
+<label>Email</label>
+<input type="email" ng-model="newVisitor.coVisitorEmail" class="form-control" required />
+</div>
+</div>
+
+</div>
+</div>
+<div class="modal-footer">
+	<button type="submit" class="btn btn-primary" ng-click="addCoVistor()">Submit</button>
+	<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+</div>
+</form>
+</div>
+</div>
+</div>
+<!-- add co visitor ends -->
+
+
+<div class="modal fade" id="captureImageModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal-dialog" role="document">
+<div class="modal-content">
+<div class="modal-header">
+<h5 class="modal-title BlackTxtColor" id="exampleModalLabel">Capture Image</h5>
+<button type="button" class="close" ng-click="closeCaptureImage()" data-dismiss="modal" aria-label="Close">
+<span aria-hidden="true">&times;</span>
+</button>
+</div>
+<div class="modal-body">
+<div class="row">
+<div class="col-lg-12">
+<div class="form-group">
+
+
+<div>
+<form style="text-align: center;">
+	<p style="margin-bottom: 1%;">Do you have Aarogya Setu App Installed?</p>
+	<input ng-model="appInstalled" value="true" type="radio"> Yes &nbsp;&nbsp;
+	<input ng-model="appInstalled" value="false" type="radio"> No<br>
+	<p style="margin-bottom: 1%;margin-top:1%;margin-left: 20%;">Temperature:
+	<input type="number" ng-model="temperature">&#8457;
+	</p>
+	<p style="margin-bottom: 1%;margin-top:1%">Batch number assigned:
+	<input type="text" ng-model="batchNo">
+	</p>
+	<p ng-if="checkBatch == 'BatchPresent'" style="color: red;margin-left: 40%;">Batch number not available.</p>
+	
+</form>
+</div>
+<div id="my_camera" style="margin-left: 15%;"></div>
+<input class="btn btn-primary" type=button style="margin-left: 37%; margin-top: 2%;margin-bottom: 2%;" value="Take Snapshot" ng-click="take_snapshot()">
+ 
+<div id="results" style="margin-left: 15%;"></div>
+<button ng-hide="visitorImg == null || visitorImg == undefined"  type="button" style="margin-left: 42%; margin-top: 2%;margin-bottom: 2%;" class="btn btn-primary" ng-click="saveVisitorImage()">Save</button>
+
+</div>
+</div>
+</div>
+</div>
+<!-- <div class="modal-footer">
+<button type="button" class="btn btn-primary" ng-click="checkoutCoVisitor()">Check Out</button>
+<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+</div> -->
+</div>
+</div>
+</div>
+
+
+<div class="modal fade" id="emailModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal-dialog" role="document">
+<div class="modal-content">
+<div class="modal-header">
+<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+<span aria-hidden="true">&times;</span>
+</button>
+</div>
+<div class="modal-body">
+<div class="row">
+<div class="col-lg-12">
+<div class="form-group">
+Email sent
+</div>
+</div>
+</div>
+</div>
+<!-- <div class="modal-footer">
+<button type="button" class="btn btn-primary" ng-click="checkoutCoVisitor()">Check Out</button>
+<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+</div> -->
+</div>
+</div>
+</div>
+
+<div class="modal fade" id="Loader" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal-dialog modal-md" role="document">
+<div class="modal-content" style="display: contents;">
+
+	<img src="images/Spinner.gif" style="margin: 51%;" height="22%"/>
+
+</div>
+</div>
+</div>
+
+</div>
+<!-- /End Page Content -->
